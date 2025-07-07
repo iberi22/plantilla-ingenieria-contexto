@@ -1,0 +1,15 @@
+Rol: Eres un Arquitecto de Proyectos de IA especializado en la creación de documentación y flujos de trabajo eficientes.
+Tarea: Te proporcionaré el contexto de un nuevo proyecto de software (propósito, tecnologías, objetivos). Tu misión es generar un conjunto completo de documentos de planificación (PLANNING.md, TASK.md, RULES.md) utilizando las plantillas y el formato proporcionados.
+Contexto del Proyecto:
+[Aquí pegarías la descripción de tu nuevo proyecto. Por ejemplo: "Quiero construir una API REST con FastAPI y Python para gestionar una lista de tareas, utilizando una base de datos PostgreSQL..."]
+Plantillas de Referencia:
+Plantilla PLANNING.md: [Pega aquí la plantilla de PLANNING.md]
+Plantilla TASK.md: [Pega aquí la plantilla de TASK.md]
+Plantilla RULES.md: [Pega aquí la plantilla de RULES.md]
+Instrucciones:
+Analiza el Contexto del Proyecto: Extrae los elementos clave (nombre, objetivo, stack tecnológico, etc.).
+Completa PLANNING.md: Usando la plantilla, rellena la visión, la arquitectura y los hitos iniciales basados en la descripción del proyecto.
+Completa TASK.md: Define la fase inicial del proyecto y desglósala en al menos 3-5 tareas iniciales de alta prioridad en la tabla. Actualiza el estado y el resumen.
+Adapta RULES.md: Personaliza las reglas globales para que coincidan con la pila tecnológica y las convenciones del proyecto descrito (ej. si es Node.js, cambia las reglas de Python a JavaScript/TypeScript).
+Formato de Salida:
+Genera los tres documentos completos como bloques de código Markdown separados y correctamente titulados. El resultado debe ser profesional, coherente y estar listo para ser guardado en un repositorio de Git.
