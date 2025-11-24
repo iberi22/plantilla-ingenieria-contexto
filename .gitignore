@@ -72,3 +72,4 @@ coverage.xml
 # OS
 .DS_Store
 Thumbs.db
+create_placeholders.py
