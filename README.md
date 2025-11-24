@@ -93,23 +93,6 @@ pytest tests/ -v
 
 # Run specific test modules
 pytest tests/test_scanner.py -v
-pytest tests/test_persistence.py -v
-
-# Run with coverage
-pytest tests/ --cov=src --cov-report=html
-```
-
-Validate integration:
-```bash
-python validate_integration.py
-```
-
-## 🌐 Web Dashboard (New)
-
-A modern React + Vite + Tailwind dashboard is available in the `web/` directory to manage and view generated content.
-
-### Setup Web UI
-```bash
 cd web
 npm install
 npm run dev

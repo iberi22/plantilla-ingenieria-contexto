@@ -171,24 +171,6 @@ Timeline:
 | BG-06 | Tests de Blog Generator | 0.5 días |
 
 **Total:** 4.5 días
-
-### 🎥 Fase 2: Reel Creator (Prioridad ALTA)
-**Objetivo:** Generar videos de 20 segundos
-
-| Tarea | Descripción | Estimación |
-|-------|-------------|------------|
-| RC-01 | Implementar `ScreenshotCapturer` | 0.5 días |
-| RC-02 | Implementar `ReelCreator` (timeline 20s) | 2 días |
-| RC-03 | Integrar imágenes + screenshot | 0.5 días |
-| RC-04 | Agregar transiciones y efectos | 1 día |
-| RC-05 | Implementar narración condensada | 0.5 días |
-| RC-06 | Tests de Reel Creator | 0.5 días |
-
-**Total:** 5 días
-
-### 🔄 Fase 3: Automatización Local (Prioridad MEDIA)
-**Objetivo:** Detectar cambios y generar videos automáticamente
-
 | Tarea | Descripción | Estimación |
 |-------|-------------|------------|
 | AL-01 | Implementar `BlogWatcher` | 1 día |

@@ -74,6 +74,56 @@ class ScreenshotCapturer:
             self.logger.error(f"Failed to capture screenshot: {e}")
             return None
 
+    async def capture_highlights(self, url: str, repo_name: str, highlights: Dict[str, str]) -> Dict[str, str]:
+        """
+        Capture screenshots of specific elements on the page.
+
+        Args:
+            url: URL of the repository.
+            repo_name: Name of the repository.
+            highlights: Dictionary mapping name to CSS selector (e.g., {'readme': 'article.markdown-body'}).
+
+        Returns:
+            Dictionary mapping highlight name to file path.
+        """
+        results = {}
+        try:
+            self.logger.info(f"Capturing highlights for {url}")
+
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                context = await browser.new_context(
+                    viewport={'width': 1280, 'height': 720},
+                    device_scale_factor=2
+                )
+                page = await context.new_page()
+                await page.goto(url, wait_until="networkidle")
+                await self._remove_banners(page)
+
+                safe_name = repo_name.lower().replace(" ", "-").replace("/", "-")
+                repo_dir = self.output_dir / safe_name
+                repo_dir.mkdir(parents=True, exist_ok=True)
+
+                for name, selector in highlights.items():
+                    try:
+                        element = await page.query_selector(selector)
+                        if element:
+                            output_path = repo_dir / f"{name}.png"
+                            await element.screenshot(path=str(output_path))
+                            results[name] = str(output_path)
+                            self.logger.info(f"Captured highlight '{name}' to {output_path}")
+                        else:
+                            self.logger.warning(f"Element not found for highlight '{name}' (selector: {selector})")
+                    except Exception as e:
+                        self.logger.error(f"Failed to capture highlight '{name}': {e}")
+
+                await browser.close()
+
+        except Exception as e:
+            self.logger.error(f"Failed to capture highlights: {e}")
+
+        return results
+
     async def _remove_banners(self, page):
         """Attempt to remove common cookie banners and popups."""
         try:
@@ -94,3 +144,4 @@ class ScreenshotCapturer:
                     pass
         except Exception:
             pass
+

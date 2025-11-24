@@ -41,7 +41,8 @@ class ScriptWriter:
         - "pros": List of advantages.
         - "cons": List of potential downsides or limitations.
         - "verdict": Professional, honest feedback.
-        - "narration": A full narration text for the video.
+        - "narration": A full narration text for the blog post audio.
+        - "narration_20s": A condensed, punchy narration specifically for a 20-second video reel.
         """
 
         if self.provider == "gemini":
