@@ -63,6 +63,8 @@ class YouTubeAPIClient:
                     flow = InstalledAppFlow.from_client_secrets_file(
                         self.client_secret_file, SCOPES
                     )
+                # NOTE: run_local_server expects a browser.
+                # For headless servers, use flow.run_console() or pre-generate tokens.
                     credentials = flow.run_local_server(port=0)
                 except Exception as e:
                     self.logger.error(f"Failed to run auth flow: {e}")
