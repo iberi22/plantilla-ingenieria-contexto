@@ -28,7 +28,7 @@ function VoiceRecorder() {
 
   // Step 6: Video Generation
   const [videoStatus, setVideoStatus] = useState({}); // { lang: 'idle' | 'loading' | 'success' | 'error' }
-  const [generatedVideos, setGeneratedVideos] = useState({}); // { lang: filename }
+  const [generatedVideos, setGeneratedVideos] = useState({}); // { lang: { filename: string, opencut: object } }
 
   const mediaRecorderRef = useRef(null);
   const audioRef = useRef(null);
@@ -243,7 +243,7 @@ function VoiceRecorder() {
 
       if (data.error) throw new Error(data.error);
 
-      setGeneratedVideos(prev => ({ ...prev, [lang]: data.filename }));
+      setGeneratedVideos(prev => ({ ...prev, [lang]: data }));
       setVideoStatus(prev => ({ ...prev, [lang]: 'success' }));
     } catch (error) {
       console.error(`Video generation failed for ${lang}:`, error);
@@ -465,7 +465,7 @@ function VoiceRecorder() {
                     <div className="flex items-center gap-3">
                       {generatedVideos[lang] ? (
                         <a
-                          href={`http://localhost:5000/api/download/${generatedVideos[lang]}`}
+                          href={`http://localhost:5000/api/download/${generatedVideos[lang].filename}`}
                           className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium flex items-center gap-2"
                         >
                           <Download className="w-4 h-4" />
@@ -479,6 +479,21 @@ function VoiceRecorder() {
                         >
                           {videoStatus[lang] === 'loading' ? <Loader className="animate-spin w-4 h-4" /> : <Video className="w-4 h-4" />}
                           Generate Video
+                        </button>
+                      )}
+                      {generatedVideos[lang] && generatedVideos[lang].opencut && (
+                        <button
+                            onClick={() => {
+                                if (generatedVideos[lang].opencut.editor_url) {
+                                    window.open(generatedVideos[lang].opencut.editor_url, '_blank');
+                                } else {
+                                    alert("Editor URL not available");
+                                }
+                            }}
+                            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-medium flex items-center gap-2"
+                        >
+                            <Edit className="w-4 h-4" />
+                            Edit Video
                         </button>
                       )}
                     </div>
