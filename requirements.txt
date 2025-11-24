@@ -26,6 +26,7 @@ Pillow==10.1.0
 
 # Audio
 edge-tts==6.1.10
+openai-whisper==20231117
 pydub==0.25.1
 
 # Web Framework (for API)

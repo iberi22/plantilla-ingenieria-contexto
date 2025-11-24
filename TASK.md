@@ -19,14 +19,14 @@ _Última Actualización: 23 de noviembre de 2025 - 21:30_
 - [🟢] 🎨 Generación de Imágenes: 100% (7/7 tareas) ✅
 - [🟢] 📝 Blog Generator: 100% (18/18 tareas) ✅
 - [🟢] 🎥 Reel Creator (20s): 85% (16/19 tareas) ✅
-- [🟢] 🌍 Multilingual Voice Cloning: 90% (17/21 tareas) **← NUEVO**
+- [🟢] 🌍 Multilingual Voice Translation: 90% (18/20 tareas)
 - [🔴] 🔄 Automatización Local: 0% (0/4 tareas)
-- [🟡] 🧪 Testing: 40% (8/24 tareas)
+- [🟡] 🧪 Testing: 37.5% (9/24 tareas)
 - [🟡] 📚 Documentación: 70% (7/10 tareas)
 
 **Métricas de Calidad:**
-- Tareas Completadas: 68/99 (69%)
-- Cobertura de Tests: 30%
+- Tareas Completadas: 69/98 (70%)
+- Cobertura de Tests: 35%
 - Deuda Técnica: Baja
 - Documentación: Actualizada con nueva arquitectura
 
@@ -153,36 +153,29 @@ _Última Actualización: 23 de noviembre de 2025 - 21:30_
 
 ---
 
-## 🌍 FASE 2.5: Multilingual Voice Cloning (NUEVO)
+## 🌍 FASE 2.5: Multilingual Voice Translation (EN PROGRESO)
 
-**Objetivo:** Sistema de clonación de voz y generación multiidioma
+**Objetivo:** Sistema de traducción de voz a voz y generación multiidioma
 
 **Prioridad:** ALTA
 **Estimación:** 3 días
 
-### Voice Cloning System
+### Voice Translation Pipeline
 
 | ID    | Tarea                                                              | Prioridad | Estado      | Responsable | Estimación |
 |-------|--------------------------------------------------------------------|-----------|-------------|-------------|------------|
-| VC-01 | Implementar `VoiceCloner` con Coqui TTS XTTS-v2                    | CRÍTICA   | ✅ Completado | Agente      | - |
-| VC-02 | Soporte para 16 idiomas                                            | CRÍTICA   | ✅ Completado | Agente      | - |
-| VC-03 | Método `clone_voice()` con referencia de audio                     | ALTA      | ✅ Completado | Agente      | - |
+| VT-01 | Implementar `VoiceTranslationPipeline`                             | CRÍTICA   | ✅ Completado | Agente      | - |
+| VT-02 | Integración con Whisper (Transcripción)                            | CRÍTICA   | ✅ Completado | Agente      | - |
+| VT-03 | Integración con MarianMT (Traducción)                              | ALTA      | ✅ Completado | Agente      | - |
+| VT-04 | Integración con XTTS-v2 (Síntesis con voz traducida)               | CRÍTICA   | ✅ Completado | Agente      | - |
 
-### Translation System
-
-| ID    | Tarea                                                              | Prioridad | Estado      | Responsable | Estimación |
-|-------|--------------------------------------------------------------------|-----------|-------------|-------------|------------|
-| TS-01 | Implementar `TextTranslator` con MarianMT                          | CRÍTICA   | ✅ Completado | Agente      | - |
-| TS-02 | Soporte para 9 pares de idiomas                                    | ALTA      | ✅ Completado | Agente      | - |
-| TS-03 | Método `translate()` con carga dinámica de modelos                 | ALTA      | ✅ Completado | Agente      | - |
-
-### Multilingual Reel Generator
+### Multilingual Reel Generation
 
 | ID    | Tarea                                                              | Prioridad | Estado      | Responsable | Estimación |
 |-------|--------------------------------------------------------------------|-----------|-------------|-------------|------------|
-| MR-01 | Implementar `MultilingualReelGenerator`                            | CRÍTICA   | ✅ Completado | Agente      | - |
-| MR-02 | Método `generate_multilingual_audio()`                             | CRÍTICA   | ✅ Completado | Agente      | - |
-| MR-03 | Integración Voice Cloning + Translation                            | ALTA      | ✅ Completado | Agente      | - |
+| MR-01 | Integrar `VoiceTranslationPipeline` en API                         | CRÍTICA   | ✅ Completado | Agente      | - |
+| MR-02 | Método `batch_translate_voice()`                                   | CRÍTICA   | ✅ Completado | Agente      | - |
+| MR-03 | Generación de video con audio traducido                            | ALTA      | ✅ Completado | Agente      | - |
 
 ### Web UI - Voice Studio
 
@@ -201,15 +194,14 @@ _Última Actualización: 23 de noviembre de 2025 - 21:30_
 | API-01| Flask API `multilingual_api.py`                                    | CRÍTICA   | ✅ Completado | Agente      | - |
 | API-02| Endpoint `/api/generate-multilingual-reels`                        | CRÍTICA   | ✅ Completado | Agente      | - |
 | API-03| Endpoint `/api/languages`                                          | MEDIA     | ✅ Completado | Agente      | - |
-| API-04| Endpoint `/api/download/<lang>/<filename>`                         | MEDIA     | ✅ Completado | Agente      | - |
+| API-04| Endpoint `/api/download/<filename>`                                | MEDIA     | ✅ Completado | Agente      | - |
 | API-05| CORS configuration para React                                      | ALTA      | ✅ Completado | Agente      | - |
 
 ### Tests
 
 | ID    | Tarea                                                              | Prioridad | Estado      | Responsable | Estimación |
 |-------|--------------------------------------------------------------------|-----------|-------------|-------------|------------|
-| TM-01 | Tests para `VoiceCloner`                                           | ALTA      | ⏳ Pendiente | Agente      | 0.5 días |
-| TM-02 | Tests para `TextTranslator`                                        | ALTA      | ⏳ Pendiente | Agente      | 0.5 días |
+| TM-01 | Tests para `VoiceTranslationPipeline`                              | ALTA      | ✅ Completado | Agente      | 0.5 días |
 | TM-03 | Tests para `MultilingualReelGenerator`                             | ALTA      | ⏳ Pendiente | Agente      | 0.5 días |
 | TM-04 | Tests de integración API                                           | MEDIA     | ⏳ Pendiente | Agente      | 0.5 días |
 

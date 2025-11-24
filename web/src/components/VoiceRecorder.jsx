@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Square, Play, Pause, Upload, Globe, Video, Download } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Mic, Square, Play, Pause, Globe, Video, Download } from 'lucide-react';
 
 function VoiceRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [script, setScript] = useState('');
   const [selectedLanguages, setSelectedLanguages] = useState(['en', 'es']);
   const [generationStatus, setGenerationStatus] = useState({});
 
@@ -22,7 +21,7 @@ function VoiceRecorder() {
     { code: 'it', name: 'Italiano', flag: '🇮🇹' },
     { code: 'pt', name: 'Português', flag: '🇵🇹' },
     { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-    { code: 'zh-cn', name: '中文', flag: '🇨🇳' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
     { code: 'ar', name: 'العربية', flag: '🇸🇦' },
   ];
@@ -82,22 +81,25 @@ function VoiceRecorder() {
   };
 
   const generateMultilingualReels = async () => {
-    if (!audioBlob || !script) {
-      alert('Please record your voice and provide a script');
+    if (!audioBlob) {
+      alert('Please record your narration first');
       return;
     }
 
-    setGenerationStatus({ status: 'processing', message: 'Uploading audio and generating reels...' });
+    if (selectedLanguages.length === 0) {
+      alert('Please select at least one target language');
+      return;
+    }
+
+    setGenerationStatus({ status: 'processing', message: 'Transcribing and translating your voice...' });
 
     try {
-      // Create FormData
       const formData = new FormData();
-      formData.append('audio', audioBlob, 'reference_voice.wav');
-      formData.append('script', script);
+      formData.append('audio', audioBlob, 'narration.wav');
       formData.append('languages', JSON.stringify(selectedLanguages));
+      formData.append('repo_name', 'my-project');
 
-      // Send to backend
-      const response = await fetch('/api/generate-multilingual-reels', {
+      const response = await fetch('http://localhost:5000/api/generate-multilingual-reels', {
         method: 'POST',
         body: formData,
       });
@@ -122,45 +124,46 @@ function VoiceRecorder() {
     }
   };
 
+  const handleDownload = (filename) => {
+    // Assuming the API is running on localhost:5000
+    const downloadUrl = `http://localhost:5000/api/download/${filename}`;
+    window.location.href = downloadUrl;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <header className="mb-12 text-center">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            🎙️ Multilingual Reel Studio
+            🎙️ Voice Translation Studio
           </h1>
-          <p className="text-xl text-gray-300">
-            Record your voice once, generate reels in multiple languages
+          <p className="text-xl text-gray-300 mb-2">
+            Record your narration once, get it in multiple languages
+          </p>
+          <p className="text-sm text-gray-400">
+            Your voice will be transcribed, translated, and synthesized in each target language
           </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column: Voice Recording */}
           <div className="space-y-6">
-            {/* Script Input */}
-            <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-              <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                <Video className="w-6 h-6 text-blue-400" />
-                Script (English)
-              </h2>
-              <textarea
-                value={script}
-                onChange={(e) => setScript(e.target.value)}
-                placeholder="Enter your 20-second script here..."
-                className="w-full h-32 bg-gray-900 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-              />
-              <p className="text-sm text-gray-400 mt-2">
-                Word count: {script.split(' ').filter(w => w).length} (~{Math.ceil(script.split(' ').filter(w => w).length / 2.5)} seconds)
-              </p>
-            </div>
-
-            {/* Voice Recording */}
             <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
                 <Mic className="w-6 h-6 text-red-400" />
-                Voice Recording
+                Record Your Narration
               </h2>
+
+              <div className="mb-4 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-blue-300 mb-2">
+                  📝 <strong>Instructions:</strong>
+                </p>
+                <ul className="text-sm text-gray-300 space-y-1 ml-4">
+                  <li>• Read your script naturally in your preferred language</li>
+                  <li>• Speak clearly and at a comfortable pace</li>
+                  <li>• Aim for 15-20 seconds of narration</li>
+                  <li>• Your voice will be translated to selected languages</li>
+                </ul>
+              </div>
 
               <div className="flex flex-col items-center gap-4">
                 {!audioUrl ? (
@@ -214,9 +217,7 @@ function VoiceRecorder() {
             </div>
           </div>
 
-          {/* Right Column: Language Selection & Generation */}
           <div className="space-y-6">
-            {/* Language Selection */}
             <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
                 <Globe className="w-6 h-6 text-green-400" />
@@ -245,17 +246,15 @@ function VoiceRecorder() {
               </p>
             </div>
 
-            {/* Generate Button */}
             <button
               onClick={generateMultilingualReels}
-              disabled={!audioBlob || !script || selectedLanguages.length === 0}
+              disabled={!audioBlob || selectedLanguages.length === 0}
               className="w-full py-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl font-bold text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
             >
               <Video className="w-6 h-6" />
-              Generate Multilingual Reels
+              Translate Voice & Generate Reels
             </button>
 
-            {/* Status */}
             {generationStatus.status && (
               <div className={`p-6 rounded-2xl border-2 ${
                 generationStatus.status === 'success' ? 'border-green-500 bg-green-900/20' :
@@ -264,14 +263,16 @@ function VoiceRecorder() {
               }`}>
                 <p className="font-semibold mb-2">{generationStatus.message}</p>
 
-                {generationStatus.results && (
+                {generationStatus.results && generationStatus.results.video_files && (
                   <div className="mt-4 space-y-2">
-                    {Object.entries(generationStatus.results).map(([lang, path]) => (
+                    {Object.entries(generationStatus.results.video_files).map(([lang, filename]) => (
                       <div key={lang} className="flex items-center justify-between bg-gray-900/50 p-3 rounded-lg">
                         <span className="flex items-center gap-2">
                           {languages.find(l => l.code === lang)?.flag} {lang.toUpperCase()}
                         </span>
-                        <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm flex items-center gap-2">
+                        <button 
+                          onClick={() => handleDownload(filename)}
+                          className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm flex items-center gap-2">
                           <Download className="w-4 h-4" />
                           Download
                         </button>

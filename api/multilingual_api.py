@@ -1,16 +1,21 @@
 """
-Flask API for multilingual reel generation.
+Flask API for professional multilingual reel generation.
+
+Uses voice translation pipeline:
+1. User records narration in their voice
+2. System transcribes and translates to target languages
+3. System synthesizes speech in target languages with user's voice characteristics
+4. System generates video reels for each language
 
 Endpoints:
 - POST /api/generate-multilingual-reels - Generate reels in multiple languages
 - GET /api/languages - Get supported languages
-- GET /api/status/<job_id> - Check generation status
+- GET /api/download/<lang>/<filename> - Download generated file
 """
 
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import logging
-import os
 import sys
 from pathlib import Path
 import json
@@ -19,7 +24,7 @@ from werkzeug.utils import secure_filename
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from video_generator.voice_cloning import VoiceCloner, TextTranslator, MultilingualReelGenerator
+from video_generator.voice_translation import VoiceTranslationPipeline
 from video_generator.reel_creator import ReelCreator
 
 app = Flask(__name__)
@@ -41,7 +46,7 @@ UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
 AUDIO_FOLDER.mkdir(parents=True, exist_ok=True)
 
-ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg', 'flac'}
+ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg', 'flac', 'webm', 'm4a'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -49,34 +54,23 @@ def allowed_file(filename):
 
 @app.route('/api/languages', methods=['GET'])
 def get_languages():
-    """Get list of supported languages."""
+    """Get list of supported languages for translation."""
     try:
-        voice_cloner = VoiceCloner()
-        languages = voice_cloner.get_supported_languages()
+        # Supported languages for voice translation
+        languages = [
+            {"code": "en", "name": "English", "flag": "🇺🇸"},
+            {"code": "es", "name": "Español", "flag": "🇪🇸"},
+            {"code": "fr", "name": "Français", "flag": "🇫🇷"},
+            {"code": "de", "name": "Deutsch", "flag": "🇩🇪"},
+            {"code": "it", "name": "Italiano", "flag": "🇮🇹"},
+            {"code": "pt", "name": "Português", "flag": "🇵🇹"},
+            {"code": "ru", "name": "Русский", "flag": "🇷🇺"},
+            {"code": "zh", "name": "中文", "flag": "🇨🇳"},
+            {"code": "ja", "name": "日本語", "flag": "🇯🇵"},
+            {"code": "ar", "name": "العربية", "flag": "🇸🇦"},
+        ]
 
-        # Language metadata
-        language_info = {
-            "en": {"name": "English", "flag": "🇺🇸"},
-            "es": {"name": "Español", "flag": "🇪🇸"},
-            "fr": {"name": "Français", "flag": "🇫🇷"},
-            "de": {"name": "Deutsch", "flag": "🇩🇪"},
-            "it": {"name": "Italiano", "flag": "🇮🇹"},
-            "pt": {"name": "Português", "flag": "🇵🇹"},
-            "ru": {"name": "Русский", "flag": "🇷🇺"},
-            "zh-cn": {"name": "中文", "flag": "🇨🇳"},
-            "ja": {"name": "日本語", "flag": "🇯🇵"},
-            "ar": {"name": "العربية", "flag": "🇸🇦"},
-        }
-
-        result = []
-        for lang in languages:
-            if lang in language_info:
-                result.append({
-                    "code": lang,
-                    **language_info[lang]
-                })
-
-        return jsonify({"languages": result})
+        return jsonify({"languages": languages})
 
     except Exception as e:
         logger.error(f"Error getting languages: {e}")
@@ -86,11 +80,10 @@ def get_languages():
 @app.route('/api/generate-multilingual-reels', methods=['POST'])
 def generate_multilingual_reels():
     """
-    Generate video reels in multiple languages.
+    Generate video reels in multiple languages from original narration.
 
     Expected form data:
-    - audio: Audio file (reference voice)
-    - script: Text script (English)
+    - audio: Audio file (user's narration in original language)
     - languages: JSON array of target language codes
     - repo_name: (optional) Repository name
     """
@@ -99,11 +92,7 @@ def generate_multilingual_reels():
         if 'audio' not in request.files:
             return jsonify({"error": "No audio file provided"}), 400
 
-        if 'script' not in request.form:
-            return jsonify({"error": "No script provided"}), 400
-
         audio_file = request.files['audio']
-        script = request.form['script']
         languages_json = request.form.get('languages', '["en"]')
         repo_name = request.form.get('repo_name', 'demo-project')
 
@@ -120,28 +109,41 @@ def generate_multilingual_reels():
         if not allowed_file(audio_file.filename):
             return jsonify({"error": "Invalid audio file format"}), 400
 
-        # Save reference audio
+        # Save original narration
         filename = secure_filename(audio_file.filename)
-        reference_audio_path = UPLOAD_FOLDER / f"reference_{filename}"
-        audio_file.save(str(reference_audio_path))
+        original_audio_path = UPLOAD_FOLDER / f"original_{filename}"
+        audio_file.save(str(original_audio_path))
 
         logger.info(f"Generating reels for {len(target_languages)} languages")
-        logger.info(f"Script: {script[:100]}...")
+        logger.info(f"Original narration: {original_audio_path}")
 
-        # Generate multilingual audio
-        generator = MultilingualReelGenerator(
-            reference_audio=str(reference_audio_path),
-            output_dir=str(AUDIO_FOLDER)
+        # Initialize voice translation pipeline
+        pipeline = VoiceTranslationPipeline(
+            whisper_model="base",  # or "small" for better accuracy
+            tts_model="tts_models/multilingual/multi-dataset/xtts_v2"
         )
 
-        audio_results = generator.generate_multilingual_audio(
-            script=script,
-            repo_name=repo_name,
-            target_languages=target_languages
+        # Translate voice to multiple languages
+        translation_results = pipeline.batch_translate_voice(
+            original_audio=str(original_audio_path),
+            target_languages=target_languages,
+            output_dir=str(AUDIO_FOLDER),
+            base_filename=repo_name
         )
 
-        if not audio_results:
-            return jsonify({"error": "Failed to generate audio"}), 500
+        if not translation_results:
+            return jsonify({"error": "Failed to translate voice"}), 500
+
+        # Extract audio paths and transcriptions
+        audio_results = {}
+        transcriptions = {}
+
+        for lang, result in translation_results.items():
+            audio_results[lang] = result["audio_path"]
+            transcriptions[lang] = {
+                "original": result["original_text"],
+                "translated": result["translated_text"]
+            }
 
         # Generate video reels for each language
         video_results = {}
@@ -154,14 +156,17 @@ def generate_multilingual_reels():
             'screenshot': 'blog/assets/images/placeholder/screenshot.png'
         }
 
-        script_data = {
-            'hook': script[:100],
-            'solution': script,
-            'verdict': 'Check it out!'
-        }
-
         for lang, audio_path in audio_results.items():
             try:
+                # Use translated text for script data
+                translated_text = transcriptions[lang]["translated"]
+
+                script_data = {
+                    'hook': translated_text[:100],
+                    'solution': translated_text,
+                    'verdict': 'Check it out!'
+                }
+
                 video_path = reel_creator.create_reel(
                     repo_name=f"{repo_name}-{lang}",
                     script_data=script_data,
@@ -170,15 +175,15 @@ def generate_multilingual_reels():
                 )
 
                 if video_path:
-                    video_results[lang] = video_path
+                    video_results[lang] = Path(video_path).name
                     logger.info(f"✅ Video created for {lang}: {video_path}")
 
             except Exception as e:
                 logger.error(f"Failed to create video for {lang}: {e}")
 
-        # Cleanup reference audio
+        # Cleanup original audio
         try:
-            reference_audio_path.unlink()
+            original_audio_path.unlink()
         except:
             pass
 
@@ -187,6 +192,7 @@ def generate_multilingual_reels():
             "message": f"Generated {len(video_results)} reels",
             "audio_files": audio_results,
             "video_files": video_results,
+            "transcriptions": transcriptions,
             "languages": list(video_results.keys())
         })
 
@@ -195,8 +201,8 @@ def generate_multilingual_reels():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api/download/<lang>/<filename>', methods=['GET'])
-def download_file(lang, filename):
+@app.route('/api/download/<filename>', methods=['GET'])
+def download_file(filename):
     """Download generated video file."""
     try:
         file_path = OUTPUT_FOLDER / filename
@@ -218,7 +224,16 @@ def download_file(lang, filename):
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""
-    return jsonify({"status": "healthy", "service": "multilingual-reel-api"})
+    return jsonify({
+        "status": "healthy",
+        "service": "multilingual-reel-api",
+        "features": [
+            "voice-translation",
+            "multilingual-reels",
+            "whisper-transcription",
+            "tts-synthesis"
+        ]
+    })
 
 
 if __name__ == '__main__':

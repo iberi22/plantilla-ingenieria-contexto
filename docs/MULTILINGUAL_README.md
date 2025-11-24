@@ -1,256 +1,146 @@
-# 🌍 Multilingual Voice Cloning System
+# 🌍 Multilingual Voice Translation System
 
-Sistema avanzado de clonación de voz y generación de reels en múltiples idiomas usando modelos locales.
+A professional, local-first system for translating your voice into multiple languages to generate multilingual video reels.
 
-## ✨ Características
+## ✨ Features
 
-### 🎙️ Voice Cloning
-- **Modelo:** Coqui TTS XTTS-v2
-- **Idiomas soportados:** 16 idiomas
-- **Calidad:** Clonación de voz de alta fidelidad
-- **Local:** 100% en tu máquina, sin APIs externas
+### 🎙️ Voice Translation Pipeline
+- **Transcription:** State-of-the-art `Whisper` for highly accurate transcription of your original narration.
+- **Text Translation:** `MarianMT` (Helsinki-NLP) models for professional-grade text translation.
+- **Speech Synthesis:** `Coqui TTS XTTS-v2` for synthesizing the translated text while retaining the characteristics of your original voice.
+- **Local:** 100% on your machine. No external APIs, no fees, no privacy concerns.
 
-### 🌐 Traducción Automática
-- **Modelo:** MarianMT (Helsinki-NLP)
-- **Pares de idiomas:** 9 pares principales
-- **Precisión:** Traducción de calidad profesional
-- **Offline:** Modelos descargables para uso local
+### 🎬 Multilingual Reel Generation
+- **Automated:** Generates videos for each translated language.
+- **Format:** Vertical 9:16 (1080x1920) videos, perfect for social media.
+- **Audio:** Your translated voice, synchronized with video content.
 
-### 🎬 Generación de Reels
-- **Formato:** Videos verticales 9:16 (1080x1920)
-- **Duración:** 20 segundos
-- **Idiomas:** Generación simultánea en múltiples idiomas
-- **Audio:** Tu voz clonada en cada idioma
+## 🎯 The Workflow: From One Voice to Many
 
-## 📋 Idiomas Soportados
+The system follows a sophisticated voice-to-voice translation pipeline:
 
-| Idioma | Código | Voice Cloning | Traducción |
-|--------|--------|---------------|------------|
-| English | `en` | ✅ | ✅ |
-| Español | `es` | ✅ | ✅ |
-| Français | `fr` | ✅ | ✅ |
-| Deutsch | `de` | ✅ | ✅ |
-| Italiano | `it` | ✅ | ✅ |
-| Português | `pt` | ✅ | ✅ |
-| Русский | `ru` | ✅ | ✅ |
-| 中文 | `zh-cn` | ✅ | ✅ |
-| 日本語 | `ja` | ✅ | ✅ |
-| العربية | `ar` | ✅ | ✅ |
-| Polski | `pl` | ✅ | ❌ |
-| Türkçe | `tr` | ✅ | ❌ |
-| Nederlands | `nl` | ✅ | ❌ |
-| Čeština | `cs` | ✅ | ❌ |
-| Magyar | `hu` | ✅ | ❌ |
-| 한국어 | `ko` | ✅ | ❌ |
+1.  **Record Your Narration**
+    *   You record your voice reading a script in your natural language (e.g., English).
 
-## 🚀 Instalación
+2.  **Transcription (Speech-to-Text)**
+    *   The `Whisper` model listens to your recording and transcribes it into text with high accuracy.
 
-### 1. Instalar Dependencias
+3.  **Text Translation**
+    *   The transcribed text is fed into `MarianMT` models, which translate it into the target languages you selected (e.g., Spanish, French, German).
+
+4.  **Speech Synthesis (Text-to-Speech)**
+    *   The powerful `XTTS-v2` model takes the *translated text* and synthesizes it into speech.
+    *   Crucially, it uses your **original recording** as a reference to ensure the synthesized speech has the same tone, pace, and characteristics as your own voice.
+
+5.  **Video Generation**
+    *   `MoviePy` creates a 20-second video reel for each language, combining the translated audio with project images and text overlays.
+
+6.  **Result**
+    *   You get multiple video reels, ready to publish, each with your voice speaking a different language.
+
+## 📋 Supported Languages
+
+The system supports translation from English to 9 other languages. The voice synthesis (XTTS) supports 16 languages, making the system highly extensible.
+
+| Language | Code | Text Translation (EN→) | Voice Synthesis |
+|---|---|---|---|
+| English | `en` | (Source) | ✅ |
+| Spanish | `es` | ✅ | ✅ |
+| French | `fr` | ✅ | ✅ |
+| German | `de` | ✅ | ✅ |
+| Italian | `it` | ✅ | ✅ |
+| Portuguese | `pt` | ✅ | ✅ |
+| Russian | `ru` | ✅ | ✅ |
+| Chinese | `zh-cn`| ✅ | ✅ |
+| Japanese | `ja` | ✅ | ✅ |
+| Arabic | `ar` | ✅ | ✅ |
+| *Other XTTS languages*| | ❌ | ✅ |
+
+
+## 🚀 Installation
+
+All dependencies are listed in `requirements.txt`.
 
 ```bash
-# Instalar dependencias de Python
+# Install all required Python packages
 pip install -r requirements.txt
-
-# Instalar PyTorch (con CUDA si tienes GPU)
-pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
-
-# Instalar Coqui TTS
-pip install TTS
-
-# Instalar Transformers para traducción
-pip install transformers sentencepiece
 ```
+**Note:** The models (Whisper, MarianMT, XTTS) will be downloaded automatically on first use. This may take some time and requires a stable internet connection.
 
-### 2. Descargar Modelos (Opcional)
+## 💻 Usage
 
-Los modelos se descargan automáticamente la primera vez que los usas, pero puedes pre-descargarlos:
+### Option 1: Web UI (Recommended)
 
-```python
-from TTS.api import TTS
-from transformers import MarianMTModel, MarianTokenizer
-
-# Descargar modelo de voice cloning
-tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2")
-
-# Descargar modelos de traducción
-MarianMTModel.from_pretrained("Helsinki-NLP/opus-mt-en-es")
-MarianMTModel.from_pretrained("Helsinki-NLP/opus-mt-en-fr")
-# ... etc
-```
-
-## 💻 Uso
-
-### Opción 1: Web UI (Recomendado)
+The Voice Translation Studio provides a user-friendly interface to manage the entire process.
 
 ```bash
-# 1. Iniciar el backend API
+# 1. In one terminal, start the backend API
 python api/multilingual_api.py
 
-# 2. En otra terminal, iniciar el frontend
+# 2. In another terminal, start the frontend
 cd web
 npm install
 npm run dev
 
-# 3. Abrir http://localhost:5173
+# 3. Open your browser to http://localhost:5173
 ```
 
-#### Pasos en la UI:
-1. **Escribir script** (20 segundos, ~50 palabras)
-2. **Grabar tu voz** (click en el micrófono)
-3. **Seleccionar idiomas** objetivo
-4. **Generar reels** (click en el botón)
-5. **Descargar videos** generados
+#### Steps in the UI:
+1.  **Record Your Voice:** Click the microphone and read your script (15-20 seconds).
+2.  **Select Languages:** Choose the target languages for translation.
+3.  **Generate Reels:** Click the "Translate Voice & Generate Reels" button.
+4.  **Download:** Once processing is complete, download your generated video files.
 
-### Opción 2: Python Script
+### Option 2: Python Script (Advanced)
+
+You can directly use the `VoiceTranslationPipeline` in your own scripts.
 
 ```python
-from video_generator.voice_cloning import MultilingualReelGenerator
+from src.video_generator.voice_translation import VoiceTranslationPipeline
 
-# Configuración
-generator = MultilingualReelGenerator(
-    reference_audio="path/to/your/voice.wav",
-    output_dir="output/audio"
+# 1. Initialize the pipeline
+pipeline = VoiceTranslationPipeline(whisper_model="base")
+
+# 2. Define source audio and output directory
+original_narration = "path/to/your/voice.wav"
+output_folder = "output/translated_audio"
+target_languages = ["es", "fr", "de"]
+
+# 3. Run the batch translation process
+results = pipeline.batch_translate_voice(
+    original_audio=original_narration,
+    target_languages=target_languages,
+    output_dir=output_folder,
+    base_filename="my-project"
 )
 
-# Script
-script = """
-    Discover this amazing open source project that solves
-    a common developer problem. Check it out!
-"""
-
-# Generar audio en múltiples idiomas
-audio_files = generator.generate_multilingual_audio(
-    script=script,
-    repo_name="my-project",
-    target_languages=["en", "es", "fr", "de"]
-)
-
-# Resultado: {'en': 'path/to/en.wav', 'es': 'path/to/es.wav', ...}
+# 4. Print results
+for lang, result in results.items():
+    print(f"--- {lang.upper()} ---")
+    print(f"  Original: {result['original_text']}")
+    print(f"  Translated: {result['translated_text']}")
+    print(f"  Audio Path: {result['audio_path']}")
 ```
 
-### Opción 3: Script Demo
+## 📊 System Requirements
 
-```bash
-# Editar scripts/demo_multilingual.py con tu audio de referencia
-python scripts/demo_multilingual.py
-```
-
-## 🎯 Workflow Completo
-
-```
-1. Grabar Voz de Referencia
-   └─> Tu voz (10-30 segundos)
-
-2. Escribir Script
-   └─> Texto en inglés (~50 palabras)
-
-3. Traducción Automática
-   └─> MarianMT traduce a idiomas objetivo
-
-4. Voice Cloning
-   └─> XTTS-v2 genera audio con tu voz en cada idioma
-
-5. Generación de Video
-   └─> MoviePy crea reels de 20s con:
-       - Audio clonado
-       - Imágenes del proyecto
-       - Transiciones suaves
-       - Text overlays
-
-6. Resultado
-   └─> Videos listos para publicar en múltiples idiomas
-```
-
-## 📊 Requisitos del Sistema
-
-### Mínimos
-- **CPU:** Intel i5 / AMD Ryzen 5
-- **RAM:** 8 GB
-- **Almacenamiento:** 10 GB (para modelos)
-- **GPU:** Opcional (acelera generación)
-
-### Recomendados
-- **CPU:** Intel i7 / AMD Ryzen 7
-- **RAM:** 16 GB
-- **GPU:** NVIDIA con 6+ GB VRAM
-- **Almacenamiento:** 20 GB SSD
-
-## ⚡ Optimización
-
-### Con GPU (CUDA)
-```python
-# Los modelos detectan automáticamente CUDA
-# Aceleración: 5-10x más rápido
-```
-
-### Sin GPU (CPU)
-```python
-# Funciona perfectamente en CPU
-# Tiempo: ~30-60 segundos por idioma
-```
-
-## 🎨 Personalización
-
-### Cambiar Voz
-```python
-# Usa diferentes voces de referencia
-generator = MultilingualReelGenerator(
-    reference_audio="different_voice.wav"
-)
-```
-
-### Ajustar Velocidad
-```python
-voice_cloner.clone_voice(
-    text=text,
-    reference_audio=ref,
-    output_path=out,
-    language="es",
-    # Parámetros adicionales (si el modelo los soporta)
-)
-```
-
-### Idiomas Personalizados
-```python
-# Agregar más pares de traducción
-translator.language_pairs["en-ko"] = "Helsinki-NLP/opus-mt-en-ko"
-```
+- **RAM:** 12 GB minimum, 16 GB+ recommended.
+- **Storage:** 15 GB+ free space for models.
+- **GPU:** An NVIDIA GPU with 8GB+ VRAM is **highly recommended** for acceptable performance. CPU-only execution will be very slow.
 
 ## 🔧 Troubleshooting
 
 ### Error: "CUDA out of memory"
-```bash
-# Reducir batch size o usar CPU
-export CUDA_VISIBLE_DEVICES=""
-```
+Your GPU does not have enough VRAM. Close other applications using the GPU. If the error persists, you may need to run on CPU, which will be much slower.
 
-### Error: "Model not found"
-```bash
-# Descargar manualmente
-python -c "from TTS.api import TTS; TTS('tts_models/multilingual/multi-dataset/xtts_v2')"
-```
+### Slow Performance on CPU
+This is expected. Voice synthesis and transcription are computationally expensive tasks. A CUDA-enabled GPU is recommended for a better experience.
 
-### Audio de baja calidad
-- Usa un micrófono de mejor calidad
-- Graba en un ambiente silencioso
-- Habla claramente y naturalmente
-- Proporciona 15-30 segundos de referencia
-
-## 📚 Recursos
-
-- [Coqui TTS Documentation](https://github.com/coqui-ai/TTS)
-- [XTTS-v2 Paper](https://arxiv.org/abs/2311.13343)
-- [MarianMT Models](https://huggingface.co/Helsinki-NLP)
-- [Transformers Documentation](https://huggingface.co/docs/transformers)
-
-## 🤝 Contribuir
-
-Ver [CONTRIBUTING.md](../CONTRIBUTING.md) para guías de desarrollo.
-
-## 📄 Licencia
-
-MIT License - Ver [LICENSE](../LICENSE) para detalles.
+### Poor Audio Quality
+- Ensure your recording environment is quiet.
+- Use a high-quality microphone.
+- Speak clearly and naturally for 15-30 seconds. The model needs enough data to learn your voice characteristics.
 
 ---
 
-**Hecho con ❤️ usando modelos de código abierto**
+**Built with ❤️ using incredible open-source models.**
