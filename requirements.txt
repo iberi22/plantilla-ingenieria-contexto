@@ -1,6 +1,6 @@
 # Core dependencies
 python-dotenv==1.0.0
-requests==2.31.0
+requests==2.32.4
 pyyaml==6.0.1
 
 # GitHub API
@@ -12,17 +12,17 @@ openai==1.6.1
 
 # Voice Cloning and TTS
 TTS==0.22.0
-torch==2.1.2
+torch==2.8.0
 torchaudio==2.1.2
 
 # Translation
-transformers==4.36.2
+transformers==4.53.0
 sentencepiece==0.1.99
 
 # Video Generation
 playwright==1.40.0
 moviepy==2.0.0.dev2
-Pillow==10.1.0
+Pillow==10.3.0
 
 # Audio
 edge-tts==6.1.10
@@ -31,7 +31,7 @@ pydub==0.25.1
 
 # Web Framework (for API)
 flask==3.0.0
-flask-cors==4.0.0
+flask-cors==6.0.0
 
 # Firebase
 firebase-admin==6.3.0
