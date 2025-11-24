@@ -1,39 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }} | {{ site.title }}</title>
-    <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 }}">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- SEO -->
-    {% seo %}
+  <title>{% if page.title %}{{ page.title | escape }} | {% endif %}{{ site.title | escape }}</title>
+  <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | absolute_url }}">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container">
-            <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
-            <p>{{ site.description }}</p>
-        </div>
-    </header>
 
-    <main class="site-content">
-        <div class="container">
-            {{ content }}
-        </div>
-    </main>
+  <header>
+    <div class="container header-content">
+      <a class="site-title" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+      <nav>
+        <!-- Navigation links could go here -->
+      </nav>
+    </div>
+  </header>
 
-    <footer class="site-footer">
-        <div class="container">
-            <p>Powered by AI (Gemini) • Generated with ❤️ by automation</p>
-            <p><a href="https://github.com/yourusername/op-to-video">View on GitHub</a></p>
-        </div>
-    </footer>
+  <main class="page-content" aria-label="Content">
+    <div class="container">
+      {{ content }}
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; {{ site.time | date: '%Y' }} {{ site.title | escape }}. Powered by AI.</p>
+    </div>
+  </footer>
+
 </body>
 </html>

@@ -73,3 +73,4 @@ coverage.xml
 .DS_Store
 Thumbs.db
 create_placeholders.py
+web/node_modules/

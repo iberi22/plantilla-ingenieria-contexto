@@ -7,7 +7,7 @@ Captures high-quality screenshots of repository webpages using Playwright.
 import logging
 import asyncio
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict
 from playwright.async_api import async_playwright
 
 class ScreenshotCapturer:

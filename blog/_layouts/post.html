@@ -1,82 +1,32 @@
 ---
 layout: default
 ---
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-<article class="post">
-    <header class="post-header">
-        <h1 class="post-title">{{ page.title }}</h1>
-        <div class="post-meta">
-            <time datetime="{{ page.date | date_to_xmlschema }}">
-                {{ page.date | date: "%B %d, %Y" }}
-            </time>
-            {% if page.repo %}
-            <span class="repo-link">
-                <a href="https://github.com/{{ page.repo }}" target="_blank">
-                    📦 {{ page.repo }}
-                </a>
-            </span>
-            {% endif %}
-            {% if page.stars %}
-            <span class="stars">⭐ {{ page.stars }}</span>
-            {% endif %}
-            {% if page.language %}
-            <span class="language">💻 {{ page.language }}</span>
-            {% endif %}
-        </div>
+  <div class="post-header">
+    <h1 class="post-title-main" itemprop="name headline">{{ page.title | escape }}</h1>
+    <p class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {{ page.date | date: "%b %-d, %Y" }}
+      </time>
+      {% if page.author %} • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>{% endif %}
+    </p>
+  </div>
 
-        {% if page.tags %}
-        <div class="post-tags">
-            {% for tag in page.tags %}
-            <span class="tag">{{ tag }}</span>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </header>
+  <div class="post-content" itemprop="articleBody">
 
-    {% if page.video %}
-    <div class="post-video">
-        <video controls poster="{{ page.images.screenshot | relative_url }}">
-            <source src="{{ page.video | relative_url }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+    <!-- Featured Reel -->
+    {% if page.video_path %}
+    <div class="reel-container">
+      <video controls poster="{{ page.image | relative_url }}">
+        <source src="{{ page.video_path | relative_url }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-top: 8px;">📺 Watch the 20s Reel Summary</p>
     </div>
     {% endif %}
 
-    <div class="post-content">
-        {{ content }}
-    </div>
+    {{ content }}
+  </div>
 
-    {% if page.images %}
-    <div class="post-images">
-        <h2>📸 Visual Resources</h2>
-        <div class="image-gallery">
-            {% if page.images.architecture %}
-            <div class="gallery-item">
-                <img src="{{ page.images.architecture | relative_url }}" alt="Architecture Diagram">
-                <p>Architecture Diagram</p>
-            </div>
-            {% endif %}
-
-            {% if page.images.flow %}
-            <div class="gallery-item">
-                <img src="{{ page.images.flow | relative_url }}" alt="Problem-Solution Flow">
-                <p>Problem-Solution Flow</p>
-            </div>
-            {% endif %}
-
-            {% if page.images.screenshot %}
-            <div class="gallery-item">
-                <img src="{{ page.images.screenshot | relative_url }}" alt="Repository Screenshot">
-                <p>Repository Screenshot</p>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-
-    <footer class="post-footer">
-        <a href="https://github.com/{{ page.repo }}" class="cta-button" target="_blank">
-            View on GitHub →
-        </a>
-    </footer>
 </article>

@@ -10,13 +10,14 @@ from pathlib import Path
 from typing import Dict, Optional, List, Any, Tuple
 from moviepy import (
     VideoFileClip, ImageClip, TextClip, CompositeVideoClip,
-    concatenate_videoclips, ColorClip, AudioFileClip
+    concatenate_videoclips, ColorClip, AudioFileClip, CompositeAudioClip
 )
+from moviepy.audio.fx import MultiplyVolume
 from moviepy.video.fx import Resize, Crop, FadeIn, FadeOut
 
 class ReelCreator:
     """
-    Creates 20-second video reels from blog post content.
+    Creates vertical video reels from blog post content.
     """
 
     def __init__(self, output_dir: str = "blog/assets/videos"):
@@ -34,7 +35,6 @@ class ReelCreator:
         self.width = 1080
         self.height = 1920
         self.fps = 30
-        self.duration = 20
 
         # Colors
         self.bg_color = (31, 41, 55) # Dark gray/blue
@@ -46,77 +46,128 @@ class ReelCreator:
         repo_name: str,
         script_data: Dict[str, Any],
         images: Dict[str, str],
-        audio_path: Optional[str] = None
+        audio_path: Optional[str] = None,
+        durations: Optional[Dict[str, float]] = None,
+        background_music: Optional[str] = None
     ) -> Optional[str]:
         """
-        Create a 20-second reel.
+        Create a reel with dynamic durations, highlights, and music.
 
-        Timeline:
-        00-03s: Intro (Title + Logo)
-        03-08s: Problem (Flow Diagram)
-        08-13s: Solution (Screenshot)
-        13-17s: Architecture (Diagram)
-        17-20s: Outro (CTA)
+        Args:
+            repo_name: Name of the repository/project.
+            script_data: Dictionary containing text for sections and optional highlights.
+                         e.g., {'hook': 'Text', 'hook_highlights': ['word'], 'solution': ...}
+            images: Dictionary of image paths.
+            audio_path: Path to narration audio.
+            durations: Dictionary of section durations in seconds.
+            background_music: Path to background music file.
         """
         self.logger.info(f"Creating reel for {repo_name}...")
 
         try:
+            # Default durations
+            section_durations = {
+                'intro': 3,
+                'problem': 5,
+                'solution': 5,
+                'architecture': 4,
+                'outro': 3
+            }
+            if durations:
+                section_durations.update(durations)
+
             clips = []
 
-            # 1. Intro (0-3s)
-            intro_clip = self._create_intro(repo_name, duration=3)
+            # 1. Intro
+            intro_clip = self._create_intro(repo_name, duration=section_durations['intro'])
             clips.append(intro_clip)
 
-            # 2. Problem (3-8s)
+            # 2. Problem
             problem_img = images.get('flow')
             problem_text = script_data.get('hook', 'Problem Analysis')
+            problem_highlights = script_data.get('hook_highlights', [])
             problem_clip = self._create_section(
                 "The Problem",
                 problem_text,
                 problem_img,
-                duration=5
+                duration=section_durations['problem'],
+                highlights=problem_highlights
             )
             clips.append(problem_clip)
 
-            # 3. Solution (8-13s)
+            # 3. Solution
             solution_img = images.get('screenshot')
             solution_text = script_data.get('solution', 'The Solution')
+            solution_highlights = script_data.get('solution_highlights', [])
             solution_clip = self._create_section(
                 "The Solution",
                 solution_text,
                 solution_img,
-                duration=5
+                duration=section_durations['solution'],
+                highlights=solution_highlights
             )
             clips.append(solution_clip)
 
-            # 4. Architecture (13-17s)
+            # 4. Architecture
             arch_img = images.get('architecture')
-            arch_text = "How it Works"
+            arch_text = script_data.get('architecture', 'How it Works')
+            arch_highlights = script_data.get('architecture_highlights', [])
             arch_clip = self._create_section(
                 "Architecture",
                 arch_text,
                 arch_img,
-                duration=4
+                duration=section_durations['architecture'],
+                highlights=arch_highlights
             )
             clips.append(arch_clip)
 
-            # 5. Outro (17-20s)
-            outro_clip = self._create_outro(duration=3)
+            # 5. Outro
+            outro_clip = self._create_outro(duration=section_durations['outro'])
             clips.append(outro_clip)
 
-            # Concatenate
+            # Concatenate Video
             final_video = concatenate_videoclips(clips, method="compose")
 
-            # Add Audio if provided
+            # --- Audio Mixing ---
+            audio_tracks = []
+
+            # 1. Narration
             if audio_path and os.path.exists(audio_path):
-                audio = AudioFileClip(audio_path)
-                # Loop or cut audio to fit video
-                if audio.duration < self.duration:
-                    # If audio is shorter, we might need to loop or silence (simple logic for now)
-                    pass
+                narration = AudioFileClip(audio_path)
+                # Adjust video duration to match narration if narration is longer than video
+                # or cut narration if video is strictly defined by durations.
+                # Usually narration drives the video.
+                # For this implementation, we will trust the provided durations align with narration segments
+                # or just overlay narration and let it cut off or silence video.
+                # A better approach (future): Align sections to narration timestamps.
+
+                # For now: simple overlay
+                if narration.duration > final_video.duration:
+                     final_video = final_video.with_duration(narration.duration) # Extend last frame if needed? No, that's hard with concatenate.
+                     # Instead, we just take the min.
+                     narration = narration.subclip(0, final_video.duration)
+
+                audio_tracks.append(narration)
+
+            # 2. Background Music
+            if background_music and os.path.exists(background_music):
+                bg_music = AudioFileClip(background_music)
+
+                # Loop if needed
+                if bg_music.duration < final_video.duration:
+                     from moviepy.audio.fx import Loop
+                     bg_music = bg_music.with_effects([Loop(duration=final_video.duration)])
                 else:
-                    audio = audio.subclip(0, self.duration)
-                final_video = final_video.set_audio(audio)
+                    bg_music = bg_music.subclip(0, final_video.duration)
+
+                # Ducking: Lower volume when narration is present
+                # Simple approach: Constant low volume
+                bg_music = bg_music.with_effects([MultiplyVolume(0.15)])
+                audio_tracks.append(bg_music)
+
+            if audio_tracks:
+                final_audio = CompositeAudioClip(audio_tracks)
+                final_video = final_video.with_audio(final_audio)
 
             # Write file
             output_filename = f"{repo_name.lower().replace(' ', '-')}-reel.mp4"
@@ -128,7 +179,7 @@ class ReelCreator:
                 codec='libx264',
                 audio_codec='aac',
                 threads=4,
-                logger=None # Reduce noise
+                logger=None
             )
 
             self.logger.info(f"Reel created successfully: {output_path}")
@@ -140,10 +191,7 @@ class ReelCreator:
 
     def _create_intro(self, title: str, duration: int) -> CompositeVideoClip:
         """Create intro section."""
-        # Background
         bg = ColorClip(size=(self.width, self.height), color=self.bg_color, duration=duration)
-
-        # Title Text
         try:
             txt_clip = TextClip(
                 text=title,
@@ -153,10 +201,8 @@ class ReelCreator:
                 size=(self.width - 100, None),
                 method='caption'
             ).with_position('center').with_duration(duration)
-
             return CompositeVideoClip([bg, txt_clip]).with_effects([FadeIn(0.5), FadeOut(0.5)])
-        except Exception as e:
-            self.logger.warning(f"TextClip failed: {e}")
+        except Exception:
             return bg
 
     def _create_section(
@@ -164,49 +210,36 @@ class ReelCreator:
         header: str,
         body: str,
         image_path: Optional[str],
-        duration: int
+        duration: int,
+        highlights: List[str] = []
     ) -> CompositeVideoClip:
-        """Create a content section with image and text overlay."""
-
-        # Background
+        """
+        Create a content section with image and text overlay.
+        Includes optional text highlighting.
+        """
         bg = ColorClip(size=(self.width, self.height), color=self.bg_color, duration=duration)
         layers = [bg]
 
-        # Image with Ken Burns Effect
+        # Image
         if image_path and os.path.exists(image_path):
             img_clip = ImageClip(image_path).with_duration(duration)
 
-            # Initial resize to cover the screen (zoom start)
-            # We want it slightly larger than screen to allow movement
+            # Fit and Center
             img_ratio = img_clip.w / img_clip.h
             screen_ratio = self.width / self.height
 
             if img_ratio > screen_ratio:
-                # Image is wider, fit height
                 new_h = self.height
                 new_w = int(new_h * img_ratio)
             else:
-                # Image is taller, fit width
                 new_w = self.width
                 new_h = int(new_w / img_ratio)
 
             img_clip = img_clip.with_effects([Resize(height=new_h) if img_ratio > screen_ratio else Resize(width=new_w)])
-
-            # Ken Burns: Zoom in slightly (1.0 -> 1.15)
-            def zoom_effect(t):
-                scale = 1 + 0.15 * (t / duration)
-                return scale
-
-            # Apply zoom using Resize with a function
-            # Note: In MoviePy v1 this was resize(lambda t: ...). In v2 it might be different.
-            # For safety and simplicity in v2, we can just use a static resize + scroll or just a static larger image.
-            # Let's try a simple approach: Resize to 1.1x and center, effectively static "filled" look for now to avoid complex lambda issues if unknown version.
-            # BETTER: Just center it.
-
             img_clip = img_clip.with_position('center')
             layers.append(img_clip)
 
-        # Header Text (Top)
+        # Header (Top)
         try:
             header_bg = ColorClip(size=(self.width, 150), color='black', duration=duration).with_opacity(0.6).with_position(('center', 50))
             layers.append(header_bg)
@@ -222,20 +255,40 @@ class ReelCreator:
             layers.append(header_clip)
 
             # Body Text (Bottom Overlay)
-            if len(body) > 100:
-                body = body[:97] + "..."
+            # Truncate if too long
+            display_text = body[:150] + "..." if len(body) > 150 else body
 
-            body_bg = ColorClip(size=(self.width, 300), color='black', duration=duration).with_opacity(0.7).with_position(('center', self.height - 350))
+            body_bg = ColorClip(size=(self.width, 400), color='black', duration=duration).with_opacity(0.7).with_position(('center', self.height - 450))
             layers.append(body_bg)
 
+            # Highlight Logic
+            # Check if any highlight word is present in the text
+            has_highlight = any(h.lower() in display_text.lower() for h in highlights)
+
+            text_color_to_use = self.text_color
+
+            # If highlight found, use accent color for the whole block (MVP solution)
+            # A better approach would be splitting strings, but standard TextClip doesn't support mixed format easily.
+            if has_highlight:
+                text_color_to_use = self.accent_color
+
             body_clip = TextClip(
-                text=body,
+                text=display_text,
                 font_size=40,
-                color=self.text_color,
+                color=text_color_to_use,
                 font='Arial',
                 size=(self.width - 100, None),
                 method='caption'
-            ).with_position(('center', self.height - 300)).with_duration(duration)
+            ).with_position(('center', self.height - 400)).with_duration(duration)
+
+            # If highlighted, maybe pulse opacity?
+            if has_highlight:
+                 # Simple pulse effect: 1.0 -> 0.7 -> 1.0
+                 def pulse(t):
+                     return 0.85 + 0.15 * ((t * 2) % 1) # Fluctuate between 0.85 and 1.0
+                 # body_clip = body_clip.with_effects([Opacity(pulse)]) # Opacity effect needs checking import
+                 pass
+
             layers.append(body_clip)
 
         except Exception:
@@ -246,7 +299,6 @@ class ReelCreator:
     def _create_outro(self, duration: int) -> CompositeVideoClip:
         """Create outro section."""
         bg = ColorClip(size=(self.width, self.height), color=self.bg_color, duration=duration)
-
         try:
             txt_clip = TextClip(
                 text="Link in Bio\nCheck the Blog!",
@@ -256,7 +308,6 @@ class ReelCreator:
                 size=(self.width - 100, None),
                 method='caption'
             ).with_position('center').with_duration(duration)
-
             return CompositeVideoClip([bg, txt_clip]).with_effects([FadeIn(0.5), FadeOut(0.5)])
         except Exception:
             return bg
