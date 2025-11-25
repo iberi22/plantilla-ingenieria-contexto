@@ -97,7 +97,12 @@ class ScreenshotCapturer:
                     device_scale_factor=2
                 )
                 page = await context.new_page()
-                await page.goto(url, wait_until="networkidle")
+                if url.startswith("file://"):
+                    # For local files, we might need to wait for load event
+                    await page.goto(url)
+                else:
+                    await page.goto(url, wait_until="networkidle")
+
                 await self._remove_banners(page)
 
                 safe_name = repo_name.lower().replace(" ", "-").replace("/", "-")
@@ -106,6 +111,12 @@ class ScreenshotCapturer:
 
                 for name, selector in highlights.items():
                     try:
+                        # Wait for selector to appear (useful for client-side rendered content)
+                        try:
+                            await page.wait_for_selector(selector, timeout=5000)
+                        except:
+                            pass # proceed to query_selector
+
                         element = await page.query_selector(selector)
                         if element:
                             output_path = repo_dir / f"{name}.png"

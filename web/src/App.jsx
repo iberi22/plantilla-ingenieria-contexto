@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import VoiceRecorder from './components/VoiceRecorder';
+import Dashboard from './components/Dashboard';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('recorder');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ function App() {
   }, []);
 
   const tabs = [
+    { id: 'dashboard', name: '📊 Dashboard', icon: '📊' },
     { id: 'recorder', name: '🎙️ Voice Studio', icon: '🎙️' },
     { id: 'posts', name: '📝 Blog Posts', icon: '📝' },
     { id: 'videos', name: '🎬 Videos', icon: '🎬' },
@@ -27,22 +29,25 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       {/* Navigation */}
-      <nav className="bg-gray-800 border-b border-gray-700">
+      <nav className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <h1 className="text-2xl font-bold text-blue-500">Open Source Video Generator</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Open Source Video Generator
+            </h1>
             <div className="flex gap-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
+                  className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-medium ${
                     activeTab === tab.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                 >
-                  {tab.name}
+                  <span>{tab.icon}</span>
+                  <span className="hidden md:inline">{tab.name.split(' ')[1]}</span>
                 </button>
               ))}
             </div>
@@ -51,7 +56,8 @@ function App() {
       </nav>
 
       {/* Content */}
-      <main>
+      <main className="animate-in fade-in duration-500">
+        {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'recorder' && <VoiceRecorder />}
 
         {activeTab === 'posts' && (

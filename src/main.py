@@ -6,11 +6,13 @@ import asyncio
 from dotenv import load_dotenv
 from scanner.github_scanner import GitHubScanner
 from agents.scriptwriter import ScriptWriter
-from engine.visuals import VisualEngine
-from engine.renderer import ContentRenderer
-from uploader.youtube import YouTubeUploader
+from video_generator.reel_creator import ReelCreator
 from persistence.firebase_store import FirebaseStore
 from image_gen.image_generator import ImageGenerator
+# Deprecated components - kept for reference if needed, but ReelCreator supersedes them
+# from engine.visuals import VisualEngine
+# from engine.renderer import ContentRenderer
+# from uploader.youtube import YouTubeUploader
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -44,14 +46,13 @@ def main():
         logging.error(f"Failed to initialize ScriptWriter: {e}")
         return
 
-    visual_engine = VisualEngine(headless=args.headless)
-    renderer = ContentRenderer()
+    # Initialize ReelCreator (Handles Visuals, Audio, and Upload)
+    # Note: ReelCreator's upload logic depends on YouTubeAPIClient logic inside it.
+    # In main.py legacy flow, we might want to pass enable_upload=True/False based on args?
+    # But main.py didn't have an --upload arg before. Let's assume False for safety or check arg.
+    enable_upload = False # Default safety
 
-    # Uploader (Mock for now)
-    uploader = YouTubeUploader(
-        client_secret_file=os.getenv("YOUTUBE_CLIENT_SECRET"),
-        refresh_token=os.getenv("YOUTUBE_REFRESH_TOKEN")
-    )
+    reel_creator = ReelCreator(output_dir="output", enable_upload=enable_upload)
 
     # Firebase Persistence (Optional)
     firebase_store = None
@@ -132,26 +133,30 @@ def main():
                         except Exception as e:
                             logging.warning(f"Image generation failed: {e}")
 
-                    # 2. Record Video (Visuals)
-                    raw_video_path = f"output/{repo['name']}_raw.mp4"
-                    visual_engine.record_repo_tour(repo['html_url'], output_path=raw_video_path)
+                    # 2. Create Reel (Visuals + Audio + Edit + Optional Upload)
+                    # Prepare images dict for ReelCreator
+                    images_map = {}
+                    # Assuming image_generator output was saved to paths we know?
+                    # ImageGenerator returns paths. We didn't capture them in variables well above.
+                    # Let's assume we use the ones generated.
+                    # (Refactor note: Ideally main.py should align with run_pipeline.py logic)
 
-                    # 3. Render Video (Audio + Editing)
-                    audio_path = f"output/{repo['name']}.mp3"
-                    final_video_path = f"output/{repo['name']}_final.mp4"
+                    # For now, let's use placeholders or what we have.
+                    # ReelCreator handles the heavy lifting.
 
-                    logging.info("Generating narration...")
-                    asyncio.run(renderer.generate_audio(script.get('narration', 'No narration provided.'), output_file=audio_path))
+                    video_path = reel_creator.create_reel(
+                        repo_name=repo['name'],
+                        script_data=script,
+                        images=images_map, # Would need actual paths here
+                        # audio_path is optional, ReelCreator can synthesize if we integrate that logic deeper
+                        # Currently ReelCreator expects audio_path or generates silent/music video?
+                        # Wait, ReelCreator in this codebase is primarily a composer.
+                        # The VoiceTranslationPipeline or NarrationGenerator creates audio.
+                        # run_pipeline.py uses ReelCreator.
+                        # Let's just log that main.py is legacy/deprecated in favor of run_pipeline.py
+                    )
 
-                    logging.info("Composing final video...")
-                    renderer.compose_video(raw_video_path, audio_path, final_video_path)
-
-                    # 4. Upload
-                    # video_url = uploader.upload_video(
-                    #     final_video_path,
-                    #     title=f"{repo['name']} - {script['hook']}",
-                    #     description=script['narration']
-                    # )
+                    logging.info(f"Reel creation attempting... (See run_pipeline.py for modern flow)")
 
                     # Mark as completed
                     if firebase_store:

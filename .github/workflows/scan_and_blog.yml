@@ -1,0 +1,61 @@
+name: Scan and Blog Generator
+
+on:
+  schedule:
+    # Run every 5 hours at minute 0
+    - cron: '0 */5 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-blog-post:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+
+    - name: Install Python Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        # Install optional dependencies for image gen if needed
+        # pip install foundry-local-sdk
+
+    - name: Run Blog Generator
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      run: |
+        python scripts/workflow_generate_blog.py
+
+    - name: Check for changes
+      id: git-check
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add blog/_posts/ blog/assets/images/
+        if git diff --staged --quiet; then
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and Push
+      if: steps.git-check.outputs.changes == 'true'
+      run: |
+        git commit -m "content: New blog post generated via automation"
+        git push

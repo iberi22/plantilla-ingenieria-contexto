@@ -52,8 +52,9 @@ def main():
     try:
         # Step 1: Scan GitHub for repos
         logger.info("\n📦 Step 1: Scanning GitHub for quality repositories...")
-        scanner = GitHubScanner(api_key=github_token)
-        repos = scanner.scan_recent_repos(days=7, max_results=10)
+        scanner = GitHubScanner(token=github_token)
+        # scan_recent_repos signature is (query, limit)
+        repos = scanner.scan_recent_repos(limit=10)
 
         if not repos:
             logger.warning("No repositories found")

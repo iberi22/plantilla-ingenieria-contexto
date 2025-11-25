@@ -215,21 +215,27 @@ npm test
 - [RULES.md](RULES.md) - Development rules and standards
 - [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) - Latest implementation details
 - [docs/MULTILINGUAL_README.md](docs/MULTILINGUAL_README.md) - Multilingual features documentation
+- [docs/AUTOMATION_GUIDE.md](docs/AUTOMATION_GUIDE.md) - Guide for the new Automation Pipeline
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment instructions for API and Webhooks
 - [CHANGELOG.md](CHANGELOG.md) - Detailed changelog of PR #2
 - [PR_REVIEW.md](PR_REVIEW.md) - Comprehensive code review and recommendations
 
-## 🚀 Next Development Phases
+## 🚀 Automation Features
 
-### Phase 6: Video Editor Integration (OpenCut)
-Integrate [OpenCut](https://github.com/OpenCut-app/OpenCut) to allow manual editing of auto-generated videos. Goal: Fully automated with optional manual refinement.
+### End-to-End Pipeline
+The `scripts/run_pipeline.py` script orchestrates the entire flow:
+1.  Scans/Analyses a Repo.
+2.  Generates a Blog Post (simulated).
+3.  Creates a Video Reel with audio and images.
+4.  Auto-uploads to YouTube (if enabled).
 
-### Phase 7: YouTube Automation (MCP)
-Implement automated YouTube publishing using [youtube-mcp-server](https://github.com/ZubeidHendricks/youtube-mcp-server). Evaluate MCP protocol vs direct API integration.
+### Webhook Integration
+The `api/webhook_server.py` listens for GitHub events (e.g., Star) and automatically triggers the pipeline for the starred repository.
 
-### Phase 8: End-to-End Automation
-Complete pipeline: GitHub Repo → Video Generation → [Optional Edit] → YouTube → Blog Post
+### OpenCut Editor Bridge
+Videos generated can be opened in [OpenCut](https://github.com/OpenCut-app/OpenCut) for manual editing via the "Edit Video" button in the Voice Studio UI.
 
-See [TASK.md](TASK.md) for detailed task breakdown and estimates.
+See [TASK.md](TASK.md) for detailed task status.
 
 ## 🤝 Contributing
 

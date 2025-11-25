@@ -15,18 +15,39 @@ from moviepy import (
 from moviepy.audio.fx import MultiplyVolume
 from moviepy.video.fx import Resize, Crop, FadeIn, FadeOut
 
+# Import YouTube Client
+try:
+    from uploader.youtube_api_client import YouTubeAPIClient
+except ImportError:
+    # Fallback if running as a module where uploader is a sibling
+    try:
+        from src.uploader.youtube_api_client import YouTubeAPIClient
+    except ImportError:
+        YouTubeAPIClient = None
+
 class ReelCreator:
     """
     Creates vertical video reels from blog post content.
     """
 
-    def __init__(self, output_dir: str = "blog/assets/videos"):
+    def __init__(self, output_dir: str = "blog/assets/videos", enable_upload: bool = False):
         """
         Initialize ReelCreator.
 
         Args:
             output_dir: Directory to save generated videos.
+            enable_upload: Whether to automatically upload to YouTube.
         """
+        self.enable_upload = enable_upload
+        if enable_upload and YouTubeAPIClient:
+            # In a real app, these paths should come from config/env
+            self.uploader = YouTubeAPIClient(
+                client_secret_file="client_secret.json",
+                token_file="token.pickle"
+            )
+        else:
+            self.uploader = None
+
         self.logger = logging.getLogger(__name__)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -82,7 +103,7 @@ class ReelCreator:
             intro_clip = self._create_intro(repo_name, duration=section_durations['intro'])
             clips.append(intro_clip)
 
-            # 2. Problem
+            # 2. Problem (Flow Diagram from Blog)
             problem_img = images.get('flow')
             problem_text = script_data.get('hook', 'Problem Analysis')
             problem_highlights = script_data.get('hook_highlights', [])
@@ -95,7 +116,7 @@ class ReelCreator:
             )
             clips.append(problem_clip)
 
-            # 3. Solution
+            # 3. Solution (Screenshot from Blog or Repo)
             solution_img = images.get('screenshot')
             solution_text = script_data.get('solution', 'The Solution')
             solution_highlights = script_data.get('solution_highlights', [])
@@ -108,7 +129,7 @@ class ReelCreator:
             )
             clips.append(solution_clip)
 
-            # 4. Architecture
+            # 4. Architecture (Diagram from Blog)
             arch_img = images.get('architecture')
             arch_text = script_data.get('architecture', 'How it Works')
             arch_highlights = script_data.get('architecture_highlights', [])
@@ -183,6 +204,11 @@ class ReelCreator:
             )
 
             self.logger.info(f"Reel created successfully: {output_path}")
+
+            # Upload if enabled
+            if self.enable_upload and self.uploader:
+                self._handle_upload(str(output_path), repo_name, script_data)
+
             return str(output_path)
 
         except Exception as e:
@@ -204,6 +230,52 @@ class ReelCreator:
             return CompositeVideoClip([bg, txt_clip]).with_effects([FadeIn(0.5), FadeOut(0.5)])
         except Exception:
             return bg
+
+    def _handle_upload(self, video_path: str, repo_name: str, script_data: Dict[str, Any]):
+        """
+        Handles the automatic upload of the video to YouTube.
+        """
+        self.logger.info("Starting automatic upload to YouTube...")
+
+        # Generate Metadata
+        title = f"{repo_name} - Project Overview 🚀"
+
+        # Generate Description
+        description = f"""
+        Check out {repo_name}!
+
+        {script_data.get('hook', '')}
+
+        {script_data.get('solution', '')}
+
+        🔗 Read the full blog post: https://your-blog.com/posts/{repo_name.lower().replace(' ', '-')}
+
+        #opensource #coding #dev #tech #{repo_name.replace(' ', '')}
+        """
+
+        # Extract potential tags (simple heuristic)
+        tags = ["opensource", "programming", "tech", repo_name.split()[0].lower()]
+        if "python" in script_data.get('architecture', '').lower():
+            tags.append("python")
+        if "react" in script_data.get('architecture', '').lower():
+            tags.append("react")
+
+        try:
+            video_id = self.uploader.upload_video(
+                video_path=video_path,
+                title=title,
+                description=description,
+                tags=tags,
+                privacy_status="private" # Safety default
+            )
+
+            if video_id:
+                self.logger.info(f"Successfully uploaded to YouTube! ID: {video_id}")
+            else:
+                self.logger.warning("Upload failed.")
+
+        except Exception as e:
+            self.logger.error(f"Error in upload process: {e}")
 
     def _create_section(
         self,

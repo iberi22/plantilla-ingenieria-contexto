@@ -21,5 +21,9 @@ RUN playwright install chromium
 # Copy source code
 COPY . .
 
+# Expose ports for API and Webhook
+EXPOSE 5000 5001
+
 # Default command (can be overridden)
-CMD ["python", "src/main.py"]
+# Runs both the API and Webhook server in the background
+CMD ["sh", "-c", "python api/multilingual_api.py & python api/webhook_server.py"]

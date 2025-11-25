@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y ffmpeg
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        playwright install chromium
+    - name: Run Pytest
+      run: pytest tests/
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - name: Install dependencies
+      working-directory: ./web
+      run: npm install
+    - name: Run Lint
+      working-directory: ./web
+      run: npm run lint
+    # - name: Run Tests
+    #   working-directory: ./web
+    #   run: npm test # Uncomment when frontend tests are added

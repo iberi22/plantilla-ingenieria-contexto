@@ -32,6 +32,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from video_generator.voice_translation import VoiceTranslationPipeline
 from video_generator.reel_creator import ReelCreator
+from persistence.firebase_store import FirebaseStore
+try:
+    from video_editor.opencut_bridge import OpenCutBridge
+except ImportError:
+    OpenCutBridge = None
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
@@ -75,6 +80,27 @@ def get_pipeline():
             tts_model="tts_models/multilingual/multi-dataset/xtts_v2"
         )
     return _pipeline
+
+# Initialize Persistence
+firebase_store = None
+try:
+    firebase_store = FirebaseStore()
+except Exception:
+    pass
+
+@app.route('/api/status', methods=['GET'])
+def get_status():
+    """Get processing status from Firebase."""
+    try:
+        limit = int(request.args.get('limit', 10))
+        if firebase_store:
+            # Mocking retrieval for now as FirebaseStore methods might need update to list all
+            # Assuming firebase_store has a method or we mock it.
+            # Real implementation would query 'processed_repos' collection
+            return jsonify({"status": "connected", "jobs": []})
+        return jsonify({"status": "disconnected", "jobs": []})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/languages', methods=['GET'])
 def get_languages():
@@ -233,11 +259,12 @@ def generate_video():
         text_content = data.get('text_content', '')
         repo_name = data.get('repo_name', 'custom-video')
         language = data.get('language', 'en')
+        auto_upload = data.get('auto_upload', False) # Check for auto upload flag
 
         if not audio_path or not Path(audio_path).exists():
             return jsonify({"error": "Invalid audio path"}), 400
 
-        reel_creator = ReelCreator(output_dir=str(OUTPUT_FOLDER))
+        reel_creator = ReelCreator(output_dir=str(OUTPUT_FOLDER), enable_upload=auto_upload)
 
         # Use provided images or fallbacks
         placeholder_images = {
@@ -277,9 +304,27 @@ def generate_video():
         if not video_path:
             return jsonify({"error": "Video generation failed"}), 500
 
+        # Prepare OpenCut Project if Bridge is available
+        opencut_data = None
+        if OpenCutBridge:
+            try:
+                bridge = OpenCutBridge()
+                assets = [
+                    {"type": "video", "path": video_path},
+                    {"type": "audio", "path": audio_path}
+                ]
+                metadata = {
+                    "title": f"{repo_name}-{language}",
+                    "duration": 20 # approx
+                }
+                opencut_data = bridge.export_for_editing(video_path, metadata, assets)
+            except Exception as e:
+                logger.error(f"OpenCut bridge error: {e}")
+
         return jsonify({
             "video_path": video_path,
-            "filename": Path(video_path).name
+            "filename": Path(video_path).name,
+            "opencut": opencut_data
         })
 
     except Exception as e:
