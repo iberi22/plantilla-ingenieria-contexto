@@ -1,6 +1,20 @@
 # Open Source Video Generator
 
+[![CI Status](https://github.com/iberi22/plantilla-ingenieria-contexto/actions/workflows/ci.yml/badge.svg)](https://github.com/iberi22/plantilla-ingenieria-contexto/actions)
+[![Tests](https://img.shields.io/badge/tests-32%2F45%20passing-yellow)](https://github.com/iberi22/plantilla-ingenieria-contexto)
+[![Coverage](https://img.shields.io/badge/coverage-71%25-yellow)]()
+[![Status](https://img.shields.io/badge/status-87%25%20complete-blue)]()
+
 Automated tool to scan GitHub for trending repositories, generate a video script using AI (Gemini or Foundry Local), record a visual tour, and narrate it. Now with **Voice Translation Studio** for creating multilingual video reels with voice cloning!
+
+## 📊 Current Status (Nov 2025)
+
+- ✅ **Core pipeline:** Scanner → Blog → Video → Upload (operational)
+- ✅ **CI/CD:** GitHub Actions for testing and blog generation
+- ⚠️ **Voice translation:** Requires `sentencepiece` installation
+- ⚠️ **Webhook server:** Prototype (needs production queue - see [ROADMAP.md](ROADMAP.md))
+- 📊 **Test Coverage:** 71% (32/45 tests passing - fixes in progress)
+- 📝 **Documentation:** [Full Status Report](PROJECT_STATUS_REPORT.md)
 
 ## ✨ Features
 
