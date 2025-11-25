@@ -1,4 +1,4 @@
-# Open Source Video Generator
+# bestof-opensorce
 
 [![CI Status](https://github.com/iberi22/plantilla-ingenieria-contexto/actions/workflows/ci.yml/badge.svg)](https://github.com/iberi22/plantilla-ingenieria-contexto/actions)
 [![Tests](https://img.shields.io/badge/tests-49%2F49%20passing-brightgreen)](https://github.com/iberi22/plantilla-ingenieria-contexto)
@@ -7,7 +7,7 @@
 [![Queue](https://img.shields.io/badge/queue-RQ%20%2B%20Redis-orange)]()
 [![Production](https://img.shields.io/badge/production-ready-success)]()
 
-Automated tool to scan GitHub for trending repositories, generate a video script using AI (Gemini or Foundry Local), record a visual tour, and narrate it. Now with **Voice Translation Studio** for creating multilingual video reels with voice cloning!
+Automated tool to scan GitHub for trending repositories, generate a blog and video script using AI (Gemini or Foundry Local), record a visual tour, and narrate it. Now with **Voice Translation Studio** for creating multilingual video reels with voice cloning!
 
 ## 📊 Current Status (Nov 2025)
 
