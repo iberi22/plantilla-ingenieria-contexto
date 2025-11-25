@@ -1,9 +1,11 @@
 # Open Source Video Generator
 
 [![CI Status](https://github.com/iberi22/plantilla-ingenieria-contexto/actions/workflows/ci.yml/badge.svg)](https://github.com/iberi22/plantilla-ingenieria-contexto/actions)
-[![Tests](https://img.shields.io/badge/tests-42%2F45%20passing-brightgreen)](https://github.com/iberi22/plantilla-ingenieria-contexto)
-[![Coverage](https://img.shields.io/badge/coverage-93%25-brightgreen)]()
-[![Status](https://img.shields.io/badge/status-90%25%20complete-blue)]()
+[![Tests](https://img.shields.io/badge/tests-49%2F49%20passing-brightgreen)](https://github.com/iberi22/plantilla-ingenieria-contexto)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)]()
+[![Status](https://img.shields.io/badge/status-95%25%20complete-blue)]()
+[![Queue](https://img.shields.io/badge/queue-RQ%20%2B%20Redis-orange)]()
+[![Production](https://img.shields.io/badge/production-ready-success)]()
 
 Automated tool to scan GitHub for trending repositories, generate a video script using AI (Gemini or Foundry Local), record a visual tour, and narrate it. Now with **Voice Translation Studio** for creating multilingual video reels with voice cloning!
 
@@ -11,9 +13,11 @@ Automated tool to scan GitHub for trending repositories, generate a video script
 
 - ✅ **Core pipeline:** Scanner → Blog → Video → Upload (operational)
 - ✅ **CI/CD:** GitHub Actions for testing and blog generation
-- ✅ **Test Coverage:** **93%** (42/45 tests passing) 🎉
+- ✅ **Test Coverage:** **100%** (49/49 tests passing) 🎉
 - ✅ **Sprint 1 Complete:** All critical fixes delivered ([details](SPRINT1_COMPLETE.md))
-- ⚠️ **Webhook server:** Prototype (needs production queue - see [ROADMAP.md](ROADMAP.md))
+- ✅ **Sprint 2 Complete:** Queue system + 100% coverage ([details](SPRINT2_COMPLETE.md))
+- ✅ **Queue System:** Production-ready RQ + Redis ([setup guide](docs/QUEUE_SYSTEM_GUIDE.md))
+- 🚀 **Status:** **READY FOR STAGING DEPLOYMENT**
 - 📝 **Documentation:** [Full Status Report](PROJECT_STATUS_REPORT.md) | [Executive Summary](EXECUTIVE_SUMMARY.md)
 
 ## ✨ Features

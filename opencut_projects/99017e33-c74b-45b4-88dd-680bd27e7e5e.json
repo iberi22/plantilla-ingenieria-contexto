@@ -1,0 +1,33 @@
+{
+  "id": "99017e33-c74b-45b4-88dd-680bd27e7e5e",
+  "name": "custom-video-es",
+  "version": "1.0.0",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "tracks": [
+    {
+      "id": "7fe08de7-81d2-4493-933e-642de39173d9",
+      "type": "video",
+      "clips": [
+        {
+          "id": "7e2c29be-3415-4d67-8192-8eb1f4180af4",
+          "assetId": "main_video",
+          "start": 0,
+          "duration": 20,
+          "offset": 0
+        }
+      ]
+    }
+  ],
+  "assets": {
+    "main_video": {
+      "path": "http://localhost:5000/api/download/video.mp4",
+      "type": "video"
+    },
+    "main_audio": {
+      "path": null,
+      "type": "audio"
+    }
+  }
+}

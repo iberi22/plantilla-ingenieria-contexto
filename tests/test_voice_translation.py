@@ -10,6 +10,7 @@ import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock, Mock
 import sys
+import torch
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -25,20 +26,25 @@ def mock_audio_file(tmp_path):
 
 @patch('video_generator.voice_translation.WHISPER_AVAILABLE', True)
 @patch('video_generator.voice_translation.TTS_AVAILABLE', True)
-@patch('transformers.MarianMTModel.from_pretrained')
-@patch('transformers.MarianTokenizer.from_pretrained')
-def test_pipeline_initialization(mock_tokenizer, mock_marian):
+@patch('video_generator.voice_translation.TRANSFORMERS_AVAILABLE', True)
+def test_pipeline_initialization():
     """Test that the VoiceTranslationPipeline can be initialized."""
-    with patch('whisper.load_model') as mock_whisper, \
-         patch('TTS.api.TTS') as mock_tts:
-        mock_tts_instance = Mock()
-        mock_tts.return_value.to.return_value = mock_tts_instance
+    with patch('video_generator.voice_translation.whisper.load_model') as mock_whisper, \
+         patch('video_generator.voice_translation.TTS') as mock_tts:
+        # Setup mock returns
+        mock_whisper_model = Mock()
+        mock_whisper.return_value = mock_whisper_model
         
+        mock_tts_instance = Mock()
+        mock_tts_instance.to.return_value = mock_tts_instance
+        mock_tts.return_value = mock_tts_instance
+
         pipeline = VoiceTranslationPipeline()
         assert pipeline is not None
+        assert pipeline.whisper_model is not None
+        assert pipeline.tts is not None
         mock_whisper.assert_called_once()
-        # TTS is called through sys.modules mock, so just verify pipeline has tts attribute
-        assert hasattr(pipeline, 'tts')
+        mock_tts.assert_called_once()
 
 @patch('video_generator.voice_translation.WHISPER_AVAILABLE', True)
 @patch('video_generator.voice_translation.TTS_AVAILABLE', True)
@@ -48,7 +54,7 @@ def test_transcribe_audio(mock_audio_file):
          patch('TTS.api.TTS') as mock_tts:
         mock_tts_instance = Mock()
         mock_tts.return_value.to.return_value = mock_tts_instance
-        
+
         # Arrange
         pipeline = VoiceTranslationPipeline()
         mock_transcribe_result = {'text': 'This is a test.', 'language': 'en'}
@@ -65,41 +71,50 @@ def test_transcribe_audio(mock_audio_file):
 
 @patch('video_generator.voice_translation.WHISPER_AVAILABLE', True)
 @patch('video_generator.voice_translation.TTS_AVAILABLE', True)
-@patch('transformers.MarianMTModel.from_pretrained')
-@patch('transformers.MarianTokenizer.from_pretrained')
-def test_translate_text(mock_tokenizer, mock_marian):
+@patch('video_generator.voice_translation.TRANSFORMERS_AVAILABLE', True)
+def test_translate_text():
     """Test the text translation step, mocking the models."""
-    with patch('whisper.load_model'), \
-         patch('TTS.api.TTS') as mock_tts_class:
+    with patch('video_generator.voice_translation.whisper.load_model') as mock_whisper, \
+         patch('video_generator.voice_translation.TTS') as mock_tts, \
+         patch('video_generator.voice_translation.MarianMTModel') as mock_marian, \
+         patch('video_generator.voice_translation.MarianTokenizer') as mock_tokenizer:
+        
+        # Setup Whisper mock
+        mock_whisper_model = Mock()
+        mock_whisper.return_value = mock_whisper_model
+        
         # Setup TTS mock
         mock_tts_instance = Mock()
-        mock_tts_class.return_value.to.return_value = mock_tts_instance
+        mock_tts_instance.to.return_value = mock_tts_instance
+        mock_tts.return_value = mock_tts_instance
+
+        # Setup Translation mocks
+        mock_tensor = Mock()
+        mock_tensor.to.return_value = mock_tensor
         
+        mock_tokenizer_instance = Mock()
+        mock_tokenizer_instance.return_value = {
+            "input_ids": mock_tensor,
+            "attention_mask": mock_tensor
+        }
+        mock_tokenizer_instance.decode.return_value = "Ceci est un test."
+        mock_tokenizer.from_pretrained.return_value = mock_tokenizer_instance
+        
+        mock_model_instance = Mock()
+        mock_model_instance.generate.return_value = torch.tensor([[1, 2, 3]])
+        mock_model_instance.to.return_value = mock_model_instance
+        mock_marian.from_pretrained.return_value = mock_model_instance
+
         # Arrange
         pipeline = VoiceTranslationPipeline()
 
-    # Create proper tensor mocks for tokenizer
-    mock_tensor = Mock()
-    mock_tensor.to.return_value = mock_tensor
-    
-    mock_tokenizer_instance = mock_tokenizer.return_value
-    mock_model_instance = mock_marian.return_value
+        # Act
+        translated_text = pipeline.translate_text("This is a test.", source_lang="en", target_lang="fr")
 
-    # Mock tokenizer to return tensor-like objects
-    mock_tokenizer_instance.return_value = {
-        "input_ids": mock_tensor, 
-        "attention_mask": mock_tensor
-    }
-    mock_model_instance.generate.return_value = ["mock_translation_ids"]
-    mock_tokenizer_instance.decode.return_value = "Ceci est un test."
-
-    # Act
-    translated_text = pipeline.translate_text("This is a test.", source_lang="en", target_lang="fr")
-
-    # Assert
-    assert translated_text == "Ceci est un test."
-    mock_marian.assert_called_with("Helsinki-NLP/opus-mt-en-fr")
-    mock_tokenizer.assert_called_with("Helsinki-NLP/opus-mt-en-fr")
+        # Assert
+        assert translated_text == "Ceci est un test."
+        mock_marian.from_pretrained.assert_called_once_with("Helsinki-NLP/opus-mt-en-fr")
+        mock_tokenizer.from_pretrained.assert_called_once_with("Helsinki-NLP/opus-mt-en-fr")
 
 
 @patch('video_generator.voice_translation.WHISPER_AVAILABLE', True)
@@ -110,7 +125,7 @@ def test_synthesize_speech(mock_audio_file, tmp_path):
          patch('TTS.api.TTS') as mock_tts:
         mock_tts_instance = Mock()
         mock_tts.return_value.to.return_value = mock_tts_instance
-        
+
         # Arrange
         pipeline = VoiceTranslationPipeline()
         mock_tts_instance = pipeline.tts
@@ -139,7 +154,7 @@ def test_full_voice_translation_pipeline(mock_synthesize, mock_translate, mock_t
          patch('TTS.api.TTS') as mock_tts:
         mock_tts_instance = Mock()
         mock_tts.return_value.to.return_value = mock_tts_instance
-        
+
         # Arrange
         pipeline = VoiceTranslationPipeline()
 

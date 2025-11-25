@@ -33,6 +33,10 @@ pydub==0.25.1
 flask==3.0.0
 flask-cors==6.0.0
 
+# Queue System
+rq==1.15.1
+redis==5.0.1
+
 # Firebase
 firebase-admin==6.3.0
 

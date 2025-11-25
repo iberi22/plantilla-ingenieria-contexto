@@ -14,11 +14,11 @@ def mock_manager():
     mock = MagicMock()
     mock.endpoint = "http://localhost:8000"
     mock.api_key = "test-key"
-    
+
     mock_model_info = MagicMock()
     mock_model_info.id = "nano-banana-2"
     mock.get_model_info.return_value = mock_model_info
-    
+
     return mock
 
 
@@ -64,7 +64,7 @@ class TestImageGenerator:
         mock = MagicMock()
         generator = ImageGenerator(output_dir=str(tmp_path), manager=mock)
         assert generator.manager is mock
-        
+
         # Without manager and without foundry_local, would fail (tested by integration)
 
     def test_generate_architecture_diagram(self, image_generator):

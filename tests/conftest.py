@@ -4,9 +4,23 @@ import sys
 from unittest.mock import MagicMock, Mock
 
 # Mock whisper and TTS modules globally before any imports
-sys.modules['whisper'] = Mock()
-sys.modules['TTS'] = Mock()
-sys.modules['TTS.api'] = Mock()
+# Create proper module mocks with required functions
+whisper_mock = Mock()
+whisper_mock.load_model = Mock()
+sys.modules['whisper'] = whisper_mock
+
+tts_module_mock = Mock()
+tts_api_mock = Mock()
+tts_api_mock.TTS = Mock()
+sys.modules['TTS'] = tts_module_mock
+sys.modules['TTS.api'] = tts_api_mock
+
+# Mock transformers module for translation tests
+transformers_mock = Mock()
+transformers_mock.MarianMTModel = Mock()
+transformers_mock.MarianTokenizer = Mock()
+sys.modules['transformers'] = transformers_mock
+sys.modules['transformers.tokenization_utils_fast'] = Mock()
 
 @pytest.fixture(autouse=True)
 def mock_env_vars():
