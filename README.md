@@ -15,18 +15,71 @@
 
 Visit our blog at: **[https://iberi22.github.io/bestof-opensorce](https://iberi22.github.io/bestof-opensorce)**
 
-## 🏗️ Project Structure
+## 🏗️ Two-Repository Architecture
 
-\\\
-investigations/      # Markdown database (⭐ main content)
+This project is split into **two repositories** for security and clarity:
+
+### 🌐 This Repository (PUBLIC)
+Contains:
+- 📚 **Investigations Database** (`investigations/`) - Markdown analysis of projects
+- 🎨 **Blog Frontend** (`website/`) - Astro static site on GitHub Pages
+- 🔍 **Scanner** (`src/scanner/`) - Repository discovery tools
+- 💾 **Persistence** (`src/persistence/`) - Local data storage
+
+### 🔐 Private Repository ([bestof-pipeline](https://github.com/iberi22/bestof-pipeline))
+Contains:
+- 🎙️ **Voice Studio** - Dashboard for recording multilingual narration
+- 🤖 **Blog Generator** - AI-powered post generation with Gemini
+- 🎬 **Video Pipeline** - Automated reel generation (20s videos)
+- 🔊 **TTS System** - Text-to-speech with voice cloning
+- 🔌 **API** - Flask backend for content generation
+
+### 🔄 How They Work Together
+
+```
+PUBLIC REPO                          PRIVATE REPO
+┌──────────────┐                    ┌──────────────┐
+│   Scanner    │ ─── discovers ───> │  Processing  │
+│ (every 4h)   │                    │              │
+└──────────────┘                    └──────────────┘
+       │                                    │
+       v                                    v
+┌──────────────┐    webhook         ┌──────────────┐
+│investigations│ ───────────────>   │ Blog Gen AI  │
+│   *.md       │                    │   + Images   │
+└──────────────┘                    └──────────────┘
+       │                                    │
+       │                            commits back
+       │ <───────────────────────────────┘
+       v
+┌──────────────┐
+│ GitHub Pages │
+│ (auto-deploy)│
+└──────────────┘
+```
+
+**Documentation:**
+- [TWO_REPO_ARCHITECTURE.md](./TWO_REPO_ARCHITECTURE.md) - Complete architecture
+- [MIGRATION_WEB_GUIDE.md](./MIGRATION_WEB_GUIDE.md) - Migration details
+
+## 📂 Project Structure
+
+```
+investigations/      # ⭐ Markdown database (main content)
 website/             # Astro blog frontend
-web/                 # React dashboard (legacy)
 src/
 ├── scanner/         # GitHub repository scanner
 └── persistence/     # Data storage layer
 scripts/
-└── run_scanner.py   # Public scanner script
-\\\
+├── run_scanner.py   # Public scanner script
+└── watch_blog.py    # Blog watcher
+docs/
+├── INDEX.md         # Documentation index
+├── archive/         # Historical documentation
+├── planning/        # Roadmaps and planning
+└── sprints/         # Sprint reports
+tests/               # Unit tests
+```
 
 ## 🚀 Contributing
 
