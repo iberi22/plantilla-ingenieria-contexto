@@ -1,0 +1,79 @@
+name: Investigation Pipeline
+
+on:
+  schedule:
+    # Run every 4 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Mode: check (updates) or discover (new)'
+        required: true
+        default: 'check'
+        type: choice
+        options:
+        - check
+        - discover
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  manage-investigations:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Important for git history if needed
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Run Investigation Manager
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }} # Use PAT for broader access if available, else GITHUB_TOKEN
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      run: |
+        if [ "${{ github.event_name }}" == "schedule" ]; then
+          # On schedule, do both: check for updates AND discover a few new ones
+          echo "Running scheduled check and discovery..."
+          python scripts/manage_investigations.py --check
+          python scripts/manage_investigations.py --discover 3
+        elif [ "${{ inputs.mode }}" == "discover" ]; then
+          echo "Running manual discovery..."
+          python scripts/manage_investigations.py --discover 5
+        else
+          echo "Running manual check..."
+          python scripts/manage_investigations.py --check
+        fi
+
+    - name: Check for changes
+      id: git-check
+      run: |
+        git add investigations/ blog/_posts/
+        if git diff --staged --quiet; then
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and Push
+      if: steps.git-check.outputs.changes == 'true'
+      run: |
+        git commit -m "chore: Update investigations and blog posts [skip ci]"
+        git push

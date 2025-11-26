@@ -1,4 +1,3 @@
-
 import requests
 import datetime
 import os
@@ -89,3 +88,15 @@ class GitHubScanner:
             return False
         except Exception:
             return False
+
+    def get_latest_commit(self, repo_full_name: str):
+        """Fetches the latest commit hash for the default branch."""
+        try:
+            url = f"{self.api_url}/repos/{repo_full_name}/commits/HEAD"
+            response = requests.get(url, headers=self.headers)
+            if response.status_code == 200:
+                return response.json()["sha"]
+            return None
+        except Exception as e:
+            logging.error(f"Error fetching commit for {repo_full_name}: {e}")
+            return None
