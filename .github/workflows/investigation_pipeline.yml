@@ -48,7 +48,7 @@ jobs:
 
     - name: Run Blog Generation Workflow
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }} # Use PAT for broader access if available, else GITHUB_TOKEN
+        GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }} # Use PAT if available, else default GITHUB_TOKEN
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
         if [ "${{ github.event_name }}" == "schedule" ]; then
