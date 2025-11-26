@@ -1,12 +1,17 @@
-name: Deploy Blog to GitHub Pages
+name: Deploy Blog to GitHub Pages (DEPRECATED - Use deploy-web.yml)
+
+# This workflow is deprecated. The new Astro website is deployed via deploy-web.yml
+# Uncomment below to re-enable Jekyll blog deployment
+# on:
+#   push:
+#     branches: [main]
+#     paths:
+#       - 'blog/**'
+#       - '.github/workflows/deploy-blog.yml'
+#   workflow_dispatch:
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'blog/**'
-      - '.github/workflows/deploy-blog.yml'
-  workflow_dispatch:
+  workflow_dispatch: # Manual only, disabled by default
 
 permissions:
   contents: read

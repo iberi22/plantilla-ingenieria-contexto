@@ -5,6 +5,6 @@ import svelte from "@astrojs/svelte";
 // https://astro.build/config
 export default defineConfig({
   site: 'https://iberi22.github.io',
-  base: '/plantilla-ingenieria-contexto',
+  base: '/bestof-opensorce',
   integrations: [tailwind(), svelte()],
 });
