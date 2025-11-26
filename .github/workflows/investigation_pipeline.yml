@@ -67,7 +67,7 @@ jobs:
     - name: Check for changes
       id: git-check
       run: |
-        git add investigations/ blog/_posts/
+        git add investigations/ website/src/content/blog/
         if git diff --staged --quiet; then
           echo "changes=false" >> $GITHUB_OUTPUT
         else

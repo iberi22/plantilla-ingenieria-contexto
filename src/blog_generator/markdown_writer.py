@@ -108,12 +108,23 @@ class MarkdownWriter:
         frontmatter += f"layout: post\n"
         frontmatter += f"title: \"{title}\"\n"
         frontmatter += f"date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S %z')}\n"
+        frontmatter += f"description: \"{description.replace('\"', '\\\"')}\"\n"
         frontmatter += f"repo: {repo_full_name}\n"
         frontmatter += f"stars: {stars}\n"
         frontmatter += f"language: {language}\n"
+        
+        # Astro Schema: repo_data object
+        frontmatter += "repo_data:\n"
+        frontmatter += f"  full_name: {repo_full_name}\n"
+        frontmatter += f"  description: \"{description.replace('\"', '\\\"')}\"\n"
+        frontmatter += f"  stars: {stars}\n"
+        frontmatter += f"  language: {language}\n"
+        frontmatter += f"  url: {repo_data.get('html_url', '')}\n"
+        frontmatter += f"  owner: {repo_data.get('owner', {}).get('login', '')}\n"
 
         if tags:
             frontmatter += f"tags: [{', '.join(tags)}]\n"
+            frontmatter += f"categories: [{', '.join(tags[:2])}]\n" # Use first 2 tags as categories
 
         # Add images if provided
         if images:

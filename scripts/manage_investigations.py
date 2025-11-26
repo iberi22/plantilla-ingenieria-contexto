@@ -194,16 +194,15 @@ class InvestigationManager:
         This should interface with BlogManager/MarkdownWriter.
         """
         logger.info(f"📝 Updating blog post for {repo_data['name']}...")
-
+        
         try:
-            writer = MarkdownWriter()
+            # Output to Astro content directory
+            writer = MarkdownWriter(output_dir="website/src/content/blog")
             # We pass empty images for now as we are focusing on text/data flow
             post_path = writer.create_post(repo_data, analysis, images={})
             logger.info(f"✅ Blog post generated at: {post_path}")
         except Exception as e:
-            logger.error(f"Failed to generate blog post: {e}")
-
-def main():
+            logger.error(f"Failed to generate blog post: {e}")def main():
     parser = argparse.ArgumentParser(description="Manage Investigations")
     parser.add_argument("--check", action="store_true", help="Check for updates")
     parser.add_argument("--add", help="Add a repo by URL")
