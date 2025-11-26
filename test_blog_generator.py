@@ -52,7 +52,7 @@ def test_markdown_writer():
 
     try:
         # Create writer
-        writer = MarkdownWriter(output_dir="blog/_posts")
+        writer = MarkdownWriter(output_dir="website/src/content/blog")
         print("✅ MarkdownWriter initialized")
 
         # Generate post

@@ -205,13 +205,13 @@ Each repository receives a score (0-100) for each category based on multiple sig
 ```python
 def classify_repository(repo_data: dict) -> list[str]:
     scores = {category: 0 for category in CATEGORIES}
-    
+
     # Signal 1: Language analysis
     language = repo_data.get("language", "").lower()
     for category, criteria in TAXONOMY.items():
         if language in criteria["languages"]:
             scores[category] += 30
-    
+
     # Signal 2: Dependencies (from package files)
     dependencies = extract_dependencies(repo_data)
     for dep in dependencies:
@@ -219,7 +219,7 @@ def classify_repository(repo_data: dict) -> list[str]:
             if dep in criteria["dependencies"]:
                 scores[category] += 25
                 break
-    
+
     # Signal 3: Topics/tags
     topics = repo_data.get("topics", [])
     for topic in topics:
@@ -227,7 +227,7 @@ def classify_repository(repo_data: dict) -> list[str]:
             if topic in criteria["topics"]:
                 scores[category] += 20
                 break
-    
+
     # Signal 4: Description keywords
     description = repo_data.get("description", "").lower()
     for category, criteria in TAXONOMY.items():
@@ -235,30 +235,30 @@ def classify_repository(repo_data: dict) -> list[str]:
             if keyword in description:
                 scores[category] += 15
                 break
-    
+
     # Signal 5: README analysis
     readme = fetch_readme(repo_data["full_name"])
     for category, criteria in TAXONOMY.items():
         if any(kw in readme.lower() for kw in criteria["keywords"]):
             scores[category] += 10
             break
-    
+
     # Assign categories
     categories = []
     max_score = max(scores.values())
-    
+
     if max_score >= 40:
         # Primary category
         primary = max(scores, key=scores.get)
         categories.append(primary)
-        
+
         # Secondary categories (if score > 70)
         for cat, score in scores.items():
             if cat != primary and score > 70:
                 categories.append(cat)
     else:
         categories.append("Other")
-    
+
     return categories
 ```
 
@@ -273,10 +273,10 @@ def classify_repository(repo_data: dict) -> list[str]:
    - npm: >1000 weekly downloads
    - PyPI: >500 monthly downloads
    - Docker Hub: >1000 pulls
-   
+
 2. **Dependents Count**
    - GitHub dependents: >10 repositories
-   
+
 3. **Contributors**
    - >5 unique contributors
    - Regular commit activity (>1 commit/week average)
@@ -332,7 +332,7 @@ Formula: `(downloads_score * 0.3) + (contributors_score * 0.2) + (activity_score
   <div class="score-circle">
     <svg viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="45" class="score-bg"/>
-      <circle cx="50" cy="50" r="45" class="score-fill" 
+      <circle cx="50" cy="50" r="45" class="score-fill"
               stroke-dasharray="282" stroke-dashoffset="42"/>
     </svg>
     <span class="score-text">85%</span>

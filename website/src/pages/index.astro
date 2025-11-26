@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.svelte';
+import Header from '../components/Header.svelte';
+import Directory from '../components/Directory.svelte';
+import { PROJECTS } from '../constants';
+---
+
+<Layout title="Best of Open Source">
+  <Header client:load />
+	<main>
+		<Hero client:load />
+
+    <div id="directory" class="min-h-screen bg-dark-bg relative z-10">
+      <Directory client:visible projects={PROJECTS} />
+    </div>
+	</main>
+</Layout>

@@ -48,6 +48,45 @@ _Última Actualización: 25 de noviembre de 2025 - Post Jules Integration_
 
 ## 🚀 NUEVAS FASES - Blog Enhancement (Multi-Category System)
 
+## 🚀 FASE 14: Modern Web Architecture (Astro + Tailwind + Svelte) (🔥 NUEVA PRIORIDAD)
+**Objetivo:** Migración de Jekyll a Astro para mejor performance y DX, implementando el diseño "Best of Open Source".
+
+### Stack Tecnológico:
+- **Framework:** Astro (Static Site Generation)
+- **Estilos:** Tailwind CSS
+- **Interactividad:** Svelte (Islands Architecture)
+- **Deploy:** GitHub Actions -> GitHub Pages
+
+### Tareas:
+- [x] 14.1: Setup del Proyecto Astro - 1h
+  - Inicializar proyecto en `website/`
+  - Configurar integraciones: `@astrojs/tailwind`, `@astrojs/svelte`
+  - Configurar `astro.config.mjs` para GitHub Pages
+
+- [x] 14.2: Migración de Componentes (React -> Astro/Svelte) - 3h
+  - Portar `Hero.tsx` -> `Hero.svelte`
+  - Portar `BlogCard.tsx` -> `BlogCard.svelte`
+  - Portar `ProjectCard.tsx` -> `ProjectCard.svelte` (con Flashlight Effect)
+  - Implementar Layout principal (Navbar, Footer, Noise Overlay)
+  - Implementar `Directory.svelte` con Sticky Filter Bar
+
+- [ ] 14.3: Lógica de Blog y Contenido - 3h
+  - [x] Configurar Content Collections (`src/content/blog`)
+  - Migrar posts existentes de Jekyll a Astro
+  - Implementar páginas dinámicas `[...slug].astro`
+  - Implementar sistema de Tags y Categorías (Taxonomy)
+
+- [ ] 14.4: Integración de Automatización - 2h
+  - Actualizar `blog_generator` para escribir en `website/src/content/blog`
+  - Asegurar formato de Frontmatter compatible
+  - Script de migración de assets
+
+- [x] 14.5: CI/CD para Astro - 1h
+  - Crear workflow `.github/workflows/deploy-web.yml`
+  - Configurar build y deploy a `gh-pages`
+
+**Total Estimado:** 10 horas / 2 días
+
 ## 🔧 FASE 10: Enhanced Repository Analysis (⏳ EN PROGRESO - Alta Prioridad)
 **Objetivo:** Análisis profundo con GitHub Insights API + Detección de proyectos reales
 

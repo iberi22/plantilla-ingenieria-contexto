@@ -1,0 +1,46 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+
+<Layout title="Blog - Best of Open Source">
+  <main class="pt-24 px-6 max-w-7xl mx-auto pb-20">
+    <h1 class="text-4xl md:text-5xl font-bold text-bone mb-12 tracking-tight">Latest Analysis</h1>
+
+    {posts.length === 0 ? (
+      <div class="text-center py-20 border border-dashed border-white/10 rounded-3xl">
+        <p class="text-bone-dark/40 text-xl">No posts found yet. Run the scanner to generate content.</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map(post => (
+          <a href={`${base}blog/${post.slug}`} class="block group">
+            <article class="bg-[#141414] border border-white/5 rounded-3xl p-8 h-full transition-all duration-300 hover:border-white/20 hover:bg-white/[0.02] hover:-translate-y-1">
+              <div class="flex justify-between items-start mb-6">
+                <div class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-bone-dark/60">
+                  {post.data.categories?.[0] || 'Uncategorized'}
+                </div>
+                {post.data.repo_data?.stars && (
+                  <div class="flex items-center gap-1 text-xs font-mono text-bone-dark/60">
+                    <span>★</span>
+                    <span>{post.data.repo_data.stars.toLocaleString()}</span>
+                  </div>
+                )}
+              </div>
+
+              <h2 class="text-2xl font-bold text-bone mb-4 group-hover:text-emerald-400 transition-colors leading-tight">{post.data.title}</h2>
+              <p class="text-bone-dark/60 line-clamp-3 text-sm leading-relaxed mb-6">{post.data.description}</p>
+
+              <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-bone-dark/40 group-hover:text-bone transition-colors">
+                Read Analysis <span>→</span>
+              </div>
+            </article>
+          </a>
+        ))}
+      </div>
+    )}
+  </main>
+</Layout>

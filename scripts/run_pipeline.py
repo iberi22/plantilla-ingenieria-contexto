@@ -114,13 +114,24 @@ def main():
 
         # 1c. Generate Images
         try:
-            img_gen = ImageGenerator(model_name="nano-banana-2", output_dir=f"blog/assets/images/{repo_name.lower()}")
+            # Update output directory to Astro public folder
+            img_output_dir = f"website/public/assets/images/{repo_name.lower()}"
+            img_gen = ImageGenerator(model_name="nano-banana-2", output_dir=img_output_dir)
 
             arch_img = img_gen.generate_architecture_diagram(repo_data, script_data)
             flow_img = img_gen.generate_problem_solution_flow(repo_data, script_data)
 
-            if arch_img: images['architecture'] = arch_img
-            if flow_img: images['flow'] = flow_img
+            # Helper to convert local path to web path
+            def to_web_path(local_path):
+                if not local_path: return None
+                # Convert backslashes to forward slashes and remove prefix
+                p = Path(local_path).as_posix()
+                if "website/public" in p:
+                    return p.split("website/public")[1]
+                return p
+
+            if arch_img: images['architecture'] = to_web_path(arch_img)
+            if flow_img: images['flow'] = to_web_path(flow_img)
 
             # Placeholder for screenshot (ScreenshotCapturer would handle this in ReelCreator or here)
             # images['screenshot'] = ...
@@ -129,7 +140,8 @@ def main():
             logger.warning(f"Image generation skipped: {e}")
 
         # 1d. Write Blog Post
-        md_writer = MarkdownWriter(output_dir="blog/_posts")
+        # Update output directory to Astro content folder
+        md_writer = MarkdownWriter(output_dir="website/src/content/blog")
         post_path = md_writer.create_post(repo_data, script_data, images)
         logger.info(f"✅ Blog post created at: {post_path}")
 

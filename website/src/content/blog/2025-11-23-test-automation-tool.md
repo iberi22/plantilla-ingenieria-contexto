@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "test-automation-tool - Manual testing is slow and error-prone"
 date: 2025-11-23 22:02:45
 repo: testuser/test-automation-tool
@@ -7,9 +6,9 @@ stars: 567
 language: Python
 tags: [automation, testing, devops]
 images:
-  architecture: assets/images/test-automation-tool/architecture.png
-  flow: assets/images/test-automation-tool/flow.png
-  screenshot: assets/images/test-automation-tool/screenshot.png
+  architecture: /assets/images/test-automation-tool/architecture.png
+  flow: /assets/images/test-automation-tool/flow.png
+  screenshot: /assets/images/test-automation-tool/screenshot.png
 ---
 
 ## 🎯 The Problem
