@@ -20,8 +20,15 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from scanner.github_scanner import GitHubScanner
 from agents.scriptwriter import ScriptWriter
-from image_gen.image_generator import ImageGenerator
 from blog_generator.markdown_writer import MarkdownWriter
+
+# Optional: Image generation (only in private repo)
+try:
+    from image_gen.image_generator import ImageGenerator
+    IMAGE_GEN_AVAILABLE = True
+except ImportError:
+    IMAGE_GEN_AVAILABLE = False
+    logging.warning("image_gen module not available - skipping image generation")
 
 # Configure logging
 logging.basicConfig(
@@ -90,44 +97,48 @@ def main():
 
         logger.info("✅ Analysis generated successfully")
 
-        # Step 4: Generate images
+        # Step 4: Generate images (optional, only if module available)
+        images = {}
         logger.info("\n🎨 Step 3: Generating images...")
-        try:
-            image_generator = ImageGenerator(
-                model_name="nano-banana-2",
-                output_dir="blog/assets/images"
-            )
 
-            repo_name = valid_repo['name'].lower()
+        if IMAGE_GEN_AVAILABLE:
+            try:
+                image_generator = ImageGenerator(
+                    model_name="nano-banana-2",
+                    output_dir="website/public/images"
+                )
 
-            # Generate architecture diagram
-            arch_img = image_generator.generate_architecture_diagram(
-                valid_repo,
-                script_data
-            )
+                repo_name = valid_repo['name'].lower()
 
-            # Generate flow diagram
-            flow_img = image_generator.generate_problem_solution_flow(
-                valid_repo,
-                script_data
-            )
+                # Generate architecture diagram
+                arch_img = image_generator.generate_architecture_diagram(
+                    valid_repo,
+                    script_data
+                )
 
-            # Prepare image paths for blog post (relative to site root for Jekyll)
-            images = {}
-            if arch_img:
-                images['architecture'] = f"assets/images/{repo_name}/architecture.png"
-            if flow_img:
-                images['flow'] = f"assets/images/{repo_name}/flow.png"
+                # Generate flow diagram
+                flow_img = image_generator.generate_problem_solution_flow(
+                    valid_repo,
+                    script_data
+                )
 
-            logger.info(f"✅ Generated {len(images)} images")
+                # Prepare image paths for blog post
+                if arch_img:
+                    images['architecture'] = f"/images/{repo_name}/architecture.png"
+                if flow_img:
+                    images['flow'] = f"/images/{repo_name}/flow.png"
 
-        except Exception as e:
-            logger.warning(f"Image generation failed: {e}. Continuing without images.")
-            images = {}
+                logger.info(f"✅ Generated {len(images)} images")
+
+            except Exception as e:
+                logger.warning(f"Image generation failed: {e}. Continuing without images.")
+                images = {}
+        else:
+            logger.info("⏭️  Image generation skipped (module not available in this repo)")
 
         # Step 5: Create blog post
         logger.info("\n📝 Step 4: Creating blog post...")
-        markdown_writer = MarkdownWriter(output_dir="blog/_posts")
+        markdown_writer = MarkdownWriter(output_dir="website/src/content/blog")
 
         post_path = markdown_writer.create_post(
             valid_repo,

@@ -17,7 +17,7 @@ class MarkdownWriter:
     Creates Jekyll-compatible posts from repository and script data.
     """
 
-    def __init__(self, output_dir: str = "blog/_posts"):
+    def __init__(self, output_dir: str = "website/src/content/blog"):
         """
         Initialize MarkdownWriter.
 
@@ -103,11 +103,10 @@ class MarkdownWriter:
         topics = repo_data.get("topics", [])
         tags = topics[:5] if topics else [language.lower()] if language else []
 
-        # Build frontmatter
+        # Build frontmatter for Astro
         frontmatter = "---\n"
-        frontmatter += f"layout: post\n"
         frontmatter += f"title: \"{title}\"\n"
-        frontmatter += f"date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S %z')}\n"
+        frontmatter += f"date: {datetime.now().strftime('%Y-%m-%d')}\n"
         frontmatter += f"description: \"{description.replace('\"', '\\\"')}\"\n"
         frontmatter += f"repo: {repo_full_name}\n"
         frontmatter += f"stars: {stars}\n"
@@ -223,8 +222,8 @@ class MarkdownWriter:
                 self.logger.error("Post missing frontmatter")
                 return False
 
-            # Check for required fields
-            required_fields = ["layout:", "title:", "date:", "repo:"]
+            # Check for required fields (Astro format)
+            required_fields = ["title:", "date:", "repo:"]
             for field in required_fields:
                 if field not in content:
                     self.logger.error(f"Post missing required field: {field}")

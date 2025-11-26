@@ -46,28 +46,27 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Run Investigation Manager
+    - name: Run Blog Generation Workflow
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PAT }} # Use PAT for broader access if available, else GITHUB_TOKEN
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
         if [ "${{ github.event_name }}" == "schedule" ]; then
-          # On schedule, do both: check for updates AND discover a few new ones
-          echo "Running scheduled check and discovery..."
-          python scripts/manage_investigations.py --check
-          python scripts/manage_investigations.py --discover 3
+          # On schedule, generate blog posts
+          echo "Running scheduled blog generation..."
+          python scripts/workflow_generate_blog.py
         elif [ "${{ inputs.mode }}" == "discover" ]; then
-          echo "Running manual discovery..."
-          python scripts/manage_investigations.py --discover 5
+          echo "Running manual blog generation..."
+          python scripts/workflow_generate_blog.py
         else
-          echo "Running manual check..."
-          python scripts/manage_investigations.py --check
+          echo "Running scanner only..."
+          python scripts/run_scanner.py
         fi
 
     - name: Check for changes
       id: git-check
       run: |
-        git add investigations/ website/src/content/blog/
+        git add website/src/content/blog/ website/public/images/
         if git diff --staged --quiet; then
           echo "changes=false" >> $GITHUB_OUTPUT
         else

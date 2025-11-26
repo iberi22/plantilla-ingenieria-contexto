@@ -3,6 +3,8 @@ import sys
 import hmac
 import hashlib
 import logging
+import subprocess
+from pathlib import Path
 from flask import Flask, request, jsonify
 from redis import Redis
 from rq import Queue
@@ -50,8 +52,8 @@ def verify_signature(payload, signature):
 @app.route('/webhook', methods=['POST'])
 def github_webhook():
     """
-    Handle GitHub webhooks.
-    Triggers pipeline on 'star' events (created).
+    Handle GitHub webhooks from public repo.
+    Triggers content generation when investigations are updated.
     """
     signature = request.headers.get('X-Hub-Signature-256')
 
@@ -63,8 +65,103 @@ def github_webhook():
     event = request.headers.get('X-GitHub-Event', 'ping')
 
     if event == 'ping':
-        return jsonify({"message": "Pong!"}), 200
+        logger.info("Received ping from GitHub webhook")
+        return jsonify({"message": "Pong! Webhook is configured correctly."}), 200
 
+    # Handle push events (when investigations are updated)
+    if event == 'push':
+        data = request.json
+        ref = data.get('ref', '')
+        commits = data.get('commits', [])
+
+        # Only process main branch
+        if ref != 'refs/heads/main':
+            logger.info(f"Ignoring push to {ref}")
+            return jsonify({"message": "Ignored: not main branch"}), 200
+
+        # Check if investigations or blog files were modified
+        modified_files = []
+        for commit in commits:
+            modified_files.extend(commit.get('added', []))
+            modified_files.extend(commit.get('modified', []))
+
+        investigations_updated = any('investigations/' in f for f in modified_files)
+        blog_updated = any('website/src/content/blog/' in f for f in modified_files)
+
+        if not investigations_updated and not blog_updated:
+            logger.info("No relevant files updated")
+            return jsonify({"message": "No investigations or blog files updated"}), 200
+
+        logger.info(f"Content updated: investigations={investigations_updated}, blog={blog_updated}")
+
+        # Trigger content generation pipeline
+        try:
+            if task_queue:
+                # Enqueue the content generation job
+                job = task_queue.enqueue(
+                    'api.worker.generate_content_task',
+                    modified_files=modified_files,
+                    job_timeout='30m',
+                    result_ttl=86400
+                )
+                logger.info(f"Content generation job {job.id} enqueued")
+                return jsonify({
+                    "message": "Content generation triggered",
+                    "job_id": job.id,
+                    "status_url": f"/jobs/{job.id}"
+                }), 202
+            else:
+                # Fallback: Run content generation directly
+                logger.info("Running content generation in fallback mode")
+                subprocess.Popen([
+                    sys.executable,
+                    "scripts/manage_investigations.py",
+                    "--check"
+                ])
+                return jsonify({
+                    "message": "Content generation triggered (fallback mode)",
+                    "warning": "No job tracking available"
+                }), 202
+        except Exception as e:
+            logger.error(f"Failed to trigger content generation: {e}")
+            return jsonify({"error": "Internal Error", "details": str(e)}), 500
+
+    # Handle repository_dispatch events (manual triggers)
+    if event == 'repository_dispatch':
+        data = request.json
+        action = data.get('action', '')
+
+        logger.info(f"Repository dispatch received: {action}")
+
+        if action == 'generate-content':
+            try:
+                if task_queue:
+                    job = task_queue.enqueue(
+                        'api.worker.generate_content_task',
+                        modified_files=[],
+                        job_timeout='30m',
+                        result_ttl=86400
+                    )
+                    logger.info(f"Manual content generation job {job.id} enqueued")
+                    return jsonify({
+                        "message": "Content generation triggered",
+                        "job_id": job.id,
+                        "status_url": f"/jobs/{job.id}"
+                    }), 202
+                else:
+                    subprocess.Popen([
+                        sys.executable,
+                        "scripts/manage_investigations.py",
+                        "--check"
+                    ])
+                    return jsonify({
+                        "message": "Content generation triggered (fallback mode)"
+                    }), 202
+            except Exception as e:
+                logger.error(f"Failed to trigger content generation: {e}")
+                return jsonify({"error": "Internal Error", "details": str(e)}), 500
+
+    # Handle star events (legacy support)
     if event == 'star':
         data = request.json
         action = data.get('action')
@@ -73,16 +170,14 @@ def github_webhook():
             repo_url = data['repository']['html_url']
             logger.info(f"New Star detected on {repo_url}! Triggering pipeline...")
 
-            # Trigger Pipeline using RQ Queue
             try:
                 if task_queue:
-                    # Enqueue the job
                     job = task_queue.enqueue(
                         'api.worker.run_pipeline_task',
                         repo_url,
                         upload=True,
-                        job_timeout='30m',  # 30 minute timeout
-                        result_ttl=86400    # Keep results for 24 hours
+                        job_timeout='30m',
+                        result_ttl=86400
                     )
                     logger.info(f"Job {job.id} enqueued for {repo_url}")
                     return jsonify({
@@ -91,8 +186,6 @@ def github_webhook():
                         "status_url": f"/jobs/{job.id}"
                     }), 202
                 else:
-                    # Fallback to subprocess if Redis is unavailable
-                    import subprocess
                     subprocess.Popen([
                         sys.executable,
                         "scripts/run_pipeline.py",
@@ -108,6 +201,7 @@ def github_webhook():
                 logger.error(f"Failed to trigger pipeline: {e}")
                 return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
+    logger.info(f"Event {event} ignored")
     return jsonify({"message": "Event ignored"}), 200
 
 @app.route('/jobs/<job_id>', methods=['GET'])
