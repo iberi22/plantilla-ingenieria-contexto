@@ -1,34 +1,28 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection, z } from 'astro:content';
 
 const blogCollection = defineCollection({
-	type: "content",
+	type: 'content',
 	schema: z.object({
-		layout: z.string().optional(),
 		title: z.string(),
-		date: z.coerce.date().optional(),
-		description: z.string().optional(),
-		repo: z.string().optional(),
-		stars: z.number().optional(),
+        // Allow string or date for flexibility
+		date: z.union([z.string(), z.date()]).transform((str) => new Date(str)),
+		repo: z.string(),
+		stars: z.number().optional().default(0),
 		language: z.string().optional(),
-		repo_data: z
-			.object({
-				full_name: z.string(),
-				description: z.string().optional(),
-				stars: z.number().optional(),
-				language: z.string().optional(),
-				url: z.string().optional(),
-				owner: z.string().optional(),
-			})
-			.optional(),
-		categories: z.array(z.string()).optional(),
-		tags: z.array(z.string()).optional(),
-		images: z.record(z.string()).optional(),
-		video: z.string().optional(),
-		production_metrics: z.record(z.any()).optional(),
-		critical_issues: z.array(z.any()).optional(),
+		tags: z.array(z.string()).optional().default([]),
+		images: z.object({
+			architecture: z.string().optional(),
+			flow: z.string().optional(),
+			screenshot: z.string().optional(),
+		}).optional(),
+        description: z.string().optional(),
+        // Support both single category and array of categories
+        category: z.string().optional(),
+        categories: z.array(z.string()).optional(),
+        repo_data: z.any().optional(), // Allow any structure for repo_data
 	}),
 });
 
 export const collections = {
-	blog: blogCollection,
+	'blog': blogCollection,
 };

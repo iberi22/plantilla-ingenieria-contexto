@@ -1,5 +1,7 @@
 import { type Project, ProjectCategory } from "./types";
 
+export const BASE_URL = "/bestof-opensorce";
+
 export const HERO_WORDS = ["DISCOVER", "ANALYZE", "CONTRIBUTE", "EVOLVE"];
 
 export const PROJECTS: Project[] = [

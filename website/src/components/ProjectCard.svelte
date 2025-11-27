@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import type { Project } from '../types';
   import { analyzeRepoWithGemini } from '../services/geminiService';
+  import { BASE_URL } from '../constants';
 
   export let project: Project;
 
@@ -45,7 +46,9 @@
           </span>
           <div>
             <h3 class="text-xl font-bold tracking-tight text-bone group-hover:text-white transition-colors">
-              {project.name}
+              <a href={`${BASE_URL}/blog/${project.id}`} class="hover:underline focus:outline-none">
+                {project.name}
+              </a>
             </h3>
             <span class="text-xs font-medium text-bone-dark/50 uppercase tracking-wider">
               {project.category}
@@ -74,7 +77,8 @@
       </div>
     </div>
 
-    <div class="mt-auto">
+    <div class="mt-auto space-y-2">
+      <!-- AI Insight Button -->
       {#if aiAnalysis}
         <div class="bg-emerald-900/20 border border-emerald-500/20 p-3 rounded-lg animate-fade-in-up">
           <p class="text-xs text-emerald-100/90 font-mono">
@@ -90,6 +94,11 @@
             {loading ? 'ANALYZING...' : 'GENERATE AI INSIGHTS'}
          </button>
       {/if}
+
+       <!-- Link to Post -->
+       <a href={`${BASE_URL}/blog/${project.id}`} class="block w-full text-center text-xs font-bold uppercase tracking-widest text-bone-dark/60 hover:text-emerald-400 transition-colors py-1">
+          Read Full Post →
+       </a>
     </div>
   </div>
 </div>

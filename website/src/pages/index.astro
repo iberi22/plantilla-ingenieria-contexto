@@ -3,7 +3,50 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.svelte';
 import Header from '../components/Header.svelte';
 import Directory from '../components/Directory.svelte';
-import { PROJECTS } from '../constants';
+import { getCollection } from 'astro:content';
+import { ProjectCategory, type Project } from '../types';
+
+// Fetch real blog posts
+const blogPosts = await getCollection('blog');
+
+// Map blog posts to Project interface
+const realProjects: Project[] = blogPosts.map((post) => {
+  const data = post.data;
+
+  // Determine category based on tags or default
+  let category = ProjectCategory.AI_TOOLS; // Default
+  if (data.tags && data.tags.some(t => t.toLowerCase().includes('security'))) category = ProjectCategory.CYBERSECURITY;
+  if (data.tags && data.tags.some(t => t.toLowerCase().includes('ui') || t.toLowerCase().includes('css'))) category = ProjectCategory.UI_UX;
+  if (data.tags && data.tags.some(t => t.toLowerCase().includes('database') || t.toLowerCase().includes('sql'))) category = ProjectCategory.DATABASES;
+
+  return {
+    id: post.slug,
+    name: data.repo ? data.repo.split('/')[1] : data.title,
+    description: data.description || data.title, // Use title as description if missing
+    url: data.repo ? `https://github.com/${data.repo}` : '#',
+    category: category,
+    tags: data.tags || [],
+    logo: '📦', // Default logo
+    publishDate: data.date.toISOString().split('T')[0],
+    author: 'AI Analyst',
+    longContent: post.body,
+    insights: {
+      stars: data.stars || 0,
+      forks: 0, // Not currently in frontmatter
+      openIssues: 0, // Not currently in frontmatter
+      seriousIssuesCount: 0,
+      lastCommit: 'Recently',
+      summary: data.title
+    }
+  };
+});
+
+// Sort by date descending
+realProjects.sort((a, b) => new Date(b.publishDate || '').getTime() - new Date(a.publishDate || '').getTime());
+
+// Combine or replace hardcoded projects.
+// For now, let's use ONLY real projects if they exist, otherwise fall back to sample for dev.
+const projectsToDisplay = realProjects.length > 0 ? realProjects : [];
 ---
 
 <Layout title="Best of Open Source">
@@ -12,7 +55,7 @@ import { PROJECTS } from '../constants';
 		<Hero client:load />
 
     <div id="directory" class="min-h-screen bg-dark-bg relative z-10">
-      <Directory client:visible projects={PROJECTS} />
+      <Directory client:visible projects={projectsToDisplay} />
     </div>
 	</main>
 </Layout>

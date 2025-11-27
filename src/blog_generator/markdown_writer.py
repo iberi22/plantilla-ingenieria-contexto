@@ -8,6 +8,7 @@ import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from pathlib import Path
+import json
 
 
 class MarkdownWriter:
@@ -71,6 +72,48 @@ class MarkdownWriter:
             self.logger.error(f"Failed to create post: {e}")
             raise
 
+    def _determine_categories(self, tags: List[str], language: str) -> List[str]:
+        """
+        Determine categories based on tags and language.
+
+        Args:
+            tags: List of repository tags/topics.
+            language: Primary programming language.
+
+        Returns:
+            List of category strings.
+        """
+        categories = set()
+
+        # Normalize inputs
+        tags_lower = [t.lower() for t in tags]
+        lang_lower = language.lower() if language else ""
+
+        # Basic mapping
+        if "security" in tags_lower or "hacking" in tags_lower:
+            categories.add("Cybersecurity")
+
+        if "ai" in tags_lower or "machine-learning" in tags_lower or "llm" in tags_lower:
+            categories.add("AI Tools")
+
+        if "react" in tags_lower or "vue" in tags_lower or "svelte" in tags_lower or "css" in tags_lower or "ui" in tags_lower:
+            categories.add("UI/UX")
+
+        if "database" in tags_lower or "sql" in tags_lower or "nosql" in tags_lower:
+            categories.add("Databases")
+
+        if "docker" in tags_lower or "kubernetes" in tags_lower or "devops" in tags_lower:
+            categories.add("DevOps")
+
+        if "python" in lang_lower:
+            categories.add("Development")
+
+        # Default
+        if not categories:
+            categories.add("Development")
+
+        return list(categories)
+
     def _format_frontmatter(
         self,
         repo_data: Dict[str, Any],
@@ -78,7 +121,7 @@ class MarkdownWriter:
         images: Optional[Dict[str, str]] = None
     ) -> str:
         """
-        Format YAML frontmatter for Jekyll.
+        Format YAML frontmatter for Astro/Jekyll.
 
         Args:
             repo_data: Repository metadata.
@@ -92,39 +135,81 @@ class MarkdownWriter:
         repo_full_name = repo_data.get("full_name", "unknown/unknown")
         repo_name = repo_data.get("name", "Unknown")
         description = repo_data.get("description", "")
+        # Sanitize description for YAML
+        if description:
+            description = description.replace('"', '\\"').replace('\n', ' ')
+        else:
+            description = ""
+
         stars = repo_data.get("stargazers_count", 0)
         language = repo_data.get("language", "Unknown")
+        if not language:
+            language = "Unknown"
 
         # Create title from hook
         hook = script_data.get("hook", "")
-        title = f"{repo_name} - {hook[:50]}..." if len(hook) > 50 else f"{repo_name} - {hook}"
+        # Sanitize hook for title
+        if hook:
+             clean_hook = hook.replace('"', '\\"').replace('\n', ' ')
+             title = f"{repo_name} - {clean_hook[:50]}..." if len(clean_hook) > 50 else f"{repo_name} - {clean_hook}"
+        else:
+            title = repo_name
 
         # Extract tags from topics or language
         topics = repo_data.get("topics", [])
-        tags = topics[:5] if topics else [language.lower()] if language else []
+        tags = topics[:5] if topics else [language.lower()] if language != "Unknown" else []
+
+        # Ensure tags is a list of strings
+        tags = [str(t) for t in tags]
+
+        # Determine categories
+        categories = self._determine_categories(tags, language)
 
         # Build frontmatter for Astro
-        escaped_description = description.replace('"', '\"')
         frontmatter = "---\n"
         frontmatter += f"title: \"{title}\"\n"
         frontmatter += f"date: {datetime.now().strftime('%Y-%m-%d')}\n"
-        frontmatter += f"description: \"{escaped_description}\"\n"
+        frontmatter += f"description: \"{description}\"\n"
         frontmatter += f"repo: {repo_full_name}\n"
         frontmatter += f"stars: {stars}\n"
         frontmatter += f"language: {language}\n"
 
-        # Astro Schema: repo_data object
-        frontmatter += "repo_data:\n"
-        frontmatter += f"  full_name: {repo_full_name}\n"
-        frontmatter += f"  description: \"{escaped_description}\"\n"
-        frontmatter += f"  stars: {stars}\n"
-        frontmatter += f"  language: {language}\n"
-        frontmatter += f"  url: {repo_data.get('html_url', '')}\n"
-        frontmatter += f"  owner: {repo_data.get('owner', {}).get('login', '')}\n"
-
+        # Add tags
         if tags:
-            frontmatter += f"tags: [{', '.join(tags)}]\n"
-            frontmatter += f"categories: [{', '.join(tags[:2])}]\n" # Use first 2 tags as categories
+            frontmatter += f"tags: {json.dumps(tags)}\n"
+        else:
+            frontmatter += "tags: []\n"
+
+        # Add categories
+        if categories:
+            frontmatter += f"categories: {json.dumps(categories)}\n"
+            # Also add single category for backward compatibility (pick first)
+            frontmatter += f"category: \"{categories[0]}\"\n"
+
+        # Add repo_data (subset or full? Full is better for flexibility)
+        # We need to serialize it safely.
+        try:
+            # Simple sanitization or just dump it if it's JSON serializable
+            # We exclude 'owner' object if it has complex fields, but usually GitHub API dicts are fine.
+            # However, to be safe, we can just pick important fields if needed,
+            # but Astro schema says z.any(), so we can dump the whole thing.
+            # But let's be careful about huge dumps.
+            safe_repo_data = {
+                "full_name": repo_data.get("full_name"),
+                "description": repo_data.get("description"),
+                "stargazers_count": repo_data.get("stargazers_count"),
+                "language": repo_data.get("language"),
+                "topics": repo_data.get("topics"),
+                "updated_at": repo_data.get("updated_at"),
+                "html_url": repo_data.get("html_url")
+            }
+            frontmatter += f"repo_data:\n"
+            for k, v in safe_repo_data.items():
+                if v is not None:
+                    val_str = json.dumps(v)
+                    frontmatter += f"  {k}: {val_str}\n"
+        except Exception as e:
+            self.logger.warning(f"Could not serialize repo_data: {e}")
 
         # Add images if provided
         if images:
@@ -136,10 +221,7 @@ class MarkdownWriter:
             if images.get("screenshot"):
                 frontmatter += f"  screenshot: {images['screenshot']}\n"
 
-        # Add video placeholder (will be filled later)
-        # frontmatter += f"video: /assets/videos/{repo_name.lower()}-reel.mp4\n"
-
-        frontmatter += "---"
+        frontmatter += "---\n"
 
         return frontmatter
 
@@ -224,7 +306,7 @@ class MarkdownWriter:
                 return False
 
             # Check for required fields (Astro format)
-            required_fields = ["title:", "date:", "repo:"]
+            required_fields = ["title:", "date:", "repo:", "tags:"]
             for field in required_fields:
                 if field not in content:
                     self.logger.error(f"Post missing required field: {field}")
