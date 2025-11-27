@@ -1,0 +1,21 @@
+{
+  "tier": "small",
+  "timestamp": "2025-11-27T04:12:55.810403",
+  "statistics": {
+    "candidates": 10,
+    "approved_count": 0,
+    "review_count": 8,
+    "posts_count": 0
+  },
+  "approved_repos": [],
+  "review_repos": [
+    "catlog22/Claude-Code-Workflow",
+    "FishPiOffical/rhythm",
+    "OWOX/owox-data-marts",
+    "UI5/cli",
+    "markburgess/SSTorytime",
+    "kbingham/libcamera",
+    "CycloneDX/cyclonedx-gradle-plugin",
+    "astro/nix-openwrt-imagebuilder"
+  ]
+}

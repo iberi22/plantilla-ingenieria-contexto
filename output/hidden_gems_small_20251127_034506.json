@@ -1,0 +1,19 @@
+{
+  "tier": "small",
+  "timestamp": "2025-11-27T03:45:06.559523",
+  "statistics": {
+    "candidates": 10,
+    "approved_count": 0,
+    "review_count": 6,
+    "posts_count": 0
+  },
+  "approved_repos": [],
+  "review_repos": [
+    "moira-alert/moira",
+    "0xcaffebabe/note",
+    "F5OEO/tezuka_fw",
+    "dbarzin/mercator",
+    "Cloufield/gwaslab",
+    "TencentBlueKing/blueking-dbm"
+  ]
+}

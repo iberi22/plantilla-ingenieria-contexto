@@ -74,7 +74,7 @@ impl GitHubScanner {
             "https://api.github.com/search/repositories?q={}&sort=stars&order=desc&per_page={}",
             query, limit
         );
-        
+
         info!("Query URL: {}", url);
 
         let response = self
@@ -94,7 +94,7 @@ impl GitHubScanner {
         }
 
         let response_text = response.text().await?;
-        
+
         let search_response: SearchResponse = serde_json::from_str(&response_text)
             .context("Failed to parse search response")?;
 
@@ -131,7 +131,7 @@ impl GitHubScanner {
             info!("  ⏭️  Skipping: Not enough stars (need 200+)");
             return false;
         }
-        
+
         if repo.forks_count < 20 {
             info!("  ⏭️  Skipping: Not enough forks (need 20+)");
             return false;

@@ -1,0 +1,18 @@
+{
+  "tier": "small",
+  "timestamp": "2025-11-27T04:32:01.877264",
+  "statistics": {
+    "candidates": 10,
+    "approved_count": 2,
+    "review_count": 2,
+    "posts_count": 0
+  },
+  "approved_repos": [
+    "dingodb/dingo-store",
+    "TencentBlueKing/blueking-paas"
+  ],
+  "review_repos": [
+    "XiangZi7/GlassMusicPlayer",
+    "OpenModelica/OMPython"
+  ]
+}

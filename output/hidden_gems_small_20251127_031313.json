@@ -1,0 +1,19 @@
+{
+  "tier": "small",
+  "timestamp": "2025-11-27T03:13:13.187291",
+  "statistics": {
+    "candidates": 10,
+    "approved_count": 2,
+    "review_count": 3,
+    "posts_count": 2
+  },
+  "approved_repos": [
+    "Jolymmiels/remnawave-telegram-shop",
+    "py-pdf/pdfly"
+  ],
+  "review_repos": [
+    "giselles-ai/giselle",
+    "JasonEtco/rss-to-readme",
+    "stackitcloud/stackit-cli"
+  ]
+}

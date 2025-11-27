@@ -1,0 +1,18 @@
+{
+  "tier": "small",
+  "timestamp": "2025-11-27T04:27:19.671171",
+  "statistics": {
+    "candidates": 10,
+    "approved_count": 2,
+    "review_count": 2,
+    "posts_count": 0
+  },
+  "approved_repos": [
+    "eclipse-che4z/che-che4z-lsp-for-cobol",
+    "gardenlinux/gardenlinux"
+  ],
+  "review_repos": [
+    "invictus-ir/ALFA",
+    "x-extends/vxe-pc-ui"
+  ]
+}

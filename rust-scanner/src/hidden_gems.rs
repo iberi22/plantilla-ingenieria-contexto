@@ -63,7 +63,7 @@ impl HiddenGemsScanner {
             _ => (100, 500, 10, 100), // Default to small
         };
 
-        info!("🔍 Scanning {} tier: stars {}..{}, forks {}..{}", 
+        info!("🔍 Scanning {} tier: stars {}..{}, forks {}..{}",
               tier, min_stars, max_stars, min_forks, max_forks);
 
         let query = format!(
@@ -97,12 +97,12 @@ impl HiddenGemsScanner {
             }
 
             let search_result: SearchResponse = response.json().await?;
-            
+
             info!("📦 Found {} repositories on page {}", search_result.items.len(), page);
 
             for repo in search_result.items {
                 if self.is_valid_hidden_gem(&repo)? {
-                    info!("✅ Valid gem: {} ({} ⭐, {} 🍴)", 
+                    info!("✅ Valid gem: {} ({} ⭐, {} 🍴)",
                           repo.full_name, repo.stars, repo.forks);
                     found_repos.push(repo);
 
@@ -131,13 +131,13 @@ impl HiddenGemsScanner {
 
         // Check for red flag keywords in description/name
         let red_flags = [
-            "alpha", "beta", "test", "experimental", "wip", 
+            "alpha", "beta", "test", "experimental", "wip",
             "work in progress", "under development", "prototype",
             "template", "boilerplate", "starter"
         ];
 
-        let full_text = format!("{} {}", 
-                                repo.name.to_lowercase(), 
+        let full_text = format!("{} {}",
+                                repo.name.to_lowercase(),
                                 description.to_lowercase());
 
         for flag in &red_flags {

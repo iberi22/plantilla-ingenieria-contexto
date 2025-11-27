@@ -42,7 +42,8 @@ venv.bak/
 *.swo
 
 # Project Output
-output/
+output/*.log
+output/test_images/
 *.mp4
 *.mp3
 *.webm

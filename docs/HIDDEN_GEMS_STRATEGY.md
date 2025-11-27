@@ -120,10 +120,10 @@ Responde en JSON:
 - **Opción 1**: Google Gemini 1.5 Flash (ya tenemos)
   - Rate limit: 15 requests/min
   - Cost: Free tier disponible
-  
+
 - **Opción 2**: GitHub Copilot API (si disponible)
   - Integrado con GitHub
-  
+
 - **Opción 3**: Anthropic Claude (Haiku)
   - Más barato para análisis
   - Bueno para code review
@@ -165,7 +165,7 @@ else:
 ```
 [Rust Scanner] -> [Gem Analyzer] -> [AI Reviewer] -> [Blog Generator]
      (Fast)         (Deep Analysis)   (Quality Check)   (Content)
-     
+
      ~10s              ~30s              ~20s/repo        ~15s
 ```
 

@@ -1,0 +1,12 @@
+{
+  "tier": "small",
+  "timestamp": "2025-11-27T03:07:56.602258",
+  "statistics": {
+    "candidates": 10,
+    "approved_count": 0,
+    "review_count": 0,
+    "posts_count": 0
+  },
+  "approved_repos": [],
+  "review_repos": []
+}

@@ -1,0 +1,19 @@
+{
+  "tier": "small",
+  "timestamp": "2025-11-27T04:23:37.550734",
+  "statistics": {
+    "candidates": 10,
+    "approved_count": 0,
+    "review_count": 6,
+    "posts_count": 0
+  },
+  "approved_repos": [],
+  "review_repos": [
+    "beehive-lab/GPULlama3.java",
+    "TriPSs/nx-extend",
+    "goblint/analyzer",
+    "vinayak-mehta/conrad",
+    "zishang520/socket.io",
+    "specmatic/specmatic"
+  ]
+}

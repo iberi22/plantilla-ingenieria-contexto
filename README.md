@@ -1,66 +1,97 @@
 # 🌟 Best of Open Source
 
-**Community-driven collection** of high-quality open source projects, with weekly investigations published to our blog.
+**Automated discovery and analysis** of high-quality open source projects using **Rust + Python + AI**.
 
-> 📝 **Note:** This repository contains the public blog and investigation data. Video generation and content processing is handled in a private pipeline.
+> 🚀 **Performance:** 60x faster analysis with Rust parallelism + GitHub Models API for AI insights
 
-## 🎯 What's Here
+## 🎯 What's This
 
-- **Investigations Database** - Markdown files with detailed analysis of open source projects
-- **Blog Frontend** - Astro-based static site with search and tags
-- **Scanner Module** - Public tools for discovering repositories
-- **Community Contributions** - Open to pull requests for new investigations!
+Discover hidden gems in the open source world through:
+
+- 🦀 **Rust Scanner** - Parallel repository analysis (60x faster!)
+- 🤖 **AI Review** - GitHub Models API for quality assessment
+- 📝 **Blog Generator** - Automated Astro blog posts
+- 🔄 **GitHub Actions** - Fully automated daily pipeline
 
 ## 🌐 Live Site
 
 Visit our blog at: **[https://iberi22.github.io/bestof-opensorce](https://iberi22.github.io/bestof-opensorce)**
 
-## 🏗️ Two-Repository Architecture
+## ⚡ Quick Start
 
-This project is split into **two repositories** for security and clarity:
+### Option 1: GitHub Actions (Recommended)
 
-### 🌐 This Repository (PUBLIC)
-Contains:
-- 📚 **Investigations Database** (`investigations/`) - Markdown analysis of projects
-- 🎨 **Blog Frontend** (`website/`) - Astro static site on GitHub Pages
-- 🔍 **Scanner** (`src/scanner/`) - Repository discovery tools
-- 💾 **Persistence** (`src/persistence/`) - Local data storage
+1. Go to **Actions** tab
+2. Select **🔍 Hidden Gems Discovery Pipeline**
+3. Click **Run workflow**
+4. Choose tier (micro/small/medium) and max repos
+5. Watch it discover, analyze, and publish! 🎉
 
-### 🔐 Private Repository ([bestof-pipeline](https://github.com/iberi22/bestof-pipeline))
-Contains:
-- 🎙️ **Voice Studio** - Dashboard for recording multilingual narration
-- 🤖 **Blog Generator** - AI-powered post generation with Gemini
-- 🎬 **Video Pipeline** - Automated reel generation (20s videos)
-- 🔊 **TTS System** - Text-to-speech with voice cloning
-- 🔌 **API** - Flask backend for content generation
+### Option 2: Local Testing
 
-### 🔄 How They Work Together
+See [MANUAL_TESTING_GUIDE.md](MANUAL_TESTING_GUIDE.md) for detailed steps.
 
-```
-PUBLIC REPO                          PRIVATE REPO
-┌──────────────┐                    ┌──────────────┐
-│   Scanner    │ ─── discovers ───> │  Processing  │
-│ (every 4h)   │                    │              │
-└──────────────┘                    └──────────────┘
-       │                                    │
-       v                                    v
-┌──────────────┐    webhook         ┌──────────────┐
-│investigations│ ───────────────>   │ Blog Gen AI  │
-│   *.md       │                    │   + Images   │
-└──────────────┘                    └──────────────┘
-       │                                    │
-       │                            commits back
-       │ <───────────────────────────────┘
-       v
-┌──────────────┐
-│ GitHub Pages │
-│ (auto-deploy)│
-└──────────────┘
+```powershell
+# Quick test
+cargo build --release --bin complete-analyzer
+.\rust-scanner\target\release\complete-analyzer.exe small 3
 ```
 
-**Documentation:**
-- [TWO_REPO_ARCHITECTURE.md](./TWO_REPO_ARCHITECTURE.md) - Complete architecture
-- [MIGRATION_WEB_GUIDE.md](./MIGRATION_WEB_GUIDE.md) - Migration details
+## 🏗️ Architecture
+
+### Hybrid Rust + Python Pipeline
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│  Phase 1-2: RUST (Parallel Analysis) ⚡                     │
+│  - GitHub API scanning                                      │
+│  - Rayon parallel processing (10 repos simultaneously)      │
+│  - 4-factor scoring (commit, quality, engagement, maturity) │
+│  - Output: JSON with analysis results                       │
+│  - Performance: ~4 seconds for 10 repos (60x faster!)       │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ JSON
+┌─────────────────────────────────────────────────────────────┐
+│  Phase 3: PYTHON (AI Review) 🤖                             │
+│  - GitHub Models API (gpt-4o)                               │
+│  - Architecture, docs, testing, practices, innovation       │
+│  - Strengths & weaknesses analysis                          │
+│  - Output: Enhanced JSON with AI insights                   │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ JSON
+┌─────────────────────────────────────────────────────────────┐
+│  Phase 4: PYTHON (Blog Generation) 📝                       │
+│  - Astro markdown blog posts                                │
+│  - Complete with frontmatter & content                      │
+│  - Output: website/src/content/blog/*.md                    │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ Git Commit
+┌─────────────────────────────────────────────────────────────┐
+│  GitHub Actions: Auto-deploy to GitHub Pages 🚀            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Key Components
+
+- **`rust-scanner/`** - High-performance parallel analyzer
+  - `analyzer.rs` - 4-factor scoring with Rayon
+  - `complete_analyzer.rs` - Main pipeline orchestrator
+
+- **`scripts/`** - Python bridge scripts
+  - `ai_review_from_rust.py` - Consumes Rust JSON, adds AI review
+  - `generate_blogs_from_analysis.py` - Creates Astro blog posts
+
+- **`src/blog_generator/`** - Blog post generation
+  - `blog_post_generator.py` - High-level generator
+  - `markdown_writer.py` - Astro-compatible markdown writer
+
+- **`.github/workflows/`** - Automation
+  - `discover-hidden-gems.yml` - Daily pipeline (6 AM UTC)
+
+### Documentation
+
+- [GITHUB_ACTIONS_PIPELINE.md](./GITHUB_ACTIONS_PIPELINE.md) - Pipeline details
+- [MANUAL_TESTING_GUIDE.md](./MANUAL_TESTING_GUIDE.md) - Local testing
 
 ## 📂 Project Structure
 

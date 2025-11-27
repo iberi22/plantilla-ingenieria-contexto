@@ -30,20 +30,20 @@ Full implementation of the hidden gems discovery system as outlined in `docs/HID
   - Quality: message length and descriptiveness
   - Red flags: alpha/test/wip keywords detection
   - Diversity: unique author count
-  
+
 - **Code Quality** (25% weight):
   - README length and quality
   - License presence
   - Project structure (src/, tests/, docs/)
   - CI/CD configuration
   - Language-specific checks (setup.py, package.json, Cargo.toml)
-  
+
 - **Developer Engagement** (25% weight):
   - Issue response time (<1 day = 25pts, <7 days = 15pts)
   - Issue close ratio
   - PR merge ratio
   - External contribution acceptance
-  
+
 - **Project Maturity** (20% weight):
   - Semantic versioning
   - Release frequency
@@ -65,7 +65,7 @@ Full implementation of the hidden gems discovery system as outlined in `docs/HID
   3. **Testing Coverage**: Tests presence and quality
   4. **Best Practices**: Error handling, security, performance
   5. **Innovation Value**: Uniqueness and impact
-  
+
 - Structured JSON prompt for consistent scoring
 - Retry logic with exponential backoff
 - Converts 1-10 scores to 0-100 for integration

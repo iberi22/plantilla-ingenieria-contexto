@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2025-01-28 - GitHub Models API Migration
+
+### 🤖 AI Review System Overhaul
+
+#### Changed
+- **Migrated to GitHub Models API** (`src/scanner/grok_reviewer.py`)
+  - ❌ **Deprecated**: gh-copilot CLI extension (announced Sept 2025)
+  - ✅ **New**: Direct REST API calls to `https://models.inference.ai.azure.com`
+  - Uses GitHub token authentication (via `gh auth token` or `GITHUB_TOKEN`)
+  - Supports multiple models: gpt-4o, gpt-4o-mini, claude-3.5-sonnet, phi-4
+  - No external API keys required (leverages Copilot subscription)
+
+#### Fixed
+- **Blog Content Generation** (`scripts/discover_hidden_gems.py`)
+  - Blog posts now generate complete content sections:
+    - 🎯 Problem statement with context
+    - 💡 Solution description with gem score
+    - ✅ Strengths list (3+ items from analysis)
+    - ⚠️ Considerations (areas to improve)
+    - 🎬 Verdict with recommendation
+    - 📝 Full narration with technical details
+  - Previously only generated frontmatter (causing empty posts)
+
+#### Removed
+- `XAI_API_KEY` dependency (xAI/Grok direct API approach abandoned)
+- `GOOGLE_API_KEY` dependency (Gemini rate limits too restrictive)
+- All external API key requirements from `discover_hidden_gems.py`
+
+#### Documentation
+- ✅ Created `docs/COPILOT_INTEGRATION.md` - Complete guide for GitHub Models API
+- ✅ Added `scripts/test_grok.py` - Test reviewer initialization
+- ✅ Added `scripts/test_api_call.py` - Test real API calls with sample data
+- ⚠️ `docs/GROK_INTEGRATION.md` now obsolete (xAI approach abandoned)
+
+#### Testing Results
+```
+✅ Token detection: Working (gh CLI + environment variable)
+✅ API authentication: Successful (Bearer token)
+✅ Model call (gpt-4o): Response received in ~2s
+✅ JSON parsing: Extracted all 5 scores + strengths + assessment
+✅ Retry logic: Exponential backoff implemented
+```
+
+---
+
 ## [PR #2] - 2025-01-XX - Voice Translation Studio & Video Enhancements
 
 ### 🎙️ Voice Translation Studio (Area 1)
