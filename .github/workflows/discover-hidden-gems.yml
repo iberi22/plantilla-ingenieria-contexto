@@ -52,6 +52,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
+      - name: 📁 Create Output Directory
+        run: |
+          mkdir -p output
+          echo "Output directory created"
+      
       - name: 🔨 Build Rust Scanner
         working-directory: ./rust-scanner
         run: |
@@ -133,11 +138,10 @@ jobs:
           fi
       
       - name: 📁 Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: analysis-results-${{ github.run_number }}
-          path: |
-            output/*.json
-            output/*.log
+          path: output/
           retention-days: 30
+          if-no-files-found: warn
