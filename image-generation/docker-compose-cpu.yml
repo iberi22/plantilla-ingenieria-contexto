@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  comfyui-cpu:
+    image: ghcr.io/ai-dock/comfyui:latest
+    container_name: comfyui-local-cpu
+    ports:
+      - "8188:8188"
+    volumes:
+      - ./storage:/opt/ComfyUI/user_data
+      - ./output:/opt/ComfyUI/output
+    environment:
+      - WEB_ENABLE_AUTH=false
+      - CF_QUICK_TUNNELS=false
+    restart: unless-stopped

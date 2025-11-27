@@ -16,16 +16,50 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 from blog_generator.blog_post_generator import BlogPostGenerator
 
 
-def create_blog_post(analysis, generator):
+def find_similar_projects(current, all_projects, limit=3):
+    """Find similar projects based on language and topics."""
+    similar = []
+    current_lang = current['metadata'].get('language', 'Unknown')
+    current_topics = set(current['metadata'].get('topics', []))
+    current_name = current['repo']
+
+    for other in all_projects:
+        if other['repo'] == current_name:
+            continue
+
+        score = 0
+        # Same language
+        if other['metadata'].get('language') == current_lang:
+            score += 2
+
+        # Shared topics
+        other_topics = set(other['metadata'].get('topics', []))
+        shared = current_topics.intersection(other_topics)
+        score += len(shared)
+
+        if score > 0:
+            similar.append({
+                'name': other['repo'],
+                'url': f"https://github.com/{other['repo']}",
+                'description': other['metadata'].get('description', ''),
+                'score': score
+            })
+
+    # Sort by score desc
+    similar.sort(key=lambda x: x['score'], reverse=True)
+    return similar[:limit]
+
+
+def create_blog_post(analysis, generator, similar_projects=None):
     """Create a blog post from analysis data."""
-    
+
     repo = analysis['repo']
     metadata = analysis['metadata']
     scores = analysis['scores']
     ai_review = analysis.get('ai_review', {})
-    
+
     print(f"\n📝 Generating blog post for {repo}...")
-    
+
     # Prepare script data
     script_data = {
         'repo_name': repo,
@@ -36,25 +70,29 @@ def create_blog_post(analysis, generator):
         'forks': metadata['forks'],
         'open_issues': metadata.get('open_issues', 0),
         'total_score': analysis['total_score'],
-        
+
         # Analysis scores
         'commit_activity_score': scores['commit_activity'],
         'code_quality_score': scores['code_quality'],
         'developer_engagement_score': scores['developer_engagement'],
         'project_maturity_score': scores['project_maturity'],
-        
+
         # AI review scores (if available)
         'architecture_score': ai_review.get('architecture', 0) if ai_review else 0,
         'documentation_score': ai_review.get('documentation', 0) if ai_review else 0,
         'testing_score': ai_review.get('testing', 0) if ai_review else 0,
         'best_practices_score': ai_review.get('best_practices', 0) if ai_review else 0,
         'innovation_score': ai_review.get('innovation', 0) if ai_review else 0,
-        
+
         # AI insights
         'ai_reasoning': ai_review.get('reasoning', '') if ai_review else '',
         'strengths': ai_review.get('strengths', []) if ai_review else [],
         'weaknesses': ai_review.get('weaknesses', []) if ai_review else [],
-        
+        'use_cases': ai_review.get('use_cases', []) if ai_review else [],
+
+        # Similar Projects
+        'similar_projects': similar_projects or [],
+
         # Metadata
         'readme_excerpt': metadata.get('readme', '')[:500],
         'topics': metadata.get('topics', []),
@@ -62,27 +100,27 @@ def create_blog_post(analysis, generator):
         'created_at': metadata.get('created_at', ''),
         'updated_at': metadata.get('updated_at', ''),
     }
-    
+
     # Generate blog post
     try:
         blog_content = generator.generate_blog_post(script_data)
-        
+
         # Save to file
         blog_dir = Path(__file__).parent.parent / 'website' / 'src' / 'content' / 'blog'
         blog_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create filename from repo name
         repo_slug = repo.replace('/', '-').lower()
         timestamp = datetime.now().strftime('%Y%m%d')
         filename = f"{timestamp}-{repo_slug}.md"
-        
+
         filepath = blog_dir / filename
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(blog_content)
-        
+
         print(f"  ✅ Blog post created: {filename}")
         return filepath
-        
+
     except Exception as e:
         print(f"  ❌ Failed to generate blog post: {e}")
         return None
@@ -92,37 +130,38 @@ def main():
     if len(sys.argv) != 2:
         print("Usage: generate_blogs_from_analysis.py <analysis_with_ai.json>")
         sys.exit(1)
-    
+
     input_file = sys.argv[1]
-    
+
     print(f"📥 Loading analysis from {input_file}...")
     with open(input_file, 'r', encoding='utf-8') as f:
         analyses = json.load(f)
-    
+
     # Filter approved repos
     approved = [a for a in analyses if a['recommendation'] == 'APPROVE']
-    
+
     print(f"📊 Found {len(approved)} approved repositories")
-    
+
     if not approved:
         print("ℹ️ No approved repositories to generate blog posts for")
         return
-    
+
     # Initialize blog generator
     generator = BlogPostGenerator()
-    
+
     # Generate blog posts
     generated = []
     for analysis in approved:
-        filepath = create_blog_post(analysis, generator)
+        similar = find_similar_projects(analysis, approved)
+        filepath = create_blog_post(analysis, generator, similar_projects=similar)
         if filepath:
             generated.append(filepath)
-    
+
     # Summary
     print(f"\n✅ Blog Generation Complete:")
     print(f"   - Approved repositories: {len(approved)}")
     print(f"   - Blog posts generated: {len(generated)}")
-    
+
     if generated:
         print(f"\n📁 Generated files:")
         for filepath in generated:

@@ -28,42 +28,42 @@ jobs:
   discover-hidden-gems:
     name: 🚀 Discover & Analyze Repositories
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: 🦀 Setup Rust Toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           cache: true
-      
+
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: 📦 Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: 📁 Create Output Directory
         run: |
           mkdir -p output
           echo "Output directory created"
-      
+
       - name: 🔨 Build Rust Scanner
         working-directory: ./rust-scanner
         run: |
           echo "🔨 Building Rust scanner with release optimizations..."
           cargo build --release --bin complete-analyzer
           echo "✅ Build complete"
-      
+
       - name: 🔍 Phase 1 & 2 - Rust Analysis (Parallel)
         id: rust-analysis
         working-directory: ./rust-scanner
@@ -72,22 +72,22 @@ jobs:
         run: |
           TIER="${{ github.event.inputs.tier || 'small' }}"
           MAX_REPOS="${{ github.event.inputs.max_repos || '3' }}"
-          
+
           echo "🚀 Starting Rust analysis..."
           echo "   Tier: $TIER"
           echo "   Max repos: $MAX_REPOS"
-          
+
           # Run Rust analyzer and capture output
           ./target/release/complete-analyzer "$TIER" "$MAX_REPOS" > ../output/rust_analysis.log 2>&1
-          
+
           # Extract JSON results
           sed -n '/__RESULTS_JSON__/,/__END_JSON__/p' ../output/rust_analysis.log | \
             grep -v '__RESULTS_JSON__' | \
             grep -v '__END_JSON__' > ../output/rust_results.json
-          
+
           echo "✅ Rust analysis complete"
           cat ../output/rust_analysis.log | grep -E "🎉|Approved|analyzed"
-      
+
       - name: 🤖 Phase 3 - AI Review (Python + GitHub Models)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,7 +95,7 @@ jobs:
           echo "🤖 Starting AI review with GitHub Models API..."
           python scripts/ai_review_from_rust.py output/rust_results.json output/with_ai_review.json
           echo "✅ AI review complete"
-      
+
       - name: 📝 Phase 4 - Blog Generation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -103,30 +103,30 @@ jobs:
           echo "📝 Generating blog posts..."
           python scripts/generate_blogs_from_analysis.py output/with_ai_review.json
           echo "✅ Blog generation complete"
-      
+
       - name: 📊 Summary Report
         run: |
           echo "## 📊 Discovery Pipeline Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ -f output/with_ai_review.json ]; then
             APPROVED=$(jq '[.[] | select(.recommendation == "APPROVE")] | length' output/with_ai_review.json)
             TOTAL=$(jq 'length' output/with_ai_review.json)
-            
+
             echo "- **Total Analyzed**: $TOTAL repositories" >> $GITHUB_STEP_SUMMARY
             echo "- **Approved**: $APPROVED repositories" >> $GITHUB_STEP_SUMMARY
             echo "- **Blog Posts Generated**: $APPROVED" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            
+
             echo "### ✅ Approved Repositories" >> $GITHUB_STEP_SUMMARY
             jq -r '.[] | select(.recommendation == "APPROVE") | "- **\(.repo)** - Score: \(.total_score)/100"' output/with_ai_review.json >> $GITHUB_STEP_SUMMARY
           fi
-      
+
       - name: 📤 Commit New Blog Posts
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
+
           if [ -n "$(git status --porcelain website/src/content/blog/)" ]; then
             git add website/src/content/blog/*.md
             git add output/*.json
@@ -136,7 +136,7 @@ jobs:
           else
             echo "ℹ️ No new blog posts to commit"
           fi
-      
+
       - name: 📁 Upload Artifacts
         uses: actions/upload-artifact@v4
         if: always()

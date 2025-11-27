@@ -17,9 +17,20 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
 <Layout title={entry.data.title}>
   <main class="pt-24 pb-12">
     <article class="prose prose-invert prose-lg max-w-4xl mx-auto px-6">
-      <a href={`${base}blog`} class="inline-flex items-center gap-2 text-sm font-mono text-bone-dark/60 hover:text-bone mb-8 transition-colors group no-underline">
-        <span class="group-hover:-translate-x-1 transition-transform">←</span> Back to Blog
-      </a>
+      <div class="flex justify-between items-center mb-8">
+        <a href={`${base}blog`} class="inline-flex items-center gap-2 text-sm font-mono text-bone-dark/60 hover:text-bone transition-colors group no-underline">
+          <span class="group-hover:-translate-x-1 transition-transform">←</span> Back to Blog
+        </a>
+        <!-- Google Translate Widget -->
+        <div id="google_translate_element"></div>
+        <script type="text/javascript">
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+          }
+        </script>
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+      </div>
+
       <header class="mb-10 text-center">
         <div class="flex justify-center gap-2 mb-4">
           {entry.data.categories?.map(cat => (
@@ -41,6 +52,37 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
       <div class="bg-[#141414] border border-white/5 rounded-3xl p-8 md:p-12 mb-12">
         <Content />
       </div>
+
+      <!-- Tech Ad Banner -->
+      <div class="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-white/10 rounded-2xl p-6 mb-12 flex items-center justify-between gap-6">
+        <div>
+          <h3 class="text-lg font-bold text-white mb-2">🚀 Level Up Your Dev Skills</h3>
+          <p class="text-sm text-gray-300 m-0">Master advanced AI engineering and build tools like this one. Join our community of 10,000+ developers.</p>
+        </div>
+        <a href="#" class="px-6 py-2 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors no-underline text-sm whitespace-nowrap">
+          Learn More
+        </a>
+      </div>
+
+      <!-- Giscus Comments -->
+      <div class="mt-12">
+        <script src="https://giscus.app/client.js"
+          data-repo="iberi22/bestof-opensource"
+          data-repo-id="R_kgDONN1q_A"
+          data-category="General"
+          data-category-id="DIC_kwDONN1q_M4CkO5p"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="dark"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+        </script>
+      </div>
+
     </article>
   </main>
 </Layout>

@@ -147,6 +147,8 @@ class BlogPostGenerator:
             'pros': pros,
             'cons': cons,
             'verdict': verdict,
+            'use_cases': script_data.get('use_cases', []),
+            'similar_projects': script_data.get('similar_projects', []),
         }
 
     def _generate_hook(self, script_data: Dict[str, Any]) -> str:

@@ -47,11 +47,23 @@ class MarkdownWriter:
             Path to the generated Markdown file.
         """
         try:
+            # Determine category for folder structure
+            categories = self._determine_categories(
+                repo_data.get("topics", []),
+                repo_data.get("language", "Unknown")
+            )
+            primary_category = categories[0].lower().replace(" ", "-") if categories else "general"
+
             # Generate filename
             date_str = datetime.now().strftime("%Y-%m-%d")
             repo_name = repo_data.get("name", "unknown").lower().replace(" ", "-")
             filename = f"{date_str}-{repo_name}.md"
-            filepath = self.output_dir / filename
+
+            # Create category directory
+            category_dir = self.output_dir / primary_category
+            category_dir.mkdir(parents=True, exist_ok=True)
+
+            filepath = category_dir / filename
 
             # Build frontmatter
             frontmatter = self._format_frontmatter(repo_data, script_data, images)
@@ -81,38 +93,48 @@ class MarkdownWriter:
             language: Primary programming language.
 
         Returns:
-            List of category strings.
+            List of category strings. First one is primary.
         """
-        categories = set()
-
-        # Normalize inputs
+        categories = []
         tags_lower = [t.lower() for t in tags]
         lang_lower = language.lower() if language else ""
 
-        # Basic mapping
-        if "security" in tags_lower or "hacking" in tags_lower:
-            categories.add("Cybersecurity")
+        # AI & ML
+        if any(k in tags_lower for k in ["ai", "machine-learning", "llm", "gpt", "openai", "finetuning", "rag", "model"]):
+            categories.append("AI")
 
-        if "ai" in tags_lower or "machine-learning" in tags_lower or "llm" in tags_lower:
-            categories.add("AI Tools")
+        # MCP (Model Context Protocol)
+        if "mcp" in tags_lower or "model-context-protocol" in tags_lower:
+            categories.append("MCP")
 
-        if "react" in tags_lower or "vue" in tags_lower or "svelte" in tags_lower or "css" in tags_lower or "ui" in tags_lower:
-            categories.add("UI/UX")
+        # Cybersecurity
+        if any(k in tags_lower for k in ["security", "hacking", "pentesting", "malware", "encryption", "auth"]):
+            categories.append("Cybersecurity")
 
-        if "database" in tags_lower or "sql" in tags_lower or "nosql" in tags_lower:
-            categories.add("Databases")
+        # Web UI
+        if any(k in tags_lower for k in ["react", "vue", "svelte", "css", "ui", "frontend", "web", "html", "tailwind"]):
+            categories.append("Web UI")
 
-        if "docker" in tags_lower or "kubernetes" in tags_lower or "devops" in tags_lower:
-            categories.add("DevOps")
+        # Mobile
+        if any(k in tags_lower for k in ["mobile", "android", "ios", "flutter", "react-native", "swift", "kotlin"]):
+            categories.append("Mobile")
 
-        if "python" in lang_lower:
-            categories.add("Development")
+        # DevOps & Cloud
+        if any(k in tags_lower for k in ["docker", "kubernetes", "devops", "cloud", "aws", "azure", "terraform"]):
+            categories.append("DevOps")
 
-        # Default
+        # Fallback based on language
         if not categories:
-            categories.add("Development")
+            if "python" in lang_lower:
+                categories.append("Development")
+            elif "javascript" in lang_lower or "typescript" in lang_lower:
+                categories.append("Web UI")
+            elif "rust" in lang_lower or "go" in lang_lower:
+                categories.append("Systems")
+            else:
+                categories.append("General")
 
-        return list(categories)
+        return categories
 
     def _format_frontmatter(
         self,
@@ -150,8 +172,8 @@ class MarkdownWriter:
         hook = script_data.get("hook", "")
         # Sanitize hook for title
         if hook:
-             clean_hook = hook.replace('"', '\\"').replace('\n', ' ')
-             title = f"{repo_name} - {clean_hook[:50]}..." if len(clean_hook) > 50 else f"{repo_name} - {clean_hook}"
+            clean_hook = hook.replace('"', '\\"').replace('\n', ' ')
+            title = f"{repo_name} - {clean_hook[:50]}..." if len(clean_hook) > 50 else f"{repo_name} - {clean_hook}"
         else:
             title = repo_name
 
@@ -249,6 +271,25 @@ class MarkdownWriter:
             content += "## 💡 The Solution\n\n"
             content += f"{solution}\n\n"
 
+        # Use Cases
+        use_cases = script_data.get("use_cases", [])
+        if use_cases:
+            content += "## 🚀 Use Cases\n\n"
+            if isinstance(use_cases, list):
+                for case in use_cases:
+                    content += f"- {case}\n"
+            else:
+                content += f"{use_cases}\n"
+            content += "\n"
+
+        # Evaluation Method
+        content += "## 📊 Evaluation Method\n\n"
+        content += "Our analysis engine evaluates open source projects on four key dimensions:\n\n"
+        content += "1.  **Commit Activity:** Frequency and consistency of updates.\n"
+        content += "2.  **Code Quality:** Adherence to best practices, documentation, and testing.\n"
+        content += "3.  **Developer Engagement:** Community interaction, issues, and PR management.\n"
+        content += "4.  **Project Maturity:** Stability, longevity, and release history.\n\n"
+
         # Pros
         pros = script_data.get("pros", [])
         if pros:
@@ -260,10 +301,10 @@ class MarkdownWriter:
                 content += f"{pros}\n"
             content += "\n"
 
-        # Cons
+        # Cons / Improvements
         cons = script_data.get("cons", [])
         if cons:
-            content += "## ⚠️ Considerations\n\n"
+            content += "## ⚠️ Areas for Improvement\n\n"
             if isinstance(cons, list):
                 for con in cons:
                     content += f"- {con}\n"
@@ -271,18 +312,23 @@ class MarkdownWriter:
                 content += f"{cons}\n"
             content += "\n"
 
+        # Similar Projects
+        similar = script_data.get("similar_projects", [])
+        if similar:
+            content += "## 🔄 Similar Projects\n\n"
+            content += "Here are some other projects we've scanned that solve similar problems:\n\n"
+            for sim in similar:
+                name = sim.get('name', 'Unknown')
+                url = sim.get('url', '#')
+                desc = sim.get('description', '')
+                content += f"- **[{name}]({url})**: {desc}\n"
+            content += "\n"
+
         # Verdict
         verdict = script_data.get("verdict", "")
         if verdict:
             content += "## 🎬 Verdict\n\n"
             content += f"{verdict}\n\n"
-
-        # Narration (as a quote)
-        narration = script_data.get("narration", "")
-        if narration:
-            content += "---\n\n"
-            content += "### 📝 Full Narration\n\n"
-            content += f"> {narration}\n\n"
 
         return content
 

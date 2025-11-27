@@ -1,0 +1,108 @@
+name: Rust-Powered Blog Automation
+
+on:
+  schedule:
+    # Run daily at 8 AM UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Gem tier to scan (micro/small/medium)'
+        required: true
+        default: 'small'
+        type: choice
+        options:
+          - micro
+          - small
+          - medium
+
+jobs:
+  rust-blog-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            rust-scanner/target/
+          key: ${{ runner.os }}-cargo-rust-scanner-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build Rust Scanner
+        run: |
+          cd rust-scanner
+          cargo build --release --bin hidden-gems-scanner
+          ls -lh target/release/
+
+      - name: Create Output Directory
+        run: mkdir -p output
+
+      - name: 1. Run Rust Scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          python scripts/run_rust_scanner_wrapper.py ${{ github.event.inputs.tier || 'small' }} output/rust_scan.json
+
+      - name: 2. Bridge to AI Format
+        run: |
+          python scripts/bridge_rust_to_ai.py output/rust_scan.json output/bridge_scan.json
+
+      - name: 3. Run AI Review
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          python scripts/ai_review_from_rust.py output/bridge_scan.json output/ai_scan.json
+
+      - name: 4. Generate Blog Posts
+        run: |
+          python scripts/generate_blogs_from_analysis.py output/ai_scan.json
+
+      - name: 5. Organize Blog Posts
+        run: |
+          python scripts/organize_blog_posts.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Add new blog posts (including organized folders)
+          git add website/src/content/blog/
+
+          # Add output artifacts
+          git add output/*.json
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🚀 Auto-generated blog posts via Rust Pipeline [skip ci]"
+            git push
+          fi
