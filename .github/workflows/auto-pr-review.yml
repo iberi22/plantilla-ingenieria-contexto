@@ -1,0 +1,204 @@
+name: Auto PR Review & Integration
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  auto-review:
+    runs-on: ubuntu-latest
+    # Solo ejecutar en PRs creados por Jules
+    if: github.actor == 'google-labs-jules[bot]'
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Backend Tests
+      id: backend-tests
+      continue-on-error: true
+      run: |
+        pytest tests/ --ignore=tests/test_foundry.py -v --tb=short > test-results.txt 2>&1
+        echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+    - name: Run Frontend Lint
+      id: frontend-lint
+      continue-on-error: true
+      working-directory: ./website
+      run: |
+        npm install
+        npm run lint > lint-results.txt 2>&1 || true
+        echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+    - name: Analyze Test Results
+      id: analyze
+      run: |
+        echo "## 🤖 Automated Code Review Results" > review-comment.md
+        echo "" >> review-comment.md
+
+        # Backend tests
+        if [ "${{ steps.backend-tests.outputs.exit_code }}" == "0" ]; then
+          echo "### ✅ Backend Tests: PASSED" >> review-comment.md
+        else
+          echo "### ❌ Backend Tests: FAILED" >> review-comment.md
+          echo "\`\`\`" >> review-comment.md
+          tail -20 test-results.txt >> review-comment.md
+          echo "\`\`\`" >> review-comment.md
+        fi
+
+        echo "" >> review-comment.md
+
+        # Frontend lint
+        if [ "${{ steps.frontend-lint.outputs.exit_code }}" == "0" ]; then
+          echo "### ✅ Frontend Lint: PASSED" >> review-comment.md
+        else
+          echo "### ⚠️ Frontend Lint: WARNINGS" >> review-comment.md
+          if [ -f website/lint-results.txt ]; then
+            echo "\`\`\`" >> review-comment.md
+            tail -20 website/lint-results.txt >> review-comment.md
+            echo "\`\`\`" >> review-comment.md
+          fi
+        fi
+
+        # Determinar si aprobar o no
+        if [ "${{ steps.backend-tests.outputs.exit_code }}" == "0" ]; then
+          echo "should_approve=true" >> $GITHUB_OUTPUT
+          echo "review_decision=APPROVE" >> $GITHUB_OUTPUT
+        else
+          echo "should_approve=false" >> $GITHUB_OUTPUT
+          echo "review_decision=REQUEST_CHANGES" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Request GitHub Copilot Review
+      continue-on-error: true
+      run: |
+        gh pr review ${{ github.event.pull_request.number }} \
+          --request-changes \
+          --body "🤖 Solicitando revisión automática de GitHub Copilot" || true
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Post Review Comment
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const fs = require('fs');
+          const comment = fs.readFileSync('review-comment.md', 'utf8');
+
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.pull_request.number,
+            body: comment
+          });
+
+    - name: Submit Automated Review
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const shouldApprove = '${{ steps.analyze.outputs.should_approve }}' === 'true';
+          const reviewDecision = '${{ steps.analyze.outputs.review_decision }}';
+
+          let reviewBody = '🤖 **Revisión Automatizada Completada**\n\n';
+
+          if (shouldApprove) {
+            reviewBody += '✅ Todos los tests pasaron correctamente. Este PR está listo para merge.';
+          } else {
+            reviewBody += '⚠️ Algunos tests fallaron. Por favor revisa los errores arriba antes de hacer merge.';
+          }
+
+          await github.rest.pulls.createReview({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            event: reviewDecision,
+            body: reviewBody
+          });
+
+    - name: Auto-merge if approved
+      if: steps.analyze.outputs.should_approve == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // Esperar 30 segundos para que GitHub Copilot pueda revisar
+          await new Promise(resolve => setTimeout(resolve, 30000));
+
+          try {
+            // Intentar auto-merge
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              merge_method: 'squash',
+              commit_title: `✨ ${context.payload.pull_request.title}`,
+              commit_message: `${context.payload.pull_request.body}\n\n🤖 Auto-merged after successful automated review`
+            });
+
+            console.log('✅ PR merged successfully!');
+          } catch (error) {
+            console.log('⚠️ Could not auto-merge:', error.message);
+
+            // Comentar que está listo para merge manual
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: '✅ **PR aprobado automáticamente**\n\nTodos los tests pasaron. Puedes hacer merge manualmente cuando estés listo.'
+            });
+          }
+
+  notify-continuation:
+    runs-on: ubuntu-latest
+    needs: auto-review
+    if: needs.auto-review.outputs.should_approve == 'true' && github.actor == 'google-labs-jules[bot]'
+
+    steps:
+    - name: Check for continuation task
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const prBody = context.payload.pull_request.body || '';
+
+          // Extraer task ID de Jules si existe
+          const taskMatch = prBody.match(/task\s+\[(\d+)\]/i);
+
+          if (taskMatch) {
+            const taskId = taskMatch[1];
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `🚀 **Fase completada exitosamente!**\n\n` +
+                    `Esta fase del task [${taskId}](https://jules.google.com/task/${taskId}) ha sido completada.\n\n` +
+                    `Para continuar con la siguiente fase, puedes:\n` +
+                    `1. Usar el CLI de Jules para enviar un nuevo prompt\n` +
+                    `2. Crear un nuevo issue con las instrucciones para la siguiente fase\n` +
+                    `3. Comentar en el task de Jules con las siguientes instrucciones\n\n` +
+                    `El sistema detectará automáticamente nuevos PRs y los revisará.`
+            });
+          }

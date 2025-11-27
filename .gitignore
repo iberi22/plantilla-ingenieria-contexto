@@ -97,6 +97,12 @@ website/dist/
 *.dylib
 *.exe
 
+# Rust
+rust-scanner/target/
+rust-scanner/Cargo.lock
+**/*.rs.bk
+rust-scanner/.cargo/
+
 # Firebase
 .firebase/
 firebase-debug.log

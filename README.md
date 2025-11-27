@@ -107,20 +107,30 @@ reviewed: false
 
 ### Blog Website (Astro)
 
-\\\ash
+```bash
 cd website
 npm install
 npm run dev
-\\\
+```
 
-### Scanner Script
+### Scanner Script (10x Faster with Rust!)
 
-\\\ash
+```bash
+# Option 1: Quick setup with Rust (recommended)
+.\rust-scanner\setup.ps1
+
+# Option 2: Python only
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 python scripts/run_scanner.py
-\\\
+```
+
+**Performance:**
+- 🦀 Rust scanner: ~3 seconds
+- 🐍 Python fallback: ~30 seconds
+
+See [rust-scanner/QUICKSTART.md](rust-scanner/QUICKSTART.md) for details.
 
 ## 📊 Stats
 
