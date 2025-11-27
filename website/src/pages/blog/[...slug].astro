@@ -11,11 +11,15 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 ---
 
 <Layout title={entry.data.title}>
   <main class="pt-24 pb-12">
     <article class="prose prose-invert prose-lg max-w-4xl mx-auto px-6">
+      <a href={`${base}blog`} class="inline-flex items-center gap-2 text-sm font-mono text-bone-dark/60 hover:text-bone mb-8 transition-colors group no-underline">
+        <span class="group-hover:-translate-x-1 transition-transform">←</span> Back to Blog
+      </a>
       <header class="mb-10 text-center">
         <div class="flex justify-center gap-2 mb-4">
           {entry.data.categories?.map(cat => (
@@ -25,7 +29,13 @@ const { Content } = await entry.render();
           ))}
         </div>
         <h1 class="text-4xl md:text-6xl font-bold text-bone mb-6 tracking-tight">{entry.data.title}</h1>
-        {entry.data.description && <p class="text-xl text-bone-dark/60">{entry.data.description}</p>}
+        {entry.data.description && <p class="text-xl text-bone-dark/60 mb-8">{entry.data.description}</p>}
+
+        {entry.data.images?.screenshot && (
+          <div class="rounded-3xl overflow-hidden border border-white/10 mb-12 shadow-2xl shadow-black/50">
+            <img src={entry.data.images.screenshot} alt={entry.data.title} class="w-full" />
+          </div>
+        )}
       </header>
 
       <div class="bg-[#141414] border border-white/5 rounded-3xl p-8 md:p-12 mb-12">

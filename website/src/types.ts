@@ -27,6 +27,7 @@ export interface Project {
 	tags: string[];
 	insights: Insights;
 	logo: string; // Emoji or URL
+	image?: string; // Screenshot or cover image
 	// Blog specific fields
 	publishDate?: string; // ISO date string YYYY-MM-DD
 	author?: string;

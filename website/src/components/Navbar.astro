@@ -1,0 +1,36 @@
+---
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const pathname = new URL(Astro.request.url).pathname;
+// Check if we are in the blog section.
+// Note: pathname might include the base path, so we should be careful.
+// If base is /bestof-opensorce/, pathname will be /bestof-opensorce/blog...
+const isBlog = pathname.includes('/blog');
+---
+
+<header class="fixed top-0 left-0 right-0 z-[60] backdrop-blur-xl bg-[#121212]/70 border-b border-white/5 h-16 flex items-center px-6 justify-between supports-[backdrop-filter]:bg-[#121212]/60">
+  <a href={base} class="flex items-center gap-2 group">
+    <div class="w-5 h-5 bg-bone rounded-sm rotate-45 group-hover:rotate-90 transition-transform duration-500"></div>
+    <span class="font-bold text-lg tracking-tight text-bone font-mono">BestOf<span class="opacity-40">OS</span></span>
+  </a>
+
+  <div class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center p-1 bg-white/5 rounded-full border border-white/5">
+      <a
+        href={base}
+        class={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${!isBlog ? 'bg-bone text-black shadow-lg' : 'text-bone-dark/60 hover:text-bone'}`}
+      >
+        Directory
+      </a>
+      <a
+        href={`${base}blog`}
+        class={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${isBlog ? 'bg-bone text-black shadow-lg' : 'text-bone-dark/60 hover:text-bone'}`}
+      >
+        Blog
+      </a>
+  </div>
+
+  <div class="flex items-center gap-6">
+    <a href="https://github.com/iberi22/bestof-opensorce" target="_blank" rel="noreferrer" class="text-xs font-mono text-bone-dark/60 hover:text-bone transition-colors hidden md:block uppercase tracking-wider">
+      Contribute
+    </a>
+  </div>
+</header>

@@ -30,7 +30,10 @@
     currentCardIndex = currentCardIndex === 0 ? 2 : currentCardIndex - 1;
   }
 
-  const featuredProjects = PROJECTS.slice(0, 3);
+  import { ProjectCategory, type Project } from '../types';
+  export let projects: Project[] = [];
+
+  $: featuredProjects = projects.length > 0 ? projects.slice(0, 3) : PROJECTS.slice(0, 3);
   const heroWords = ['THE', 'SOURCE', 'OF', 'OPEN'];
 </script>
 
@@ -91,9 +94,9 @@
         <!-- Pill button with border beam -->
         <div class="relative rounded-full p-[1px] overflow-hidden group cursor-pointer active:scale-95 transition-transform">
            <div class="absolute inset-0 animate-border-beam" style="--duration: 4; background: conic-gradient(from 0deg at 50% 50%, transparent 0%, transparent 80%, white 100%)"></div>
-           <button class="relative bg-dark-bg rounded-full px-8 py-3.5 text-bone font-medium group-hover:bg-white/5 transition-colors">
+           <a href="https://github.com/iberi22/bestof-opensorce/issues/new?template=project_submission.md" target="_blank" class="relative bg-dark-bg rounded-full px-8 py-3.5 text-bone font-medium group-hover:bg-white/5 transition-colors inline-block">
              Submit Project
-           </button>
+           </a>
         </div>
       </div>
     </div>
@@ -138,7 +141,13 @@
              `}>
 
                 <!-- Internal Lighting/Gradient -->
-                <div class={`absolute inset-0 bg-gradient-to-b from-white/10 to-transparent transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-20'}`}></div>
+                {#if project.image}
+                  <div class="absolute inset-0 z-0">
+                    <img src={project.image} alt={project.name} class="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity duration-500 blur-sm scale-110" />
+                    <div class="absolute inset-0 bg-[#141414]/80"></div>
+                  </div>
+                {/if}
+                <div class={`absolute inset-0 bg-gradient-to-b from-white/10 to-transparent transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-20'} z-10`}></div>
 
                 <!-- Top Highlight Badge -->
                 <div class="relative z-10 w-full flex justify-between items-center mb-8">

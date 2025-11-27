@@ -31,6 +31,19 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
                 )}
               </div>
 
+              <div class="aspect-video w-full bg-white/5 rounded-2xl mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-500 border border-white/5">
+                {post.data.images?.screenshot ? (
+                   <img src={post.data.images.screenshot} alt={post.data.title} class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                ) : (
+                   <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/5 to-white/0">
+                      <span class="text-4xl opacity-20 grayscale">
+                        {post.data.categories?.[0] === 'video' ? '🎬' :
+                         post.data.categories?.[0] === 'tool' ? '🛠️' : '📝'}
+                      </span>
+                   </div>
+                )}
+              </div>
+
               <h2 class="text-2xl font-bold text-bone mb-4 group-hover:text-emerald-400 transition-colors leading-tight">{post.data.title}</h2>
               <p class="text-bone-dark/60 line-clamp-3 text-sm leading-relaxed mb-6">{post.data.description}</p>
 

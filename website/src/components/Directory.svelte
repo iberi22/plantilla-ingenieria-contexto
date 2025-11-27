@@ -1,20 +1,12 @@
 <script lang="ts">
   import { ProjectCategory, type Project } from '../types';
   import ProjectCard from './ProjectCard.svelte';
-  import BlogCard from './BlogCard.svelte';
   import { fade } from 'svelte/transition';
 
   export let projects: Project[];
 
-  let viewMode: 'directory' | 'blog' = 'directory';
   let selectedCategory: ProjectCategory | 'All' = 'All';
   let searchQuery = '';
-
-  // Listen to view mode changes from window/header if we want global control,
-  // but for now let's control it here or pass it down.
-  // Actually, the Header is outside. We might need a store or just handle it locally for this section.
-  // Let's add a local toggle in the sticky bar as well, or assume the prop is passed.
-  // For simplicity in this demo, I'll add the toggle in the sticky bar too.
 
   $: filteredProjects = projects.filter(p => {
     const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
@@ -54,41 +46,15 @@
         </button>
       {/each}
     </div>
-
-    <!-- View Toggle (Mobile/Desktop) -->
-    <div class="flex items-center bg-white/5 rounded-full p-1 border border-white/5">
-       <button
-         on:click={() => viewMode = 'directory'}
-         class={`p-2 rounded-full transition-all ${viewMode === 'directory' ? 'bg-bone text-black' : 'text-bone-dark/40 hover:text-bone'}`}
-         title="Grid View"
-       >
-         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-       </button>
-       <button
-         on:click={() => viewMode = 'blog'}
-         class={`p-2 rounded-full transition-all ${viewMode === 'blog' ? 'bg-bone text-black' : 'text-bone-dark/40 hover:text-bone'}`}
-         title="List View"
-       >
-         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-       </button>
-    </div>
   </div>
 </div>
 
 <div class="max-w-7xl mx-auto px-6 pb-20 min-h-[50vh]">
-  {#if viewMode === 'directory'}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" in:fade={{ duration: 300 }}>
-      {#each filteredProjects as project (project.id)}
-        <ProjectCard {project} />
-      {/each}
-    </div>
-  {:else}
-    <div class="flex flex-col gap-8 max-w-4xl mx-auto" in:fade={{ duration: 300 }}>
-      {#each filteredProjects as project (project.id)}
-        <BlogCard {project} />
-      {/each}
-    </div>
-  {/if}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" in:fade={{ duration: 300 }}>
+    {#each filteredProjects as project (project.id)}
+      <ProjectCard {project} />
+    {/each}
+  </div>
 
   {#if filteredProjects.length === 0}
     <div class="text-center py-20">

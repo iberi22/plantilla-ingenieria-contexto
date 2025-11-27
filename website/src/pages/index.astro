@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.svelte';
-import Header from '../components/Header.svelte';
 import Directory from '../components/Directory.svelte';
 import { getCollection } from 'astro:content';
 import { ProjectCategory, type Project } from '../types';
@@ -27,6 +26,7 @@ const realProjects: Project[] = blogPosts.map((post) => {
     category: category,
     tags: data.tags || [],
     logo: '📦', // Default logo
+    image: data.images?.screenshot,
     publishDate: data.date.toISOString().split('T')[0],
     author: 'AI Analyst',
     longContent: post.body,
@@ -50,9 +50,8 @@ const projectsToDisplay = realProjects.length > 0 ? realProjects : [];
 ---
 
 <Layout title="Best of Open Source">
-  <Header client:load />
-	<main>
-		<Hero client:load />
+  <main>
+		<Hero client:load projects={projectsToDisplay} />
 
     <div id="directory" class="min-h-screen bg-dark-bg relative z-10">
       <Directory client:visible projects={projectsToDisplay} />

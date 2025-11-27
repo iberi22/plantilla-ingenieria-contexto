@@ -39,6 +39,13 @@
 
   <div class="relative z-10 flex flex-col h-full justify-between">
     <div>
+      {#if project.image}
+        <div class="mb-4 rounded-lg overflow-hidden h-32 w-full relative group-hover:h-40 transition-all duration-500">
+           <div class="absolute inset-0 bg-gradient-to-t from-[#141414] to-transparent z-10 opacity-60"></div>
+           <img src={project.image} alt={project.name} class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+        </div>
+      {/if}
+
       <div class="flex items-start justify-between mb-4">
         <div class="flex items-center gap-3">
           <span class="text-3xl filter grayscale group-hover:grayscale-0 transition-all duration-300">
