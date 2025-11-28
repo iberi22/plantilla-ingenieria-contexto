@@ -44,10 +44,3 @@ CLI tool to extract (meta)data from PDF and manipulate PDF files. With a discove
 ## 🎬 Verdict
 
 **pdfly** scores 75.1/100 in our hidden gems analysis. This project shows excellent potential and is worth exploring.
-
----
-
-### 📝 Full Narration
-
-> Today we're looking at pdfly, a Python project that caught our attention. It currently has 494 stars, making it a true hidden gem. Our analysis shows commit quality at 80.0, code quality at 78.0, and engagement at 62.5. The project maturity score is 80.0. Overall, this is a high-quality project worth checking out.
-
