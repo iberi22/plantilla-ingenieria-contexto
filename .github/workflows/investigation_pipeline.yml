@@ -4,8 +4,8 @@ on:
   push:
     branches: [ main ]
   schedule:
-    # Run every 4 hours
-    - cron: '0 */4 * * *'
+    # Run every 6 hours (4 times a day)
+    - cron: '0 */6 * * *'
   workflow_dispatch:
     inputs:
       mode:
@@ -79,6 +79,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
+        GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
+        GOOGLE_API_KEY_4: ${{ secrets.GOOGLE_API_KEY_4 }}
+        GOOGLE_API_KEY_5: ${{ secrets.GOOGLE_API_KEY_5 }}
         RUST_LOG: info
       run: |
         echo "🚀 Starting blog generation workflow..."

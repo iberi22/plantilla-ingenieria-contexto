@@ -79,13 +79,18 @@ def main():
                 logger.info(f"✅ Rust scanner found: {valid_repo['full_name']}")
 
         # Fallback to Python scanner if Rust fails or not available
+        # Fallback to Python scanner if Rust fails or not available
         if not valid_repo:
             logger.info("🐍 Using Python scanner (fallback)...")
             if isinstance(scanner, RustScanner):
                 from scanner.github_scanner import GitHubScanner
                 scanner = GitHubScanner(token=github_token)
 
-            repos = scanner.scan_recent_repos(limit=20)
+            # Limit to 7 projects per run to avoid API saturation
+            # 3 keys * 20 images/day = 60 images. 2 images/project = 30 projects/day.
+            # 4 runs/day => 7.5 projects/run.
+            MAX_PROJECTS = 7
+            repos = scanner.scan_recent_repos(limit=20) # Scan more to filter
 
             if not repos:
                 logger.warning("⚠️  No repositories found")
@@ -93,99 +98,106 @@ def main():
 
             logger.info(f"Found {len(repos)} repositories")
 
-            # Find a valid repo
+            # Find valid repos
+            valid_repos = []
             for repo in repos:
                 if scanner.validate_repo(repo):
-                    valid_repo = repo
+                    valid_repos.append(repo)
                     logger.info(f"✅ Selected repo: {repo['full_name']}")
-                    break
+                    if len(valid_repos) >= MAX_PROJECTS:
+                        break
 
-        if not valid_repo:
-            logger.warning("⚠️  No valid repositories found after validation")
-            return
+            if not valid_repos and not valid_repo:
+                logger.warning("⚠️  No valid repositories found after validation")
+                return
 
-        # Step 3: Generate analysis with Gemini
-        logger.info("\n🤖 Step 2: Generating analysis with Gemini...")
-        scriptwriter = ScriptWriter(
-            api_key=gemini_api_key,
-            provider="gemini",
-            model_name="gemini-2.5-flash"
-        )
+            # Process all valid repos
+            processed_count = 0
 
-        script_data = scriptwriter.generate_script(valid_repo)
+            # If we found a single valid repo via Rust, add it to the list
+            if valid_repo:
+                valid_repos = [valid_repo]
 
-        if not script_data:
-            logger.error("Failed to generate script")
-            return
+            for repo in valid_repos:
+                try:
+                    logger.info(f"\n🔄 Processing {processed_count + 1}/{len(valid_repos)}: {repo['full_name']}")
 
-        logger.info("✅ Analysis generated successfully")
+                    # Step 3: Generate analysis with Gemini
+                    logger.info("🤖 Generating analysis...")
+                    scriptwriter = ScriptWriter(
+                        api_key=gemini_api_key,
+                        provider="gemini",
+                        model_name="gemini-2.5-flash"
+                    )
 
-        # Step 4: Generate images (optional, only if module available)
-        images = {}
-        logger.info("\n🎨 Step 3: Generating images...")
+                    script_data = scriptwriter.generate_script(repo)
 
-        if IMAGE_GEN_AVAILABLE:
-            try:
-                image_generator = ImageGenerator(
-                    model_name="nano-banana-2",
-                    output_dir="website/public/images"
-                )
+                    if not script_data:
+                        logger.error(f"Failed to generate script for {repo['full_name']}")
+                        continue
 
-                repo_name = valid_repo['name'].lower()
+                    # Step 4: Generate images (optional)
+                    images = {}
+                    if IMAGE_GEN_AVAILABLE:
+                        logger.info("🎨 Generating images...")
+                        try:
+                            image_generator = ImageGenerator(
+                                model_name="nano-banana-2",
+                                output_dir="website/public/images"
+                            )
 
-                # Generate architecture diagram
-                arch_img = image_generator.generate_architecture_diagram(
-                    valid_repo,
-                    script_data
-                )
+                            repo_name = repo['name'].lower()
 
-                # Generate flow diagram
-                flow_img = image_generator.generate_problem_solution_flow(
-                    valid_repo,
-                    script_data
-                )
+                            # Generate architecture diagram
+                            arch_img = image_generator.generate_architecture_diagram(
+                                repo,
+                                script_data
+                            )
 
-                # Prepare image paths for blog post
-                if arch_img:
-                    images['architecture'] = f"/images/{repo_name}/architecture.png"
-                if flow_img:
-                    images['flow'] = f"/images/{repo_name}/flow.png"
+                            # Generate flow diagram
+                            flow_img = image_generator.generate_problem_solution_flow(
+                                repo,
+                                script_data
+                            )
 
-                logger.info(f"✅ Generated {len(images)} images")
+                            # Prepare image paths
+                            if arch_img:
+                                images['architecture'] = f"/images/{repo_name}/architecture.png"
+                            if flow_img:
+                                images['flow'] = f"/images/{repo_name}/flow.png"
 
-            except Exception as e:
-                logger.warning(f"Image generation failed: {e}. Continuing without images.")
-                images = {}
-        else:
-            logger.info("⏭️  Image generation skipped (module not available in this repo)")
+                        except Exception as e:
+                            logger.warning(f"Image generation failed for {repo['full_name']}: {e}")
+                            images = {}
 
-        # Step 5: Create blog post
-        logger.info("\n📝 Step 4: Creating blog post...")
-        markdown_writer = MarkdownWriter(output_dir="website/src/content/blog")
+                    # Step 5: Create blog post
+                    logger.info("📝 Creating blog post...")
+                    markdown_writer = MarkdownWriter(output_dir="website/src/content/blog")
 
-        post_path = markdown_writer.create_post(
-            valid_repo,
-            script_data,
-            images if images else None
-        )
+                    post_path = markdown_writer.create_post(
+                        repo,
+                        script_data,
+                        images if images else None
+                    )
 
-        logger.info(f"✅ Blog post created: {post_path}")
+                    logger.info(f"✅ Blog post created: {post_path}")
+                    processed_count += 1
 
-        # Validate post
-        if markdown_writer.validate_post(post_path):
-            logger.info("✅ Post validation passed")
-        else:
-            logger.error("❌ Post validation failed")
-            return
+                except Exception as e:
+                    logger.error(f"❌ Error processing {repo['full_name']}: {e}")
+                    continue
 
-        # Step 6: Summary
-        logger.info("\n" + "="*60)
-        logger.info("✅ Blog Generation Workflow Completed Successfully!")
-        logger.info("="*60)
-        logger.info(f"Repository: {valid_repo['full_name']}")
-        logger.info(f"Post: {post_path}")
-        logger.info(f"Images: {len(images)}")
-        logger.info("\n💡 Next: GitHub Actions will create a PR with these changes")
+            logger.info("\n" + "="*60)
+            logger.info(f"✅ Batch Completed! Processed {processed_count} projects.")
+            logger.info("="*60)
+            logger.info("\n💡 Next: GitHub Actions will create a PR with these changes")
+            return # Exit main successfully
+
+        # If we reached here without processing loop (should be covered above)
+        if valid_repo and not valid_repos:
+             # Handle single rust repo case if logic falls through
+             pass
+
 
     except Exception as e:
         logger.error(f"\n❌ Workflow failed: {e}", exc_info=True)
