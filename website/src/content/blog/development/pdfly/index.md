@@ -17,6 +17,10 @@ repo_data:
   html_url: "https://github.com/py-pdf/pdfly"
 images:
   screenshot: "/bestof-opensorce/images/blog/pdfly-header.png"
+insights:
+  last_commit_date: "2025-11-27T08:08:26Z"
+  open_issues_count: 20
+  top_contributors: [{"login": "MartinThoma", "avatar_url": "https://avatars.githubusercontent.com/u/1658117?v=4", "html_url": "https://github.com/MartinThoma", "contributions": 86}, {"login": "Lucas-C", "avatar_url": "https://avatars.githubusercontent.com/u/925560?v=4", "html_url": "https://github.com/Lucas-C", "contributions": 49}, {"login": "renovate[bot]", "avatar_url": "https://avatars.githubusercontent.com/in/2740?v=4", "html_url": "https://github.com/apps/renovate", "contributions": 37}, {"login": "allcontributors[bot]", "avatar_url": "https://avatars.githubusercontent.com/in/23186?v=4", "html_url": "https://github.com/apps/allcontributors", "contributions": 10}, {"login": "dependabot[bot]", "avatar_url": "https://avatars.githubusercontent.com/in/29110?v=4", "html_url": "https://github.com/apps/dependabot", "contributions": 7}]
 ---
 
 ## 🎯 The Problem

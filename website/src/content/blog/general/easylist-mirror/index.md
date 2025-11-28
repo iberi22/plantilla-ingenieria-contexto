@@ -16,6 +16,10 @@ tags: [abp, adblock, ads, block, easylist]
 categories: [abp, adblock]
 images:
   screenshot: "/bestof-opensorce/images/blog/easylist-mirror-header.png"
+insights:
+  last_commit_date: "2025-11-28T04:33:09Z"
+  open_issues_count: 0
+  top_contributors: [{"login": "updaterbot-easylistmirror", "avatar_url": "https://avatars.githubusercontent.com/u/142152315?v=4", "html_url": "https://github.com/updaterbot-easylistmirror", "contributions": 906496}, {"login": "thedoggybrad", "avatar_url": "https://avatars.githubusercontent.com/u/94173621?v=4", "html_url": "https://github.com/thedoggybrad", "contributions": 13}]
 ---
 
 ## 🎯 The Problem

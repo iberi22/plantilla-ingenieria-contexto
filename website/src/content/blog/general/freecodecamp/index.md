@@ -15,6 +15,10 @@ repo_data:
   html_url: "https://github.com/freeCodeCamp/freeCodeCamp"
 images:
   screenshot: "/bestof-opensorce/images/blog/freecodecamp-header.png"
+insights:
+  last_commit_date: "2025-11-27T22:54:55Z"
+  open_issues_count: 296
+  top_contributors: [{"login": "camperbot", "avatar_url": "https://avatars.githubusercontent.com/u/13561988?v=4", "html_url": "https://github.com/camperbot", "contributions": 1657}, {"login": "raisedadead", "avatar_url": "https://avatars.githubusercontent.com/u/1884376?v=4", "html_url": "https://github.com/raisedadead", "contributions": 1583}, {"login": "ojeytonwilliams", "avatar_url": "https://avatars.githubusercontent.com/u/15801806?v=4", "html_url": "https://github.com/ojeytonwilliams", "contributions": 1463}, {"login": "renovate[bot]", "avatar_url": "https://avatars.githubusercontent.com/in/2740?v=4", "html_url": "https://github.com/apps/renovate", "contributions": 1266}, {"login": "sahat", "avatar_url": "https://avatars.githubusercontent.com/u/544954?v=4", "html_url": "https://github.com/sahat", "contributions": 1261}]
 ---
 
 

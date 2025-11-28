@@ -16,6 +16,10 @@ tags: [typescript]
 categories: [typescript]
 images:
   screenshot: "/bestof-opensorce/images/blog/aws-lambda-mcp-server-header.png"
+insights:
+  last_commit_date: "2025-11-27T18:49:32Z"
+  open_issues_count: 0
+  top_contributors: [{"login": "dependabot[bot]", "avatar_url": "https://avatars.githubusercontent.com/in/29110?v=4", "html_url": "https://github.com/apps/dependabot", "contributions": 25}, {"login": "poad", "avatar_url": "https://avatars.githubusercontent.com/u/1867845?v=4", "html_url": "https://github.com/poad", "contributions": 17}, {"login": "github-actions[bot]", "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4", "html_url": "https://github.com/apps/github-actions", "contributions": 5}]
 ---
 
 ## 🎯 The Problem
