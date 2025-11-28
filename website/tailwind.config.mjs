@@ -6,7 +6,7 @@ export default {
 		extend: {
 			fontFamily: {
 				mono: ['"Fira Code"', 'monospace'],
-				sans: ['"Fira Code"', 'monospace'],
+				sans: ['"Outfit"', 'sans-serif'],
 			},
 			colors: {
 				bone: {
