@@ -1,0 +1,335 @@
+---
+/**
+ * ProseContent Component
+ * 
+ * Optimized typography for long-form reading based on UX research.
+ * 
+ * Font choices based on readability studies:
+ * - Source Serif 4: Modern serif designed for screen reading
+ * - Inter: Highly legible sans-serif for headings
+ * 
+ * Typography best practices applied:
+ * - Optimal line length: 60-75 characters
+ * - Line height: 1.6-1.8 for body text
+ * - Font size: 18-21px for comfortable reading
+ * - Adequate paragraph spacing
+ * - High contrast but not pure black/white (reduces eye strain)
+ */
+---
+
+<div class="prose-content">
+  <slot />
+</div>
+
+<style is:global>
+  /* Import optimized reading fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  .prose-content {
+    /* Base typography - Source Serif 4 for optimal reading */
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    font-size: 1.125rem; /* 18px - optimal for reading */
+    line-height: 1.75; /* Generous line height for readability */
+    color: rgba(245, 243, 240, 0.9); /* Warm off-white, easier on eyes than pure white */
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    font-optical-sizing: auto;
+    
+    /* Optimal reading width */
+    max-width: 70ch; /* ~70 characters per line - ideal for readability */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Headings - Inter for clean, modern look */
+  .prose-content h1,
+  .prose-content h2,
+  .prose-content h3,
+  .prose-content h4,
+  .prose-content h5,
+  .prose-content h6 {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    color: #F5F3F0;
+    margin-top: 2.5em;
+    margin-bottom: 0.75em;
+  }
+
+  .prose-content h1 {
+    font-size: 2.5rem;
+    margin-top: 0;
+  }
+
+  .prose-content h2 {
+    font-size: 1.875rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: #6EE7B7; /* Emerald accent */
+  }
+
+  .prose-content h3 {
+    font-size: 1.5rem;
+    color: #A7F3D0; /* Lighter emerald */
+  }
+
+  .prose-content h4 {
+    font-size: 1.25rem;
+    color: #D1FAE5;
+  }
+
+  /* Paragraphs */
+  .prose-content p {
+    margin-bottom: 1.5em;
+    text-align: left;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
+  /* First paragraph after heading - no indent, slight larger */
+  .prose-content h2 + p,
+  .prose-content h3 + p {
+    font-size: 1.1875rem;
+  }
+
+  /* Links */
+  .prose-content a {
+    color: #6EE7B7;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(110, 231, 183, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .prose-content a:hover {
+    color: #A7F3D0;
+    border-bottom-color: #A7F3D0;
+  }
+
+  /* Bold and emphasis */
+  .prose-content strong {
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  .prose-content em {
+    font-style: italic;
+    color: rgba(245, 243, 240, 0.95);
+  }
+
+  /* Lists */
+  .prose-content ul,
+  .prose-content ol {
+    margin: 1.5em 0;
+    padding-left: 1.5em;
+  }
+
+  .prose-content li {
+    margin-bottom: 0.75em;
+    padding-left: 0.5em;
+  }
+
+  .prose-content ul li::marker {
+    color: rgba(110, 231, 183, 0.5);
+  }
+
+  .prose-content ol li::marker {
+    color: rgba(110, 231, 183, 0.7);
+    font-weight: 600;
+  }
+
+  /* Nested lists */
+  .prose-content li > ul,
+  .prose-content li > ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  /* Code - JetBrains Mono for excellent code readability */
+  .prose-content code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.875em;
+    background: rgba(255, 255, 255, 0.06);
+    color: #A7F3D0;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-weight: 400;
+  }
+
+  .prose-content pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    background: #0d1117;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.5em;
+    margin: 2em 0;
+    overflow-x: auto;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .prose-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  /* Blockquotes */
+  .prose-content blockquote {
+    font-style: italic;
+    border-left: 3px solid #6EE7B7;
+    margin: 2em 0;
+    padding: 1em 1.5em;
+    background: rgba(110, 231, 183, 0.05);
+    border-radius: 0 8px 8px 0;
+    color: rgba(245, 243, 240, 0.85);
+  }
+
+  .prose-content blockquote p {
+    margin-bottom: 0;
+  }
+
+  .prose-content blockquote cite {
+    display: block;
+    margin-top: 0.75em;
+    font-size: 0.875em;
+    font-style: normal;
+    color: rgba(245, 243, 240, 0.6);
+  }
+
+  /* Images */
+  .prose-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 2em auto;
+    display: block;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .prose-content figure {
+    margin: 2em 0;
+  }
+
+  .prose-content figcaption {
+    text-align: center;
+    font-size: 0.875rem;
+    color: rgba(245, 243, 240, 0.5);
+    margin-top: 0.75em;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Tables */
+  .prose-content table {
+    width: 100%;
+    margin: 2em 0;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .prose-content th {
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75em 1em;
+    border-bottom: 2px solid rgba(110, 231, 183, 0.3);
+    color: #F5F3F0;
+  }
+
+  .prose-content td {
+    padding: 0.75em 1em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .prose-content tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Horizontal rule */
+  .prose-content hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(110, 231, 183, 0.3), transparent);
+    margin: 3em 0;
+  }
+
+  /* Selection highlight */
+  .prose-content ::selection {
+    background: rgba(110, 231, 183, 0.3);
+    color: #FFFFFF;
+  }
+
+  /* Drop cap for first paragraph (optional, adds elegance) */
+  .prose-content > p:first-of-type::first-letter {
+    font-size: 3.5em;
+    font-weight: 700;
+    float: left;
+    line-height: 0.8;
+    padding-right: 0.1em;
+    padding-top: 0.1em;
+    color: #6EE7B7;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .prose-content {
+      font-size: 1.0625rem; /* Slightly smaller on mobile */
+      line-height: 1.7;
+    }
+
+    .prose-content h2 {
+      font-size: 1.5rem;
+    }
+
+    .prose-content h3 {
+      font-size: 1.25rem;
+    }
+
+    .prose-content pre {
+      padding: 1em;
+      font-size: 0.8125rem;
+      border-radius: 8px;
+    }
+
+    .prose-content > p:first-of-type::first-letter {
+      font-size: 2.5em;
+    }
+  }
+
+  /* Dark mode optimizations - reduce brightness for night reading */
+  @media (prefers-color-scheme: dark) {
+    .prose-content {
+      /* Slightly dimmer for comfortable night reading */
+      color: rgba(245, 243, 240, 0.85);
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .prose-content {
+      font-size: 12pt;
+      line-height: 1.5;
+      color: #000;
+      max-width: none;
+    }
+
+    .prose-content h1, .prose-content h2, .prose-content h3 {
+      color: #000;
+    }
+
+    .prose-content a {
+      color: #000;
+      text-decoration: underline;
+    }
+
+    .prose-content pre {
+      border: 1px solid #ccc;
+      background: #f5f5f5;
+    }
+  }
+</style>
