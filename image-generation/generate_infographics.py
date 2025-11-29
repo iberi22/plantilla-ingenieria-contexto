@@ -21,7 +21,7 @@ from google.genai import types
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, 
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -38,21 +38,21 @@ CLIENT: genai.Client = None
 def setup_gemini() -> bool:
     """Initialize Gemini with all available API keys."""
     global API_KEYS, CLIENT
-    
+
     keys = []
     main_key = os.environ.get("GOOGLE_API_KEY")
     if main_key:
         keys.append(main_key)
-    
+
     for i in range(2, 6):
         key = os.environ.get(f"GOOGLE_API_KEY_{i}")
         if key:
             keys.append(key)
-    
+
     if not keys:
         logger.error("❌ No GOOGLE_API_KEYs found. Set GOOGLE_API_KEY, GOOGLE_API_KEY_2, etc.")
         return False
-    
+
     API_KEYS = keys
     CLIENT = genai.Client(api_key=API_KEYS[0])
     logger.info(f"✅ Loaded {len(API_KEYS)} Gemini API keys for load balancing")
@@ -64,7 +64,7 @@ def rotate_key():
     global CURRENT_KEY_INDEX, CLIENT
     if len(API_KEYS) <= 1:
         return
-    
+
     CURRENT_KEY_INDEX = (CURRENT_KEY_INDEX + 1) % len(API_KEYS)
     CLIENT = genai.Client(api_key=API_KEYS[CURRENT_KEY_INDEX])
     logger.info(f"🔄 Rotated to API key #{CURRENT_KEY_INDEX + 1}")
@@ -79,25 +79,25 @@ def parse_blog_post(md_file: Path) -> Optional[Dict]:
     try:
         with open(md_file, 'r', encoding='utf-8') as f:
             content = f.read()
-        
+
         if not content.startswith('---'):
             return None
-        
+
         parts = content.split('---', 2)
         if len(parts) < 3:
             return None
-        
+
         # Parse YAML frontmatter
         try:
             frontmatter = yaml.safe_load(parts[1])
         except:
             frontmatter = {}
-        
+
         body = parts[2]
-        
+
         # Extract sections from body
         sections = extract_sections(body)
-        
+
         return {
             'title': frontmatter.get('title', ''),
             'description': frontmatter.get('description', ''),
@@ -125,32 +125,32 @@ def extract_sections(body: str) -> Dict[str, str]:
         'considerations': '',
         'verdict': ''
     }
-    
+
     # Extract problem section
     problem_match = re.search(r'##.*Problem.*?\n(.*?)(?=##|\Z)', body, re.DOTALL | re.IGNORECASE)
     if problem_match:
         sections['problem'] = clean_text(problem_match.group(1))
-    
+
     # Extract solution section
     solution_match = re.search(r'##.*Solution.*?\n(.*?)(?=##|\Z)', body, re.DOTALL | re.IGNORECASE)
     if solution_match:
         sections['solution'] = clean_text(solution_match.group(1))
-    
+
     # Extract advantages
     advantages_match = re.search(r'##.*Advantages.*?\n(.*?)(?=##|\Z)', body, re.DOTALL | re.IGNORECASE)
     if advantages_match:
         sections['advantages'] = clean_text(advantages_match.group(1))
-    
+
     # Extract considerations/limitations
     considerations_match = re.search(r'##.*Considerations.*?\n(.*?)(?=##|\Z)', body, re.DOTALL | re.IGNORECASE)
     if considerations_match:
         sections['considerations'] = clean_text(considerations_match.group(1))
-    
+
     # Extract verdict
     verdict_match = re.search(r'##.*Verdict.*?\n(.*?)(?=##|\Z)', body, re.DOTALL | re.IGNORECASE)
     if verdict_match:
         sections['verdict'] = clean_text(verdict_match.group(1))
-    
+
     return sections
 
 
@@ -228,7 +228,7 @@ def get_language_visual_theme(language: str) -> Dict[str, str]:
             'icons': 'Android devices, null-safety shields'
         }
     }
-    
+
     return themes.get(language, {
         'colors': 'blue and purple tech gradient',
         'style': 'modern tech, professional',
@@ -253,7 +253,7 @@ def create_infographic_prompt(data: Dict) -> str:
     Create a detailed prompt for 4K professional infographic.
     The infographic should explain the repository visually without reading.
     """
-    
+
     title = data.get('title', 'Project')
     description = data.get('description', '')
     language = data.get('language', 'Unknown')
@@ -261,15 +261,15 @@ def create_infographic_prompt(data: Dict) -> str:
     category = data.get('category', 'General')
     tags = data.get('tags', [])
     sections = data.get('sections', {})
-    
+
     # Get visual themes
     lang_theme = get_language_visual_theme(language)
     category_elements = get_category_visual_elements(category)
-    
+
     # Build features list from advantages
     features = sections.get('advantages', description)[:300]
     solution = sections.get('solution', description)[:300]
-    
+
     # Determine star tier visualization
     if stars > 1000:
         popularity = "highly popular (1000+ stars)"
@@ -279,7 +279,7 @@ def create_infographic_prompt(data: Dict) -> str:
         popularity = "emerging project (100+ stars)"
     else:
         popularity = "hidden gem discovery"
-    
+
     prompt = f"""Create a professional 4K infographic (3840x2160) that visually explains the open-source project "{title}" without any text.
 
 PROJECT OVERVIEW:
@@ -334,23 +334,23 @@ Tags for context: {', '.join(tags[:5]) if tags else 'open-source, developer-tool
 def generate_infographic(prompt: str, output_path: Path, retries: int = 3) -> bool:
     """Generate infographic image using Gemini Imagen 4."""
     global CLIENT
-    
+
     for attempt in range(1, retries + 1):
         try:
             logger.info(f"🎨 Generating infographic (attempt {attempt}/{retries})...")
             logger.debug(f"Prompt: {prompt[:200]}...")
-            
+
             response = CLIENT.models.generate_images(
                 model='imagen-4.0-generate-001',
                 prompt=prompt,
                 config=types.GenerateImagesConfig(
                     number_of_images=1,
                     aspect_ratio="16:9",
-                    safety_filter_level="BLOCK_ONLY_HIGH",
+                    safety_filter_level="block_low_and_above",
                     person_generation="DONT_ALLOW"
                 )
             )
-            
+
             if response.generated_images:
                 image = response.generated_images[0]
                 output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -362,13 +362,13 @@ def generate_infographic(prompt: str, output_path: Path, retries: int = 3) -> bo
             else:
                 logger.warning(f"⚠️ No images in response (attempt {attempt})")
                 rotate_key()
-                
+
         except Exception as e:
             logger.error(f"❌ Generation error (attempt {attempt}): {e}")
             rotate_key()
             if attempt < retries:
                 time.sleep(2 ** attempt)
-    
+
     return False
 
 
@@ -384,72 +384,72 @@ def process_blog_infographics(
 ):
     """
     Process all blog posts and generate infographics.
-    
+
     Args:
         blog_dir: Path to blog content directory
         output_dir: Where to save generated images (default: same as blog post)
         limit: Maximum images to generate
         force: Regenerate even if image exists
     """
-    
+
     if not setup_gemini():
         return
-    
+
     if blog_dir is None:
         blog_dir = Path("website/src/content/blog")
     else:
         blog_dir = Path(blog_dir)
-    
+
     if not blog_dir.exists():
         logger.error(f"❌ Blog directory not found: {blog_dir}")
         return
-    
+
     generated = 0
     skipped = 0
     failed = 0
-    
+
     logger.info(f"📁 Scanning blog posts in: {blog_dir}")
-    
+
     for md_file in sorted(blog_dir.rglob("index.md")):
         if limit and generated >= limit:
             logger.info(f"🛑 Reached limit of {limit} images")
             break
-        
+
         # Determine output path
         if output_dir:
             relative = md_file.parent.relative_to(blog_dir)
             image_path = Path(output_dir) / relative / "header.png"
         else:
             image_path = md_file.parent / "header.png"
-        
+
         # Skip if exists (unless force)
         if image_path.exists() and not force:
             logger.info(f"⏭️ Skipping (exists): {md_file.parent.name}")
             skipped += 1
             continue
-        
+
         # Parse blog post
         data = parse_blog_post(md_file)
         if not data:
             logger.warning(f"⚠️ Could not parse: {md_file}")
             failed += 1
             continue
-        
+
         if not data['title']:
             logger.warning(f"⚠️ No title in: {md_file}")
             failed += 1
             continue
-        
+
         logger.info(f"\n{'='*60}")
         logger.info(f"📝 Processing: {data['title']}")
         logger.info(f"   Repo: {data['repo']}")
         logger.info(f"   Language: {data['language']}")
         logger.info(f"   Category: {data['category']}")
         logger.info(f"   Stars: {data['stars']}")
-        
+
         # Generate prompt
         prompt = create_infographic_prompt(data)
-        
+
         # Generate image
         if generate_infographic(prompt, image_path):
             generated += 1
@@ -459,7 +459,7 @@ def process_blog_infographics(
         else:
             failed += 1
             logger.error(f"❌ Failed to generate for: {data['title']}")
-    
+
     # Summary
     logger.info(f"\n{'='*60}")
     logger.info(f"📊 INFOGRAPHIC GENERATION COMPLETE")
@@ -471,13 +471,13 @@ def process_blog_infographics(
 
 def main():
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description='Generate professional 4K infographics for blog posts'
     )
     parser.add_argument(
-        '--blog-dir', 
-        type=str, 
+        '--blog-dir',
+        type=str,
         default='website/src/content/blog',
         help='Path to blog content directory'
     )
@@ -496,9 +496,9 @@ def main():
         action='store_true',
         help='Regenerate even if image exists'
     )
-    
+
     args = parser.parse_args()
-    
+
     process_blog_infographics(
         blog_dir=Path(args.blog_dir) if args.blog_dir else None,
         output_dir=Path(args.output_dir) if args.output_dir else None,

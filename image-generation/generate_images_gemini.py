@@ -3,7 +3,8 @@ import sys
 import time
 import random
 import logging
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from pathlib import Path
 
 # Configure logging
@@ -12,9 +13,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Global list of available keys
 API_KEYS = []
 CURRENT_KEY_INDEX = 0
+CLIENT: genai.Client = None
 
 def setup_gemini():
-    global API_KEYS
+    global API_KEYS, CLIENT
 
     # Collect all available keys
     keys = []
@@ -33,43 +35,45 @@ def setup_gemini():
         return None
 
     API_KEYS = keys
+    CLIENT = genai.Client(api_key=API_KEYS[0])
     logging.info(f"✅ Loaded {len(API_KEYS)} Gemini API keys for load balancing.")
 
-    # Configure with the first key initially
-    genai.configure(api_key=API_KEYS[0])
     return True
 
 def rotate_key():
     """Rotates to the next available API key."""
-    global CURRENT_KEY_INDEX
+    global CURRENT_KEY_INDEX, CLIENT
     if len(API_KEYS) <= 1:
         return # No need to rotate
 
     CURRENT_KEY_INDEX = (CURRENT_KEY_INDEX + 1) % len(API_KEYS)
-    new_key = API_KEYS[CURRENT_KEY_INDEX]
-    genai.configure(api_key=new_key)
+    CLIENT = genai.Client(api_key=API_KEYS[CURRENT_KEY_INDEX])
     logging.info(f"🔄 Rotated to API Key #{CURRENT_KEY_INDEX + 1}")
 
 def generate_image_gemini(prompt, output_path):
-    """Generates an image using Google Gemini (Imagen 3)."""
+    """Generates an image using Google Gemini (Imagen 4)."""
+    global CLIENT
+    
     try:
-        model_name = 'models/imagen-3.0-generate-001'
+        model_name = 'imagen-4.0-generate-001'
 
         logging.info(f"🎨 Generating image with prompt: {prompt[:80]}...")
 
         try:
-            image_model = genai.ImageGenerationModel(model_name)
-            response = image_model.generate_images(
+            response = CLIENT.models.generate_images(
+                model=model_name,
                 prompt=prompt,
-                number_of_images=1,
-                aspect_ratio="16:9",
-                safety_filter_level="block_only_high",
-                person_generation="allow_adult"
+                config=types.GenerateImagesConfig(
+                    number_of_images=1,
+                    aspect_ratio="16:9",
+                    safety_filter_level="block_low_and_above",
+                    person_generation="ALLOW_ADULT"
+                )
             )
 
-            if response.images:
-                image = response.images[0]
-                image.save(output_path)
+            if response.generated_images:
+                image = response.generated_images[0]
+                image.image.save(str(output_path))
                 logging.info(f"✅ Image saved to: {output_path}")
                 # Rotate key after success to spread load
                 rotate_key()
