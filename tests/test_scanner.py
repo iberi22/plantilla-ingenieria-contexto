@@ -15,17 +15,21 @@ class TestGitHubScanner:
         mock_response.status_code = 200
         mock_response.json.return_value = {
             "items": [
-                {"name": "repo1", "full_name": "user/repo1"},
-                {"name": "repo2", "full_name": "user/repo2"}
+                {"name": "repo1", "full_name": "user/repo1", "description": "A valid project description", "license": {"key": "mit"}, "archived": False, "disabled": False},
+                {"name": "repo2", "full_name": "user/repo2", "description": "Another valid project", "license": {"key": "apache-2.0"}, "archived": False, "disabled": False}
             ]
         }
         mock_get.return_value = mock_response
 
-        repos = scanner.scan_recent_repos(limit=2)
+        # Mock the enhanced analysis methods to avoid API calls
+        with patch.object(scanner, 'validate_repo_basic', return_value=True), \
+             patch.object(scanner.insights_collector, 'collect_insights', return_value={}), \
+             patch.object(scanner.classifier, 'classify_repo', return_value={'is_real_project': True, 'score': 80, 'reasons': []}):
+            repos = scanner.scan_recent_repos(limit=2)
 
-        assert len(repos) == 2
-        assert repos[0]["name"] == "repo1"
-        mock_get.assert_called_once()
+            assert len(repos) == 2
+            assert repos[0]["name"] == "repo1"
+            mock_get.assert_called_once()
 
     @patch("src.scanner.github_scanner.requests.get")
     def test_scan_recent_repos_failure(self, mock_get, scanner):

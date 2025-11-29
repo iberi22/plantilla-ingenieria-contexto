@@ -123,22 +123,25 @@ def run_pipeline_task(repo_url, upload=False):
             timeout=1800  # 30 minute timeout
         )
 
+        duration = (datetime.now() - start_time).total_seconds()
+
         if result.returncode != 0:
             logger.error(f"Pipeline failed: {result.stderr}")
             return {
                 "success": False,
+                "status": "failed",
                 "repo_url": repo_url,
                 "error": result.stderr,
-                "duration": (datetime.now() - start_time).total_seconds()
+                "exit_code": result.returncode,
+                "duration": duration
             }
 
         logger.info(f"Pipeline output: {result.stdout}")
-
-        duration = (datetime.now() - start_time).total_seconds()
         logger.info(f"Pipeline completed in {duration:.2f}s")
 
         return {
             "success": True,
+            "status": "success",
             "repo_url": repo_url,
             "duration": duration,
             "stdout": result.stdout
@@ -148,18 +151,54 @@ def run_pipeline_task(repo_url, upload=False):
         logger.error(f"Pipeline timed out for {repo_url}")
         return {
             "success": False,
+            "status": "timeout",
             "repo_url": repo_url,
-            "error": "Pipeline timed out after 30 minutes",
+            "error": "Timeout: Pipeline exceeded 30 minutes limit",
             "duration": (datetime.now() - start_time).total_seconds()
         }
     except Exception as e:
         logger.error(f"Pipeline failed for {repo_url}: {e}")
         return {
             "success": False,
+            "status": "error",
             "repo_url": repo_url,
             "error": str(e),
             "duration": (datetime.now() - start_time).total_seconds()
         }
+
+
+def process_batch_repos(repos, upload=False):
+    """
+    Process multiple repositories in batch mode.
+
+    Args:
+        repos: List of repository URLs to process
+        upload: Whether to upload results to cloud storage
+
+    Returns:
+        dict: Summary of batch processing results
+    """
+    logger.info(f"Starting batch processing of {len(repos)} repositories")
+    results = []
+    successful = 0
+    failed = 0
+
+    for repo_url in repos:
+        result = run_pipeline_task(repo_url, upload=upload)
+        results.append(result)
+        if result.get('status') == 'success':
+            successful += 1
+        else:
+            failed += 1
+
+    logger.info(f"Batch complete: {successful} successful, {failed} failed")
+
+    return {
+        'total': len(repos),
+        'successful': successful,
+        'failed': failed,
+        'repos': results
+    }
 
 
 if __name__ == "__main__":

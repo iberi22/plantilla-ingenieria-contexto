@@ -68,7 +68,7 @@ class TestFirebaseStore:
 
     def test_initialization_without_credentials(self, mock_firebase):
         """Test that initialization fails without credentials."""
-        with pytest.raises(ValueError, match="Firebase credentials required"):
+        with pytest.raises(ValueError, match="(Firebase credentials required|FIREBASE_CREDENTIALS must be)"):
             FirebaseStore()
 
     def test_is_processed_returns_true_for_existing_repo(self, firebase_store, mock_firebase):

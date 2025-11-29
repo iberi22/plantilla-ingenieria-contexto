@@ -16,12 +16,16 @@ class TestGitHubScanner(unittest.TestCase):
     def test_scan_recent_repos(self, mock_get):
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = {"items": [{"id": 1, "name": "repo1"}]}
+        mock_response.json.return_value = {"items": [{"id": 1, "name": "repo1", "full_name": "user/repo1", "description": "A valid project description", "license": {"key": "mit"}, "archived": False, "disabled": False}]}
         mock_get.return_value = mock_response
 
-        repos = self.scanner.scan_recent_repos(limit=5)
-        self.assertEqual(len(repos), 1)
-        self.assertEqual(repos[0]["name"], "repo1")
+        # Mock the enhanced analysis methods to avoid API calls
+        with patch.object(self.scanner, 'validate_repo_basic', return_value=True), \
+             patch.object(self.scanner.insights_collector, 'collect_insights', return_value={}), \
+             patch.object(self.scanner.classifier, 'classify_repo', return_value={'is_real_project': True, 'score': 80, 'reasons': []}):
+            repos = self.scanner.scan_recent_repos(limit=5)
+            self.assertEqual(len(repos), 1)
+            self.assertEqual(repos[0]["name"], "repo1")
 
     @patch('requests.get')
     def test_validate_repo_valid(self, mock_get):
@@ -65,12 +69,13 @@ class TestGitHubScanner(unittest.TestCase):
         repo = {
             "full_name": "owner/small-repo",
             "name": "small-repo",
-            "description": "Short desc.", # Too short if logic checks length, but here it might pass description check if logic changed, let's rely on readme
+            "description": "Short", # Too short - less than 10 chars
             "license": {"key": "mit"},
-            "archived": False
+            "archived": False,
+            "disabled": False
         }
 
-        # Logic check: description < 20
+        # Logic check: description < 10 chars fails validate_repo_basic
         is_valid = self.scanner.validate_repo(repo)
         self.assertFalse(is_valid)
 
