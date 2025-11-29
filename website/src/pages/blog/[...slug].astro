@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import AdBanner from '../../components/AdBanner.astro';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -30,18 +31,18 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
         (function() {
           // Get browser language (e.g., 'es', 'fr', 'de')
           const browserLang = navigator.language?.split('-')[0] || 'en';
-          
+
           // Skip if already English or if translation cookie exists
           if (browserLang === 'en') return;
-          
+
           // Check if already translated (Google sets a cookie)
           const googtrans = document.cookie.match(/googtrans=([^;]+)/);
           if (googtrans && googtrans[1].includes(browserLang)) return;
-          
+
           // Set translation cookie for automatic translation
           document.cookie = `googtrans=/en/${browserLang};path=/;domain=${location.hostname}`;
           document.cookie = `googtrans=/en/${browserLang};path=/`;
-          
+
           // Load Google Translate and auto-translate
           function loadGoogleTranslate() {
             const script = document.createElement('script');
@@ -49,7 +50,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
             script.async = true;
             document.body.appendChild(script);
           }
-          
+
           window.googleTranslateInit = function() {
             new google.translate.TranslateElement({
               pageLanguage: 'en',
@@ -58,7 +59,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
               autoDisplay: false
             }, 'google_translate_element');
           };
-          
+
           // Delay load to ensure page is ready
           if (document.readyState === 'complete') {
             loadGoogleTranslate();
@@ -68,7 +69,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
         })();
       </script>
       <div id="google_translate_element" class="hidden"></div>
-      
+
       <!-- Hide Google Translate toolbar -->
       <style is:global>
         .goog-te-banner-frame, .skiptranslate { display: none !important; }
@@ -182,6 +183,11 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
             async>
           </script>
         </div>
+      </div>
+
+      <!-- AdSense Banner - Support Section -->
+      <div class="mt-16 pt-8 border-t border-white/5">
+        <AdBanner slot="bottom" />
       </div>
 
     </article>

@@ -1,0 +1,106 @@
+---
+/**
+ * AdBanner Component
+ * 
+ * Displays Google AdSense ads to support the maintenance costs of this repository.
+ * Patreon supporters are automatically excluded from seeing ads.
+ * 
+ * Usage: <AdBanner slot="bottom" />
+ */
+
+interface Props {
+  slot?: 'bottom' | 'sidebar' | 'inline';
+}
+
+const { slot = 'bottom' } = Astro.props;
+---
+
+<!-- AdSense Banner - Hidden for Patreons -->
+<div id="ad-container" class="ad-banner" data-slot={slot}>
+  <!-- Support Message -->
+  <div class="support-message">
+    <p class="text-xs text-bone-dark/40 text-center mb-2 font-mono">
+      💚 Ads help us cover hosting & API costs. <a href="https://patreon.com/bestof_opensource" target="_blank" class="text-emerald-500 hover:text-emerald-400 underline">Become a Patreon</a> for ad-free experience.
+    </p>
+  </div>
+  
+  <!-- Google AdSense Ad Unit -->
+  <div class="adsense-container bg-white/5 rounded-xl border border-white/10 p-4 min-h-[90px] flex items-center justify-center">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7015371704987876"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+  </div>
+</div>
+
+<!-- Patreon Check Script -->
+<script is:inline>
+(function() {
+  // Check if user is a Patreon supporter
+  function isPatreonSupporter() {
+    // Check localStorage for Patreon token
+    const patreonToken = localStorage.getItem('patreon_supporter');
+    if (patreonToken) {
+      try {
+        const data = JSON.parse(patreonToken);
+        // Check if token is still valid (not expired)
+        if (data.expires && new Date(data.expires) > new Date()) {
+          return true;
+        }
+      } catch (e) {
+        // Invalid token, remove it
+        localStorage.removeItem('patreon_supporter');
+      }
+    }
+    
+    // Also check URL parameter for Patreon callback
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('patreon') === 'verified') {
+      // Store Patreon status for 30 days
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      localStorage.setItem('patreon_supporter', JSON.stringify({
+        verified: true,
+        expires: expiryDate.toISOString()
+      }));
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+      return true;
+    }
+    
+    return false;
+  }
+
+  // Hide ads for Patreon supporters
+  if (isPatreonSupporter()) {
+    const adContainers = document.querySelectorAll('#ad-container');
+    adContainers.forEach(container => {
+      container.innerHTML = `
+        <div class="text-center py-4 text-emerald-400/60 text-sm font-mono">
+          💎 Thanks for your support! You're viewing an ad-free experience.
+        </div>
+      `;
+    });
+  } else {
+    // Load AdSense for non-supporters
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  }
+})();
+</script>
+
+<style>
+  .ad-banner {
+    margin: 2rem 0;
+  }
+  
+  .support-message {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+  
+  .ad-banner:hover .support-message {
+    opacity: 1;
+  }
+</style>

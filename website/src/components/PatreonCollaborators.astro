@@ -1,0 +1,90 @@
+---
+/**
+ * PatreonCollaborators Component
+ * 
+ * Displays Patreon supporters as "Collaborators" similar to GitHub contributors.
+ * These supporters help maintain the project through their financial contributions.
+ */
+
+// Patreon supporters list - Updated manually or via Patreon API webhook
+// Format: { name, avatar, tier, since }
+const patreonSupporters = [
+  // Example entries - Will be populated from Patreon API or manually
+  // { name: "John Doe", username: "johndoe", avatar: "https://...", tier: "Gold", since: "2024-01" },
+];
+
+// Tier badges and colors
+const tierStyles = {
+  'Diamond': { bg: 'from-cyan-500/20 to-blue-500/20', border: 'border-cyan-500/30', badge: '💎', color: 'text-cyan-400' },
+  'Gold': { bg: 'from-yellow-500/20 to-amber-500/20', border: 'border-yellow-500/30', badge: '🥇', color: 'text-yellow-400' },
+  'Silver': { bg: 'from-gray-400/20 to-slate-500/20', border: 'border-gray-400/30', badge: '🥈', color: 'text-gray-300' },
+  'Bronze': { bg: 'from-orange-600/20 to-amber-700/20', border: 'border-orange-500/30', badge: '🥉', color: 'text-orange-400' },
+  'Supporter': { bg: 'from-emerald-500/20 to-green-600/20', border: 'border-emerald-500/30', badge: '💚', color: 'text-emerald-400' }
+};
+
+const hasPatreons = patreonSupporters.length > 0;
+---
+
+{hasPatreons && (
+  <div class="patreon-collaborators">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="text-lg">🏆</span>
+      <h4 class="text-xs font-bold uppercase tracking-wider text-bone/60">Collaborators</h4>
+      <span class="text-[10px] text-emerald-500/60 font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full">Patreon</span>
+    </div>
+    
+    <div class="flex flex-wrap gap-2">
+      {patreonSupporters.map((supporter) => {
+        const style = tierStyles[supporter.tier] || tierStyles['Supporter'];
+        return (
+          <a 
+            href={`https://patreon.com/${supporter.username || ''}`}
+            target="_blank" 
+            rel="noopener noreferrer"
+            class={`flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${style.bg} border ${style.border} hover:scale-105 transition-all group no-underline`}
+            title={`${supporter.name} - ${style.badge} ${supporter.tier} supporter since ${supporter.since}`}
+          >
+            {supporter.avatar ? (
+              <img 
+                src={supporter.avatar} 
+                alt={supporter.name} 
+                class="w-5 h-5 rounded-full border border-white/20"
+              />
+            ) : (
+              <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs">
+                {supporter.name.charAt(0).toUpperCase()}
+              </span>
+            )}
+            <span class={`text-xs font-medium ${style.color} group-hover:text-white transition-colors`}>
+              {supporter.name}
+            </span>
+            <span class="text-xs opacity-60">{style.badge}</span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+<!-- Placeholder when no Patreons yet -->
+{!hasPatreons && (
+  <div class="patreon-collaborators">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-lg">🏆</span>
+      <h4 class="text-xs font-bold uppercase tracking-wider text-bone/60">Collaborators</h4>
+    </div>
+    <a 
+      href="https://patreon.com/bestof_opensource" 
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#f96854]/20 to-[#ff424d]/20 border border-[#f96854]/30 hover:border-[#f96854]/60 hover:scale-105 transition-all group no-underline"
+    >
+      <svg class="w-4 h-4 text-[#f96854]" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M15.386.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524M.003 23.537h4.22V.524H.003"/>
+      </svg>
+      <span class="text-xs font-medium text-[#f96854] group-hover:text-white transition-colors">
+        Become the first collaborator
+      </span>
+    </a>
+  </div>
+)}

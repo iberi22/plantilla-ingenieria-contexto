@@ -1,3 +1,7 @@
+---
+import PatreonCollaborators from './PatreonCollaborators.astro';
+---
+
 <footer class="border-t border-white/5 bg-[#0A0A0A] py-12 mt-20">
     <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <div class="flex items-center gap-2">
@@ -21,7 +25,34 @@
             </div>
         </div>
     </div>
+    <!-- Patreon Collaborators Section -->
     <div class="max-w-7xl mx-auto px-6 mt-8 pt-8 border-t border-white/5">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <PatreonCollaborators />
+            
+            <!-- Support Links -->
+            <div class="flex flex-col items-start md:items-end gap-2">
+                <span class="text-[10px] text-bone-dark/40 font-mono">Support this project</span>
+                <div class="flex items-center gap-3">
+                    <a href="https://patreon.com/bestof_opensource" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f96854]/10 border border-[#f96854]/20 hover:border-[#f96854]/50 transition-all no-underline group">
+                        <svg class="w-3.5 h-3.5 text-[#f96854]" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.386.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524M.003 23.537h4.22V.524H.003"/>
+                        </svg>
+                        <span class="text-[10px] font-medium text-[#f96854] group-hover:text-white transition-colors">Patreon</span>
+                    </a>
+                    <a href="https://github.com/sponsors/iberi22" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#ea4aaa]/10 border border-[#ea4aaa]/20 hover:border-[#ea4aaa]/50 transition-all no-underline group">
+                        <svg class="w-3.5 h-3.5 text-[#ea4aaa]" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
+                        </svg>
+                        <span class="text-[10px] font-medium text-[#ea4aaa] group-hover:text-white transition-colors">Sponsor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sustainability Message -->
+    <div class="max-w-7xl mx-auto px-6 mt-4 pt-6 border-t border-white/5">
         <p class="text-[10px] text-bone-dark/30 text-center max-w-2xl mx-auto leading-relaxed">
             This project is designed with sustainability in mind. By leveraging efficient Rust-based scanning and optimized AI workflows,
             we minimize computational resources and reduce our carbon footprint. We believe in high-performance, low-impact software.
