@@ -12,6 +12,16 @@ from rq.job import Job
 
 app = Flask(__name__)
 
+# Register API payments blueprint
+try:
+    from api.api_payments import api_bp, init_api_payments
+    app.register_blueprint(api_bp)
+    logger_temp = logging.getLogger("WebhookServer")
+    logger_temp.info("API payments blueprint registered")
+except ImportError as e:
+    logger_temp = logging.getLogger("WebhookServer")
+    logger_temp.warning(f"API payments module not available: {e}")
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("WebhookServer")
@@ -25,6 +35,13 @@ try:
     redis_conn.ping()  # Test connection
     task_queue = Queue('pipeline_tasks', connection=redis_conn)
     logger.info(f"Connected to Redis at {redis_url}")
+    
+    # Initialize API payments with Redis
+    try:
+        init_api_payments(redis_conn)
+        logger.info("API payments system initialized with Redis")
+    except Exception as e:
+        logger.warning(f"API payments initialization failed: {e}")
 except Exception as e:
     logger.error(f"Failed to connect to Redis: {e}")
     logger.warning("Running in fallback mode without queue support")

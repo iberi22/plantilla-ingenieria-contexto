@@ -1,10 +1,10 @@
 ---
 /**
  * AdBanner Component
- * 
+ *
  * Displays Google AdSense ads to support the maintenance costs of this repository.
  * Patreon supporters are automatically excluded from seeing ads.
- * 
+ *
  * Usage: <AdBanner slot="bottom" />
  */
 
@@ -23,7 +23,7 @@ const { slot = 'bottom' } = Astro.props;
       💚 This helps me keep building more open source software. Like the project? <a href="https://patreon.com/bestof_opensource" target="_blank" class="text-emerald-500 hover:text-emerald-400 underline">Support me on Patreon</a> and enjoy ad-free.
     </p>
   </div>
-  
+
   <!-- Google AdSense Ad Unit -->
   <div class="adsense-container bg-white/5 rounded-xl border border-white/10 p-4 min-h-[90px] flex items-center justify-center">
     <ins class="adsbygoogle"
@@ -54,7 +54,7 @@ const { slot = 'bottom' } = Astro.props;
         localStorage.removeItem('patreon_supporter');
       }
     }
-    
+
     // Also check URL parameter for Patreon callback
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('patreon') === 'verified') {
@@ -69,7 +69,7 @@ const { slot = 'bottom' } = Astro.props;
       window.history.replaceState({}, '', window.location.pathname);
       return true;
     }
-    
+
     return false;
   }
 
@@ -94,12 +94,12 @@ const { slot = 'bottom' } = Astro.props;
   .ad-banner {
     margin: 2rem 0;
   }
-  
+
   .support-message {
     opacity: 0.8;
     transition: opacity 0.3s ease;
   }
-  
+
   .ad-banner:hover .support-message {
     opacity: 1;
   }

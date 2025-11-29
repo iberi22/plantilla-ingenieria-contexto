@@ -5,6 +5,7 @@ const pathname = new URL(Astro.request.url).pathname;
 // Note: pathname might include the base path, so we should be careful.
 // If base is /bestof-opensorce/, pathname will be /bestof-opensorce/blog...
 const isBlog = pathname.includes('/blog');
+const isApi = pathname.includes('/api-pricing');
 ---
 
 <header class="fixed top-0 left-0 right-0 z-[60] backdrop-blur-xl bg-[#121212]/70 border-b border-white/5 h-16 flex items-center px-6 justify-between supports-[backdrop-filter]:bg-[#121212]/60">
@@ -16,7 +17,7 @@ const isBlog = pathname.includes('/blog');
   <div class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center p-1 bg-white/5 rounded-full border border-white/5">
       <a
         href={base}
-        class={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${!isBlog ? 'bg-bone text-black shadow-lg' : 'text-bone-dark/60 hover:text-bone'}`}
+        class={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${!isBlog && !isApi ? 'bg-bone text-black shadow-lg' : 'text-bone-dark/60 hover:text-bone'}`}
       >
         Directory
       </a>
@@ -25,6 +26,12 @@ const isBlog = pathname.includes('/blog');
         class={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${isBlog ? 'bg-bone text-black shadow-lg' : 'text-bone-dark/60 hover:text-bone'}`}
       >
         Blog
+      </a>
+      <a
+        href={`${base}api-pricing`}
+        class={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${isApi ? 'bg-bone text-black shadow-lg' : 'text-bone-dark/60 hover:text-bone'}`}
+      >
+        API
       </a>
   </div>
 

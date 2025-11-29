@@ -1,7 +1,7 @@
 ---
 /**
  * PatreonCollaborators Component
- * 
+ *
  * Displays Patreon supporters as "Collaborators" similar to GitHub contributors.
  * These supporters help maintain the project through their financial contributions.
  */
@@ -32,22 +32,22 @@ const hasPatreons = patreonSupporters.length > 0;
       <h4 class="text-xs font-bold uppercase tracking-wider text-bone/60">Collaborators</h4>
       <span class="text-[10px] text-emerald-500/60 font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full">Patreon</span>
     </div>
-    
+
     <div class="flex flex-wrap gap-2">
       {patreonSupporters.map((supporter) => {
         const style = tierStyles[supporter.tier] || tierStyles['Supporter'];
         return (
-          <a 
+          <a
             href={`https://patreon.com/${supporter.username || ''}`}
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
             class={`flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${style.bg} border ${style.border} hover:scale-105 transition-all group no-underline`}
             title={`${supporter.name} - ${style.badge} ${supporter.tier} supporter since ${supporter.since}`}
           >
             {supporter.avatar ? (
-              <img 
-                src={supporter.avatar} 
-                alt={supporter.name} 
+              <img
+                src={supporter.avatar}
+                alt={supporter.name}
                 class="w-5 h-5 rounded-full border border-white/20"
               />
             ) : (
@@ -73,8 +73,8 @@ const hasPatreons = patreonSupporters.length > 0;
       <span class="text-lg">🏆</span>
       <h4 class="text-xs font-bold uppercase tracking-wider text-bone/60">Collaborators</h4>
     </div>
-    <a 
-      href="https://patreon.com/bestof_opensource" 
+    <a
+      href="https://patreon.com/bestof_opensource"
       target="_blank"
       rel="noopener noreferrer"
       class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#f96854]/20 to-[#ff424d]/20 border border-[#f96854]/30 hover:border-[#f96854]/60 hover:scale-105 transition-all group no-underline"
