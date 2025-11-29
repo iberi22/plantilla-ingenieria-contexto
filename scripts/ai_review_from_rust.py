@@ -12,7 +12,24 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
-from scanner.grok_reviewer import GrokReviewer
+from scanner.gemini_reviewer import GeminiReviewer
+
+
+class MockRepo:
+    """Mock PyGithub Repository object for use with GrokReviewer"""
+    def __init__(self, name: str, description: str, language: str, stars: int, 
+                 forks: int = 0, topics: list = None, has_license: bool = True, has_wiki: bool = False):
+        self.name = name
+        self.description = description or ""
+        self.language = language or "Unknown"
+        self.stargazers_count = stars
+        self.forks_count = forks
+        self._topics = topics or []
+        self.license = has_license
+        self.has_wiki = has_wiki
+    
+    def get_topics(self):
+        return self._topics
 
 
 def main():
@@ -29,8 +46,8 @@ def main():
     
     print(f"📊 Found {len(analyses)} repositories to review")
     
-    # Initialize AI reviewer
-    reviewer = GrokReviewer()
+    # Initialize AI reviewer with Gemini (high quality reviews)
+    reviewer = GeminiReviewer(model="gemini-2.0-flash")
     
     # Add AI reviews to approved repos
     reviewed = []
@@ -48,41 +65,46 @@ def main():
                 # Get repository details
                 owner, name = repo.split('/')
                 
-                # Prepare context for AI
-                context = {
-                    'repo': repo,
-                    'stars': analysis['metadata']['stars'],
-                    'language': analysis['metadata'].get('language'),
-                    'description': analysis['metadata'].get('description', ''),
-                    'readme_excerpt': analysis['metadata'].get('readme', '')[:2000]  # First 2000 chars
-                }
+                # Create mock repo object for GrokReviewer
+                mock_repo = MockRepo(
+                    name=name,
+                    description=analysis['metadata'].get('description', ''),
+                    language=analysis['metadata'].get('language'),
+                    stars=analysis['metadata']['stars'],
+                    forks=analysis['metadata'].get('forks', 0),
+                    topics=analysis['metadata'].get('topics', [])
+                )
                 
-                # Call AI review
+                readme_content = analysis['metadata'].get('readme', '')[:3000]
+                
+                # Call AI review with proper parameters
                 ai_scores = reviewer.review_repository(
-                    owner=owner,
-                    repo=name,
-                    readme_content=context['readme_excerpt'],
-                    language=context['language'],
-                    stars=context['stars']
+                    mock_repo,
+                    readme_content,
+                    []  # recent_files - not available from Rust scan
                 )
                 
                 # Add AI scores to analysis
-                analysis['ai_review'] = {
-                    'architecture': ai_scores.get('architecture_score', 0),
-                    'documentation': ai_scores.get('documentation_score', 0),
-                    'testing': ai_scores.get('testing_score', 0),
-                    'best_practices': ai_scores.get('best_practices_score', 0),
-                    'innovation': ai_scores.get('innovation_score', 0),
-                    'quality_score': ai_scores.get('quality_score', 0),
-                    'reasoning': ai_scores.get('reasoning', ''),
-                    'strengths': ai_scores.get('strengths', []),
-                    'weaknesses': ai_scores.get('weaknesses', [])
-                }
-                
-                print(f"  ✅ AI Review: {ai_scores.get('quality_score', 0):.1f}/100")
-                print(f"     Architecture: {ai_scores.get('architecture_score', 0)}/10")
-                print(f"     Documentation: {ai_scores.get('documentation_score', 0)}/10")
-                print(f"     Testing: {ai_scores.get('testing_score', 0)}/10")
+                if ai_scores:
+                    analysis['ai_review'] = {
+                        'architecture': ai_scores.get('architecture', 0),
+                        'documentation': ai_scores.get('documentation', 0),
+                        'testing': ai_scores.get('testing', 0),
+                        'best_practices': ai_scores.get('practices', 0),
+                        'innovation': ai_scores.get('innovation', 0),
+                        'quality_score': reviewer.calculate_quality_score(ai_scores),
+                        'reasoning': ai_scores.get('assessment', ''),
+                        'strengths': ai_scores.get('key_strengths', []),
+                        'weaknesses': ai_scores.get('improvements', [])
+                    }
+                    
+                    print(f"  ✅ AI Review: {analysis['ai_review']['quality_score']:.1f}/100")
+                    print(f"     Architecture: {ai_scores.get('architecture', 0)}/10")
+                    print(f"     Documentation: {ai_scores.get('documentation', 0)}/10")
+                    print(f"     Testing: {ai_scores.get('testing', 0)}/10")
+                else:
+                    print(f"  ⚠️ AI review returned no scores")
+                    analysis['ai_review'] = None
                 
             except Exception as e:
                 print(f"  ⚠️ AI review failed: {e}")

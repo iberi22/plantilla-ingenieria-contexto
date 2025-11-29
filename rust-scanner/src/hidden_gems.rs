@@ -74,7 +74,10 @@ impl HiddenGemsScanner {
         let mut found_repos = Vec::new();
         let mut page = 1;
 
-        while found_repos.len() < 10 && page <= 5 {
+        // Limit to 5 projects per run to conserve API usage (reviews + images)
+        const MAX_PROJECTS: usize = 5;
+
+        while found_repos.len() < MAX_PROJECTS && page <= 5 {
             let url = format!(
                 "https://api.github.com/search/repositories?q={}&sort=updated&order=desc&per_page=20&page={}",
                 query, page
@@ -106,7 +109,7 @@ impl HiddenGemsScanner {
                           repo.full_name, repo.stars, repo.forks);
                     found_repos.push(repo);
 
-                    if found_repos.len() >= 10 {
+                    if found_repos.len() >= MAX_PROJECTS {
                         break;
                     }
                 }

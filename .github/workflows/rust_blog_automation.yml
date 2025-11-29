@@ -75,9 +75,11 @@ jobs:
         run: |
           python scripts/bridge_rust_to_ai.py output/rust_scan.json output/bridge_scan.json
 
-      - name: 3. Run AI Review
+      - name: 3. Run AI Review (Gemini with key rotation)
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
+          GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
         run: |
           python scripts/ai_review_from_rust.py output/bridge_scan.json output/ai_scan.json
 
@@ -85,7 +87,17 @@ jobs:
         run: |
           python scripts/generate_blogs_from_analysis.py output/ai_scan.json
 
-      - name: 5. Organize Blog Posts
+      - name: 5. Generate Blog Images (Gemini Imagen)
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
+          GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
+        run: |
+          cd image-generation
+          python generate_images_gemini.py --blog-dir ../website/src/content/blog --limit 5
+        continue-on-error: true
+
+      - name: 6. Organize Blog Posts
         run: |
           python scripts/organize_blog_posts.py
 
@@ -94,7 +106,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          # Add new blog posts (including organized folders)
+          # Add new blog posts (including organized folders and images)
           git add website/src/content/blog/
 
           # Add output artifacts
@@ -103,6 +115,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "🚀 Auto-generated blog posts via Rust Pipeline [skip ci]"
+            git commit -m "🚀 Auto-generated blog posts + images via Rust Pipeline"
             git push
           fi

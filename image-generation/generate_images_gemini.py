@@ -123,13 +123,23 @@ def create_prompt(title, repo, language, description):
         f"no text, clean composition, tech blog header style."
     )
 
-def process_blog_posts():
+def process_blog_posts(blog_dir: Path = None, limit: int = None):
     if not setup_gemini():
         return
 
-    blog_dir = Path("website/src/content/blog")
+    if blog_dir is None:
+        blog_dir = Path("website/src/content/blog")
+    else:
+        blog_dir = Path(blog_dir)
 
+    generated_count = 0
+    
     for md_file in blog_dir.rglob("index.md"):
+        # Check limit
+        if limit and generated_count >= limit:
+            logging.info(f"🛑 Reached limit of {limit} images, stopping.")
+            break
+            
         # Check if header.png exists
         image_path = md_file.parent / "header.png"
         if image_path.exists():
@@ -153,10 +163,25 @@ def process_blog_posts():
         prompt = create_prompt(title, repo, language, description)
 
         if generate_image_gemini(prompt, image_path):
+            generated_count += 1
+            logging.info(f"✅ Generated {generated_count} images so far")
             # Wait to avoid rate limits
             time.sleep(5)
         else:
             logging.error(f"Failed to generate image for {title}")
 
+    logging.info(f"🎉 Image generation complete! Generated {generated_count} new images.")
+
+def main():
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Generate blog header images using Gemini Imagen')
+    parser.add_argument('--blog-dir', type=str, help='Path to blog directory')
+    parser.add_argument('--limit', type=int, help='Maximum number of images to generate')
+    
+    args = parser.parse_args()
+    
+    process_blog_posts(blog_dir=args.blog_dir, limit=args.limit)
+
 if __name__ == "__main__":
-    process_blog_posts()
+    main()
