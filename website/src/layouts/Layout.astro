@@ -19,9 +19,16 @@ import Footer from '../components/Footer.astro';
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		
+		<!-- Google Translate API (hidden) -->
+		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+		
 		<title>{title}</title>
 	</head>
 	<body class="bg-dark-bg text-bone font-sans min-h-screen relative overflow-x-hidden">
+		<!-- Google Translate Element (hidden) -->
+		<div id="google_translate_element"></div>
+
 		<!-- Noise Overlay -->
 		<div class="fixed inset-0 z-[-1] opacity-[0.05] pointer-events-none bg-dark-bg" style="filter: url('#noiseFilter');"></div>
 		<svg class="hidden">
@@ -33,6 +40,43 @@ import Footer from '../components/Footer.astro';
 		<Navbar />
 		<slot />
 		<Footer />
+
+		<script>
+			// Automatic language detection and translation
+			function googleTranslateElementInit() {
+				// Get user's browser language
+				const browserLang = navigator.language.split('-')[0]; // e.g., 'es', 'fr', 'de'
+				const supportedLanguages = ['es', 'fr', 'de', 'pt', 'it', 'nl', 'pl', 'ja', 'zh', 'ar', 'ru'];
+				
+				// Only auto-translate if not English and language is supported
+				if (browserLang !== 'en' && supportedLanguages.includes(browserLang)) {
+					// Initialize translator but keep it hidden
+					new google.translate.TranslateElement(
+						{
+							pageLanguage: 'en',
+							autoDisplay: false,
+							layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT
+						},
+						'google_translate_element'
+					);
+					
+					// Hide the translator widget
+					setTimeout(() => {
+						const gTranslateWidget = document.getElementById('google_translate_element');
+						if (gTranslateWidget) {
+							gTranslateWidget.style.display = 'none';
+						}
+						
+						// Auto-translate to detected language
+						const selectElement = document.querySelector('select.goog-te-combo');
+						if (selectElement) {
+							selectElement.value = browserLang;
+							selectElement.dispatchEvent(new Event('change'));
+						}
+					}, 500);
+				}
+			}
+		</script>
 	</body>
 </html>
 
