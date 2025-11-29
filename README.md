@@ -85,6 +85,11 @@ cargo build --release --bin complete-analyzer
   - `blog_post_generator.py` - High-level generator
   - `markdown_writer.py` - Astro-compatible markdown writer
 
+- **`scripts/`** - Image generation
+  - `generate_blog_images.py` - Gemini AI image generator (ready)
+  - `generate_placeholder_headers.py` - SVG fallbacks (active)
+  - See [IMAGE_GENERATION_STATUS.md](./IMAGE_GENERATION_STATUS.md) for details
+
 - **`.github/workflows/`** - Automation
   - `discover-hidden-gems.yml` - Daily pipeline (6 AM UTC)
 

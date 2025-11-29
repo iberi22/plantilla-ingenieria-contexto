@@ -58,7 +58,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
         'general': ('📦', 'package'),
     }
     emoji, icon_type = icon_map.get(category.lower() if category else 'general', ('📦', 'package'))
-    
+
     # Language-specific secondary color
     lang_colors = {
         'python': '#3776ab',
@@ -84,7 +84,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
       <stop offset="50%" style="stop-color:#1a1a2e"/>
       <stop offset="100%" style="stop-color:#16213e"/>
     </linearGradient>
-    
+
     <!-- Accent gradients -->
     <linearGradient id="accent1" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:{colors[0]}"/>
@@ -94,7 +94,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
       <stop offset="0%" style="stop-color:{lang_accent}"/>
       <stop offset="100%" style="stop-color:{colors[0]}"/>
     </linearGradient>
-    
+
     <!-- Glow effects -->
     <filter id="glow">
       <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
@@ -110,7 +110,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    
+
     <!-- 3D cube pattern -->
     <pattern id="cubePattern" width="60" height="52" patternUnits="userSpaceOnUse">
       <path d="M30 0 L60 15 L60 45 L30 52 L0 45 L0 15 Z" fill="none" stroke="{colors[0]}" stroke-width="0.5" opacity="0.15"/>
@@ -120,7 +120,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
 
   <!-- Background -->
   <rect width="1200" height="630" fill="url(#bg)"/>
-  
+
   <!-- Cube pattern overlay -->
   <rect width="1200" height="630" fill="url(#cubePattern)" opacity="0.3"/>
 
@@ -129,7 +129,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
   <circle cx="1100" cy="400" r="120" fill="{lang_accent}" opacity="0.06" filter="url(#softGlow)"/>
   <circle cx="100" cy="500" r="150" fill="{colors[1]}" opacity="0.05" filter="url(#softGlow)"/>
   <circle cx="600" cy="600" r="200" fill="{colors[0]}" opacity="0.04"/>
-  
+
   <!-- Isometric 3D element (right side) -->
   <g transform="translate(850, 200)" opacity="0.9">
     <!-- Back face -->
@@ -143,7 +143,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
     <!-- Inner glow line -->
     <path d="M100 30 L100 130 M0 80 L100 130 L200 80" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
   </g>
-  
+
   <!-- Second smaller cube -->
   <g transform="translate(750, 350) scale(0.6)" opacity="0.7">
     <path d="M0 80 L100 30 L200 80 L200 180 L100 230 L0 180 Z" fill="{lang_accent}" opacity="0.3"/>
@@ -171,7 +171,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
   <text x="60" y="310" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="52" font-weight="700" fill="#ffffff" letter-spacing="-1">
     {display_title}
   </text>
-  
+
   <!-- Accent line under title -->
   <rect x="60" y="330" width="300" height="4" rx="2" fill="url(#accent1)" opacity="0.8"/>
 
@@ -193,7 +193,7 @@ def create_svg_header(title: str, category: str, language: str, stars: int = 0) 
     <rect width="180" height="28" rx="14" fill="#ffffff" opacity="0.05"/>
     <text x="90" y="19" font-family="ui-monospace, monospace" font-size="11" fill="#ffffff" opacity="0.4" text-anchor="middle" letter-spacing="1">BESTOF OPENSOURCE</text>
   </g>
-  
+
   <!-- Corner accent -->
   <path d="M1200 0 L1200 100 L1100 0 Z" fill="url(#accent1)" opacity="0.3"/>
   <path d="M0 630 L0 530 L100 630 Z" fill="url(#accent2)" opacity="0.2"/>

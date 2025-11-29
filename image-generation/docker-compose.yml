@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  comfyui:
+    image: ghcr.io/ai-dock/comfyui:latest-cuda
+    container_name: comfyui-local
+    ports:
+      - "8188:8188"
+    volumes:
+      # Persist ComfyUI data
+      - ./storage:/opt/ComfyUI/user_data
+      - ./output:/opt/ComfyUI/output
+      # Mount your models directory if you have one, otherwise models will be downloaded to ./storage
+      # - /path/to/your/models:/opt/ComfyUI/models
+    environment:
+      - WEB_ENABLE_AUTH=false
+      - CF_QUICK_TUNNELS=false
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped

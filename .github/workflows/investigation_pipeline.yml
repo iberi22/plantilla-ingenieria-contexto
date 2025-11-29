@@ -113,25 +113,27 @@ jobs:
           python scripts/run_scanner.py
         fi
 
-    - name: Generate Images with Gemini API
-      env:
-        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-        GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
-        GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
-      run: |
-        echo "🎨 Generating images with Gemini API..."
-        python scripts/generate_blog_images.py --limit 10
-      continue-on-error: true
+    # NOTE: Image generation disabled until Gemini billing is activated
+    # Uncomment these steps after activating billing at https://console.cloud.google.com/billing
+    # - name: Generate Images with Gemini API
+    #   env:
+    #     GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+    #     GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
+    #     GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
+    #   run: |
+    #     echo "🎨 Generating images with Gemini API..."
+    #     python scripts/generate_blog_images.py --limit 10
+    #   continue-on-error: true
 
-    - name: Generate SVG Placeholders (Fallback)
+    - name: Generate SVG Placeholders Only
       run: |
-        echo "📐 Generating SVG placeholders for posts without images..."
+        echo "📐 Generating SVG placeholders (Gemini billing not active)..."
         python scripts/generate_placeholder_headers.py
 
-    - name: Sync Images to Public
-      run: |
-        echo "🔄 Syncing images to public folder..."
-        python scripts/sync_blog_images.py
+    # - name: Sync Images to Public
+    #   run: |
+    #     echo "🔄 Syncing images to public folder..."
+    #     python scripts/sync_blog_images.py
 
     - name: Check for changes
       id: git-check

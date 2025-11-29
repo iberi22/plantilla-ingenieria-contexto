@@ -1,6 +1,6 @@
 # 📋 Gestión de Tareas: Open Source Video Generator + Blog
 
-_Última Actualización: 27 de noviembre de 2025 - Sprint de Puesta a Punto_
+**Última Actualización: 29 de noviembre de 2025 - Imágenes en Standby**
 
 ## 🎯 Resumen Ejecutivo y Estado Actual
 
@@ -22,7 +22,7 @@ _Última Actualización: 27 de noviembre de 2025 - Sprint de Puesta a Punto_
 - [🟢] 🔧 Setup & Dependencies: 100% (7/7 tareas) ✅
 - [🟡] 🔄 CI/CD & Automation: 85% (Deploy funcionando, webhook pendiente)
 - [🟢] 📚 Documentación: 100% (15/15 tareas) ✅
-- [🟢] 🖼️ Image Generation: 100% (Gemini API + SVG Fallback) ✅ **NUEVO**
+- [🟢] 🖼️ Image Generation: 100% (Gemini API ready, SVG active) 🟡 **PAUSADO**
 
 **Progreso por Componente (Repositorio Privado - bestof-pipeline):**
 
@@ -102,8 +102,10 @@ _Última Actualización: 27 de noviembre de 2025 - Sprint de Puesta a Punto_
 - [x] 11.4: Syntax highlighting mejorado
 - [x] 11.5: Responsive design refinado
 
-## 🖼️ FASE 16: Image Generation with Gemini API (✅ COMPLETADO - 29 nov 2025)
+## 🖼️ FASE 16: Image Generation with Gemini API (🟡 PAUSADO - 29 nov 2025)
 **Objetivo:** Generar imágenes de alta calidad para blog posts usando Gemini Imagen API
+
+**Estado:** Pausado hasta activación de billing de Google Cloud
 
 - [x] 16.1: Crear `scripts/generate_blog_images.py` con Gemini Imagen 4.0
   - API key rotation para load balancing
@@ -130,6 +132,11 @@ _Última Actualización: 27 de noviembre de 2025 - Sprint de Puesta a Punto_
   - Troubleshooting y FAQs
   - Ejemplos de uso
 
+- [x] 16.6: Deshabilitar generación automática (workflows)
+  - Comentar steps de Gemini en workflows
+  - Preservar SVGs actuales en producción
+  - Documentar proceso de reactivación
+
 **Características Implementadas:**
 - ✅ Generación AI con Gemini Imagen 4.0 (PNG 4K)
 - ✅ Fallback SVG profesional con título
@@ -137,12 +144,28 @@ _Última Actualización: 27 de noviembre de 2025 - Sprint de Puesta a Punto_
 - ✅ Prompts contextuales (lenguaje + categoría)
 - ✅ Pipeline automático integrado
 - ✅ CI/CD con manejo de errores robusto
+- ✅ **Workflows deshabilitados hasta activación de billing**
+
+**Decisión Estratégica (29 nov 2025):**
+- 🟡 Usar SVG placeholders hasta tener dominio propio
+- 🟡 Esperar a invertir $20 en Google Cloud billing
+- 🟡 Activar Gemini cuando haya tráfico real
+- ✅ Documentación lista para reactivación inmediata
 
 **Archivos Creados/Modificados:**
-- `scripts/generate_blog_images.py` (nuevo)
-- `scripts/generate_placeholder_headers.py` (mejorado)
-- `scripts/run_full_rust_pipeline.ps1` (actualizado)
-- `.github/workflows/rust_blog_automation.yml` (actualizado)
-- `docs/IMAGE_GENERATION_GUIDE.md` (nuevo)
+- `scripts/generate_blog_images.py` (listo para usar)
+- `scripts/generate_placeholder_headers.py` (activo)
+- `scripts/run_full_rust_pipeline.ps1` (SVG mode)
+- `.github/workflows/investigation_pipeline.yml` (Gemini comentado)
+- `.github/workflows/rust_blog_automation.yml` (Gemini comentado)
+- `docs/IMAGE_GENERATION_GUIDE.md`
+- `IMAGE_GENERATION_STATUS.md` (nuevo - estado actual)
+- `GEMINI_ACTIVATION_QUICKSTART.md` (nuevo - guía rápida)
+
+**Para Reactivar Gemini:**
+1. Activar billing en https://console.cloud.google.com/billing
+2. Descomentar steps en workflows
+3. Ejecutar `python scripts/generate_blog_images.py --regenerate-all`
+4. Ver guía: `GEMINI_ACTIVATION_QUICKSTART.md`
 
 ---

@@ -76,12 +76,12 @@ def rotate_key():
 def generate_image(prompt: str, output_path: Path, retries: int = 3) -> bool:
     """
     Generate an image using Gemini Imagen API.
-    
+
     Args:
         prompt: Description of the image to generate
         output_path: Where to save the image
         retries: Number of retry attempts
-        
+
     Returns:
         True if successful, False otherwise
     """
@@ -120,7 +120,7 @@ def generate_image(prompt: str, output_path: Path, retries: int = 3) -> bool:
 
         except Exception as e:
             error_msg = str(e).lower()
-            
+
             # Check for quota/rate limit errors
             if "quota" in error_msg or "rate" in error_msg or "limit" in error_msg:
                 logger.warning(f"⚠️ Rate limit hit on key #{CURRENT_KEY_INDEX + 1}, rotating...")
@@ -129,9 +129,9 @@ def generate_image(prompt: str, output_path: Path, retries: int = 3) -> bool:
                     import time
                     time.sleep(2)  # Brief pause before retry
                     continue
-            
+
             logger.error(f"❌ Error generating image: {e}")
-            
+
             if attempt < retries:
                 import time
                 time.sleep(2)
@@ -166,13 +166,13 @@ def parse_frontmatter(content: str) -> Dict:
 def create_professional_prompt(title: str, description: str, language: str = "", category: str = "") -> str:
     """
     Create a detailed prompt for generating professional tech infographics.
-    
+
     Args:
         title: Repository/project title
         description: Short description of the project
         language: Primary programming language
         category: Project category (ai, web, devops, etc.)
-        
+
     Returns:
         Detailed prompt for Imagen API
     """
@@ -183,7 +183,7 @@ def create_professional_prompt(title: str, description: str, language: str = "",
         "dramatic lighting, sharp focus, clean composition, "
         "tech blog header style, no text overlays"
     )
-    
+
     # Language-specific visual elements
     lang_visuals = {
         'python': 'Python ecosystem with code editors and data pipelines',
@@ -195,7 +195,7 @@ def create_professional_prompt(title: str, description: str, language: str = "",
         'c++': 'C++ high-performance computing infrastructure',
         'ruby': 'Ruby web application stack with elegant frameworks',
     }
-    
+
     # Category-specific visual themes
     category_themes = {
         'ai': 'neural networks, machine learning models, AI agents, data flows',
@@ -204,11 +204,11 @@ def create_professional_prompt(title: str, description: str, language: str = "",
         'development': 'code editors, version control, testing frameworks, developer tools',
         'systems': 'server infrastructure, distributed systems, network topology, system architecture',
     }
-    
+
     # Build contextual visual description
     lang_context = lang_visuals.get(language.lower(), 'modern software architecture')
     category_context = category_themes.get(category.lower(), 'technology infrastructure')
-    
+
     # Construct final prompt
     prompt = (
         f"Create a stunning visualization for '{title}': {description}. "
@@ -219,85 +219,85 @@ def create_professional_prompt(title: str, description: str, language: str = "",
         f"Color palette: tech blues, cyber purples, neon accents. "
         f"16:9 aspect ratio, 4K resolution quality."
     )
-    
+
     return prompt
 
 
 def generate_images_for_blog_posts(blog_dir: Path = None, limit: int = None) -> int:
     """
     Generate images for blog posts that don't have them.
-    
+
     Args:
         blog_dir: Path to blog directory (default: website/src/content/blog)
         limit: Maximum number of images to generate (default: all)
-        
+
     Returns:
         Number of images successfully generated
     """
     if blog_dir is None:
         blog_dir = Path("website/src/content/blog")
-    
+
     if not blog_dir.exists():
         logger.error(f"❌ Blog directory not found: {blog_dir}")
         return 0
-    
+
     logger.info(f"📁 Scanning blog posts in: {blog_dir}")
-    
+
     generated = 0
     processed = 0
-    
+
     for md_file in blog_dir.rglob("index.md"):
         # Skip if already has an image
         header_png = md_file.parent / "header.png"
         header_svg = md_file.parent / "header.svg"
-        
+
         if header_png.exists() or header_svg.exists():
             logger.debug(f"⏭️  Skipping {md_file.parent.name} (already has image)")
             continue
-        
+
         # Check limit
         if limit and generated >= limit:
             logger.info(f"✋ Reached generation limit ({limit})")
             break
-        
+
         processed += 1
-        
+
         try:
             # Parse frontmatter
             with open(md_file, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             meta = parse_frontmatter(content)
             title = meta.get('title', md_file.parent.name)
             description = meta.get('description', '')
             language = meta.get('language', '')
             category = meta.get('category', meta.get('categories', ''))
-            
+
             logger.info(f"\n{'='*60}")
             logger.info(f"📝 Processing: {title}")
             logger.info(f"   Language: {language or 'N/A'}")
             logger.info(f"   Category: {category or 'N/A'}")
-            
+
             # Create prompt
             prompt = create_professional_prompt(title, description, language, category)
-            
+
             # Generate image
             if generate_image(prompt, header_png):
                 generated += 1
                 logger.info(f"✅ Generated {generated}/{processed} images")
             else:
                 logger.warning(f"⚠️ Failed to generate image for {title}")
-            
+
         except Exception as e:
             logger.error(f"❌ Error processing {md_file.parent.name}: {e}")
             continue
-    
+
     logger.info(f"\n{'='*60}")
     logger.info(f"🎉 Image generation complete!")
     logger.info(f"   Generated: {generated}")
     logger.info(f"   Processed: {processed}")
     logger.info(f"{'='*60}")
-    
+
     return generated
 
 
@@ -308,7 +308,7 @@ def generate_images_for_blog_posts(blog_dir: Path = None, limit: int = None) -> 
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description='Generate professional blog header images using Gemini Imagen API'
     )
@@ -329,29 +329,29 @@ def main():
         action='store_true',
         help='Enable debug logging'
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     logger.info("="*60)
     logger.info("🎨 Gemini Image Generator for Blog Posts")
     logger.info("="*60)
-    
+
     # Setup Gemini API
     if not setup_gemini():
         logger.error("❌ Failed to initialize Gemini API")
         logger.info("💡 Falling back to SVG placeholders...")
         return 1
-    
+
     # Generate images
     count = generate_images_for_blog_posts(args.blog_dir, args.limit)
-    
+
     if count == 0:
         logger.warning("⚠️ No images were generated")
         return 1
-    
+
     logger.info(f"✅ Successfully generated {count} image(s)")
     return 0
 

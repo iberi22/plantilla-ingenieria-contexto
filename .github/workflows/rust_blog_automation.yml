@@ -87,24 +87,27 @@ jobs:
         run: |
           python scripts/generate_blogs_from_analysis.py output/ai_scan.json
 
-      - name: 5. Generate Images with Gemini API
-        env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
-          GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
-        run: |
-          python scripts/generate_blog_images.py --limit 5
-        continue-on-error: true
+      # NOTE: Image generation disabled until Gemini billing is activated
+      # Uncomment after activating billing at https://console.cloud.google.com/billing
+      # - name: 5. Generate Images with Gemini API
+      #   env:
+      #     GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      #     GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
+      #     GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
+      #   run: |
+      #     python scripts/generate_blog_images.py --limit 5
+      #   continue-on-error: true
 
-      - name: 6. Generate SVG Placeholders (Fallback)
+      - name: 5. Generate SVG Placeholders Only
         run: |
+          echo "📐 Using SVG placeholders (Gemini billing not active)"
           python scripts/generate_placeholder_headers.py
 
-      - name: 7. Sync Images to Public
-        run: |
-          python scripts/sync_blog_images.py
+      # - name: 6. Sync Images to Public
+      #   run: |
+      #     python scripts/sync_blog_images.py
 
-      - name: 8. Organize Blog Posts
+      - name: 6. Organize Blog Posts
         run: |
           python scripts/organize_blog_posts.py
 
