@@ -341,7 +341,7 @@ def generate_infographic(prompt: str, output_path: Path, retries: int = 3) -> bo
             logger.debug(f"Prompt: {prompt[:200]}...")
             
             response = CLIENT.models.generate_images(
-                model='imagen-3.0-generate-002',
+                model='imagen-4.0-generate-001',
                 prompt=prompt,
                 config=types.GenerateImagesConfig(
                     number_of_images=1,
