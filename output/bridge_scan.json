@@ -1,159 +1,169 @@
 [
   {
-    "repo": "ALIILAPRO/v2rayNG-Config",
+    "repo": "ALIILAPRO/MTProtoProxy",
     "recommendation": "APPROVE",
-    "total_score": 77.675,
-    "scores": {
-      "commit_activity": 100,
-      "code_quality": 90,
-      "developer_engagement": 45.900000000000006,
-      "project_maturity": 74.8
-    },
-    "metadata": {
-      "description": "Get new and fast config for bypassing net.",
-      "stars": 264,
-      "forks": 39,
-      "language": "HTML",
-      "topics": [
-        "aliilapro",
-        "config",
-        "v2ray",
-        "v2rayng",
-        "vless",
-        "vpn"
-      ],
-      "license": "GNU General Public License v3.0",
-      "created_at": "2023-11-12T00:48:10Z",
-      "updated_at": "2025-11-29T02:15:59Z",
-      "pushed_at": "2025-11-29T02:15:58Z",
-      "readme": ""
-    }
-  },
-  {
-    "repo": "Mercury13/unicodia",
-    "recommendation": "APPROVE",
-    "total_score": 78.35,
-    "scores": {
-      "commit_activity": 100,
-      "code_quality": 90,
-      "developer_engagement": 23.4,
-      "project_maturity": 100
-    },
-    "metadata": {
-      "description": "Encyclopedia of Unicode characters",
-      "stars": 154,
-      "forks": 16,
-      "language": "C++",
-      "topics": [
-        "character-table",
-        "emoji-picker",
-        "emoji-unicode",
-        "encyclopedia",
-        "unicode",
-        "unicode-characters",
-        "unicode-data",
-        "unicode-table"
-      ],
-      "license": "GNU General Public License v3.0",
-      "created_at": "2021-05-15T14:55:17Z",
-      "updated_at": "2025-11-29T02:15:47Z",
-      "pushed_at": "2025-11-29T02:15:43Z",
-      "readme": ""
-    }
-  },
-  {
-    "repo": "ynkdir/py-win32more",
-    "recommendation": "APPROVE",
-    "total_score": 77.35,
-    "scores": {
-      "commit_activity": 100,
-      "code_quality": 80,
-      "developer_engagement": 29.4,
-      "project_maturity": 100
-    },
-    "metadata": {
-      "description": "Python bindings for Win32 API generated from win32metadata.",
-      "stars": 204,
-      "forks": 18,
-      "language": "Python",
-      "topics": [],
-      "license": "MIT License",
-      "created_at": "2022-05-01T14:33:58Z",
-      "updated_at": "2025-11-29T02:15:28Z",
-      "pushed_at": "2025-11-29T02:15:24Z",
-      "readme": ""
-    }
-  },
-  {
-    "repo": "Galeax/CVE2CAPEC",
-    "recommendation": "APPROVE",
-    "total_score": 71.775,
+    "total_score": 80.075,
     "scores": {
       "commit_activity": 100,
       "code_quality": 100,
-      "developer_engagement": 46.5,
-      "project_maturity": 40.6
+      "developer_engagement": 20.3,
+      "project_maturity": 100
     },
     "metadata": {
-      "description": "Generate MITRE ATT&CK and D3FEND from a list of CVEs. Database with CVE, CWE, CAPEC, MITRE ATT&CK and D3FEND Techniques data is updated daily. Showcased at BlackHat Europe 2025 Arsenal.",
-      "stars": 250,
-      "forks": 43,
-      "language": "Python",
+      "description": "Get daily and high-speed MTProto proxy for Telegram.",
+      "stars": 128,
+      "forks": 15,
+      "language": "HTML",
       "topics": [
-        "blackhat",
-        "blackhat-arsenal",
-        "blackhateurope-2025",
-        "capec",
-        "cve",
-        "cves",
-        "cwe",
-        "cybersecurity",
-        "d3fend",
-        "infosec",
-        "infosectools",
-        "mitre-attack",
-        "mitre-attack-db",
-        "mitre-attack-navigator",
-        "mitre-capec",
-        "mitre-cwe",
-        "mitre-d3fend",
-        "mitre-defend",
-        "ttp"
+        "mtproto-proxy",
+        "mtproxy",
+        "python",
+        "telegram"
       ],
-      "license": "GNU General Public License v3.0",
-      "created_at": "2024-10-18T08:58:56Z",
-      "updated_at": "2025-11-29T02:13:58Z",
-      "pushed_at": "2025-11-29T02:13:55Z",
+      "license": "MIT License",
+      "created_at": "2023-02-24T04:55:54Z",
+      "updated_at": "2025-11-29T02:18:39Z",
+      "pushed_at": "2025-11-29T02:18:36Z",
       "readme": ""
     }
   },
   {
-    "repo": "unixorn/fzf-zsh-plugin",
+    "repo": "WHU-Sigma/HyperSIGMA",
     "recommendation": "APPROVE",
-    "total_score": 86.45,
+    "total_score": 72.825,
     "scores": {
       "commit_activity": 100,
       "code_quality": 90,
-      "developer_engagement": 55.800000000000004,
-      "project_maturity": 100
+      "developer_engagement": 44.5,
+      "project_maturity": 56.8
     },
     "metadata": {
-      "description": "ZSH plugin to enable fzf searches of a lot more stuff - docker, tmux, homebrew and more.",
-      "stars": 393,
-      "forks": 33,
-      "language": "Shell",
+      "description": "The official repo for [TPAMI'25] \"HyperSIGMA: Hyperspectral Intelligence Comprehension Foundation Model\"",
+      "stars": 315,
+      "forks": 26,
+      "language": "Python",
       "topics": [
-        "command-history",
-        "fzf",
-        "fzf-scripts",
-        "hacktoberfest",
-        "zsh",
-        "zsh-plugin"
+        "computer-vision",
+        "deep-learning",
+        "foundation-model",
+        "foundation-models",
+        "hyperspectral-anomaly-detection",
+        "hyperspectral-change-detection",
+        "hyperspectral-datasets",
+        "hyperspectral-image-classification",
+        "hyperspectral-image-denoising",
+        "hyperspectral-image-segmentation",
+        "hyperspectral-super-resolution",
+        "hyperspectral-target-detection",
+        "hyperspectral-unmixing",
+        "pre-training",
+        "pytorch",
+        "remote-sensing",
+        "remote-sensing-foundation-model",
+        "self-attention",
+        "spectral-spatial-information-fusion",
+        "transformer"
       ],
       "license": "Apache License 2.0",
-      "created_at": "2020-09-13T21:02:40Z",
-      "updated_at": "2025-11-29T02:13:34Z",
-      "pushed_at": "2025-11-29T02:13:30Z",
+      "created_at": "2024-05-09T12:11:20Z",
+      "updated_at": "2025-11-29T02:18:09Z",
+      "pushed_at": "2025-11-29T02:18:05Z",
+      "readme": ""
+    }
+  },
+  {
+    "repo": "MrMohebi/xray-proxy-grabber-telegram",
+    "recommendation": "APPROVE",
+    "total_score": 77.375,
+    "scores": {
+      "commit_activity": 100,
+      "code_quality": 80,
+      "developer_engagement": 43.0,
+      "project_maturity": 86.5
+    },
+    "metadata": {
+      "description": "Xray proxy grabber and checker + JSON and YAML Config - telegram channels",
+      "stars": 260,
+      "forks": 34,
+      "language": "Python",
+      "topics": [
+        "bot",
+        "clash",
+        "clash-meta",
+        "free",
+        "proxy",
+        "server",
+        "telegram",
+        "v2ray",
+        "vless",
+        "vmess",
+        "vpn",
+        "xray"
+      ],
+      "license": "MIT License",
+      "created_at": "2023-07-17T12:08:05Z",
+      "updated_at": "2025-11-29T02:18:01Z",
+      "pushed_at": "2025-11-29T02:17:58Z",
+      "readme": ""
+    }
+  },
+  {
+    "repo": "MattParkerDev/SharpIDE",
+    "recommendation": "REJECT",
+    "total_score": 56.325,
+    "scores": {
+      "commit_activity": 100,
+      "code_quality": 80,
+      "developer_engagement": 43.3,
+      "project_maturity": 2.0
+    },
+    "metadata": {
+      "description": "A modern, cross platform IDE for .NET, built with .NET & Godot",
+      "stars": 378,
+      "forks": 11,
+      "language": "C#",
+      "topics": [
+        "csharp",
+        "dotnet",
+        "godot",
+        "razor",
+        "roslyn"
+      ],
+      "license": "MIT License",
+      "created_at": "2025-11-08T13:01:42Z",
+      "updated_at": "2025-11-29T02:17:55Z",
+      "pushed_at": "2025-11-29T02:17:50Z",
+      "readme": ""
+    }
+  },
+  {
+    "repo": "enzonotario/esjs-argentina-datos-api",
+    "recommendation": "APPROVE",
+    "total_score": 67.15,
+    "scores": {
+      "commit_activity": 100,
+      "code_quality": 80,
+      "developer_engagement": 18.200000000000003,
+      "project_maturity": 70.4
+    },
+    "metadata": {
+      "description": "API p\u00fablica para diferentes datos de Argentina",
+      "stars": 132,
+      "forks": 10,
+      "language": "TypeScript",
+      "topics": [
+        "api",
+        "argentina",
+        "argentina-data",
+        "argentinadatos",
+        "datos",
+        "esjs",
+        "static-api"
+      ],
+      "license": "MIT License",
+      "created_at": "2023-12-25T21:36:32Z",
+      "updated_at": "2025-11-29T02:17:10Z",
+      "pushed_at": "2025-11-29T02:17:06Z",
       "readme": ""
     }
   }

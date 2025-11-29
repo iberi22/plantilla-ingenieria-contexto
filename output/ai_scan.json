@@ -1,31 +1,29 @@
 [
   {
-    "repo": "ALIILAPRO/v2rayNG-Config",
+    "repo": "ALIILAPRO/MTProtoProxy",
     "recommendation": "APPROVE",
-    "total_score": 77.675,
+    "total_score": 80.075,
     "scores": {
       "commit_activity": 100,
-      "code_quality": 90,
-      "developer_engagement": 45.900000000000006,
-      "project_maturity": 74.8
+      "code_quality": 100,
+      "developer_engagement": 20.3,
+      "project_maturity": 100
     },
     "metadata": {
-      "description": "Get new and fast config for bypassing net.",
-      "stars": 264,
-      "forks": 39,
+      "description": "Get daily and high-speed MTProto proxy for Telegram.",
+      "stars": 128,
+      "forks": 15,
       "language": "HTML",
       "topics": [
-        "aliilapro",
-        "config",
-        "v2ray",
-        "v2rayng",
-        "vless",
-        "vpn"
+        "mtproto-proxy",
+        "mtproxy",
+        "python",
+        "telegram"
       ],
-      "license": "GNU General Public License v3.0",
-      "created_at": "2023-11-12T00:48:10Z",
-      "updated_at": "2025-11-29T02:15:59Z",
-      "pushed_at": "2025-11-29T02:15:58Z",
+      "license": "MIT License",
+      "created_at": "2023-02-24T04:55:54Z",
+      "updated_at": "2025-11-29T02:18:39Z",
+      "pushed_at": "2025-11-29T02:18:36Z",
       "readme": ""
     },
     "ai_review": {
@@ -35,152 +33,60 @@
       "best_practices": 1,
       "innovation": 2,
       "quality_score": 12.0,
-      "reasoning": "This repository provides V2Ray configurations, but lacks documentation and quality control, making it difficult to assess its reliability and security.",
+      "reasoning": "Currently, the repository lacks any code or documentation, making it essentially an empty project with potential but requiring significant development to fulfill its stated purpose.",
       "strengths": [
-        "Provides V2Ray configurations",
-        "Simple and focused purpose",
-        "Potentially useful for bypassing network restrictions"
+        "Clear project goal (providing MTProto proxies)",
+        "Simple concept",
+        "Active development (based on stars/forks)"
       ],
       "weaknesses": [
-        "Add a README explaining the purpose and usage of the configurations",
-        "Implement a system for validating and updating configurations",
-        "Consider security implications of distributing configurations"
+        "Provide a README with instructions and context.",
+        "Implement actual proxy generation or retrieval logic.",
+        "Add code, even if it's just a basic script."
       ]
     }
   },
   {
-    "repo": "Mercury13/unicodia",
+    "repo": "WHU-Sigma/HyperSIGMA",
     "recommendation": "APPROVE",
-    "total_score": 78.35,
+    "total_score": 72.825,
     "scores": {
       "commit_activity": 100,
       "code_quality": 90,
-      "developer_engagement": 23.4,
-      "project_maturity": 100
+      "developer_engagement": 44.5,
+      "project_maturity": 56.8
     },
     "metadata": {
-      "description": "Encyclopedia of Unicode characters",
-      "stars": 154,
-      "forks": 16,
-      "language": "C++",
-      "topics": [
-        "character-table",
-        "emoji-picker",
-        "emoji-unicode",
-        "encyclopedia",
-        "unicode",
-        "unicode-characters",
-        "unicode-data",
-        "unicode-table"
-      ],
-      "license": "GNU General Public License v3.0",
-      "created_at": "2021-05-15T14:55:17Z",
-      "updated_at": "2025-11-29T02:15:47Z",
-      "pushed_at": "2025-11-29T02:15:43Z",
-      "readme": ""
-    },
-    "ai_review": {
-      "architecture": 6,
-      "documentation": 2,
-      "testing": 1,
-      "best_practices": 5,
-      "innovation": 7,
-      "quality_score": 42.0,
-      "reasoning": "Unicodia has the potential to be a valuable resource for Unicode character information, but it needs significant improvements in documentation, testing, and code structure to reach its full potential.",
-      "strengths": [
-        "Provides a comprehensive Unicode character encyclopedia",
-        "Uses C++ for potentially better performance",
-        "Offers a unique character table and emoji picker functionality"
-      ],
-      "weaknesses": [
-        "Significantly improve documentation with a detailed README and code comments",
-        "Implement a robust testing strategy with unit and integration tests",
-        "Refactor the code for better modularity and maintainability"
-      ]
-    }
-  },
-  {
-    "repo": "ynkdir/py-win32more",
-    "recommendation": "APPROVE",
-    "total_score": 77.35,
-    "scores": {
-      "commit_activity": 100,
-      "code_quality": 80,
-      "developer_engagement": 29.4,
-      "project_maturity": 100
-    },
-    "metadata": {
-      "description": "Python bindings for Win32 API generated from win32metadata.",
-      "stars": 204,
-      "forks": 18,
-      "language": "Python",
-      "topics": [],
-      "license": "MIT License",
-      "created_at": "2022-05-01T14:33:58Z",
-      "updated_at": "2025-11-29T02:15:28Z",
-      "pushed_at": "2025-11-29T02:15:24Z",
-      "readme": ""
-    },
-    "ai_review": {
-      "architecture": 7,
-      "documentation": 3,
-      "testing": 4,
-      "best_practices": 6,
-      "innovation": 8,
-      "quality_score": 56.0,
-      "reasoning": "This project offers a promising approach to generating Python Win32 bindings, but requires significant improvements in documentation and testing to become widely usable.",
-      "strengths": [
-        "Automated generation of Win32 bindings",
-        "Potential for comprehensive Win32 API coverage",
-        "Addresses a need for up-to-date Python Win32 bindings"
-      ],
-      "weaknesses": [
-        "Improve README with clear installation instructions and usage examples",
-        "Add comprehensive API documentation and code comments",
-        "Implement more robust testing and CI/CD pipelines"
-      ]
-    }
-  },
-  {
-    "repo": "Galeax/CVE2CAPEC",
-    "recommendation": "APPROVE",
-    "total_score": 71.775,
-    "scores": {
-      "commit_activity": 100,
-      "code_quality": 100,
-      "developer_engagement": 46.5,
-      "project_maturity": 40.6
-    },
-    "metadata": {
-      "description": "Generate MITRE ATT&CK and D3FEND from a list of CVEs. Database with CVE, CWE, CAPEC, MITRE ATT&CK and D3FEND Techniques data is updated daily. Showcased at BlackHat Europe 2025 Arsenal.",
-      "stars": 250,
-      "forks": 43,
+      "description": "The official repo for [TPAMI'25] \"HyperSIGMA: Hyperspectral Intelligence Comprehension Foundation Model\"",
+      "stars": 315,
+      "forks": 26,
       "language": "Python",
       "topics": [
-        "blackhat",
-        "blackhat-arsenal",
-        "blackhateurope-2025",
-        "capec",
-        "cve",
-        "cves",
-        "cwe",
-        "cybersecurity",
-        "d3fend",
-        "infosec",
-        "infosectools",
-        "mitre-attack",
-        "mitre-attack-db",
-        "mitre-attack-navigator",
-        "mitre-capec",
-        "mitre-cwe",
-        "mitre-d3fend",
-        "mitre-defend",
-        "ttp"
+        "computer-vision",
+        "deep-learning",
+        "foundation-model",
+        "foundation-models",
+        "hyperspectral-anomaly-detection",
+        "hyperspectral-change-detection",
+        "hyperspectral-datasets",
+        "hyperspectral-image-classification",
+        "hyperspectral-image-denoising",
+        "hyperspectral-image-segmentation",
+        "hyperspectral-super-resolution",
+        "hyperspectral-target-detection",
+        "hyperspectral-unmixing",
+        "pre-training",
+        "pytorch",
+        "remote-sensing",
+        "remote-sensing-foundation-model",
+        "self-attention",
+        "spectral-spatial-information-fusion",
+        "transformer"
       ],
-      "license": "GNU General Public License v3.0",
-      "created_at": "2024-10-18T08:58:56Z",
-      "updated_at": "2025-11-29T02:13:58Z",
-      "pushed_at": "2025-11-29T02:13:55Z",
+      "license": "Apache License 2.0",
+      "created_at": "2024-05-09T12:11:20Z",
+      "updated_at": "2025-11-29T02:18:09Z",
+      "pushed_at": "2025-11-29T02:18:05Z",
       "readme": ""
     },
     "ai_review": {
@@ -190,65 +96,151 @@
       "best_practices": 5,
       "innovation": 8,
       "quality_score": 44.0,
-      "reasoning": "CVE2CAPEC shows promise in automating threat intelligence mapping but requires significant improvements in documentation, testing, and code structure to reach its full potential.",
+      "reasoning": "This project presents a promising foundation model for hyperspectral data, but requires substantial improvements in documentation, testing, and code structure to reach its full potential.",
       "strengths": [
-        "Automated CVE to ATT&CK/D3FEND mapping",
-        "Daily database updates",
-        "Addresses a critical need in cybersecurity"
+        "Focus on a novel hyperspectral intelligence comprehension foundation model.",
+        "Potential for significant impact in hyperspectral anomaly detection.",
+        "Early stage project with active development potential."
       ],
       "weaknesses": [
-        "Comprehensive README documentation with usage examples",
-        "Implement unit and integration tests",
-        "Improve code modularity and structure"
+        "Significantly improve documentation, including README, API docs, and examples.",
+        "Implement comprehensive testing and CI/CD pipelines.",
+        "Enhance code structure and modularity for better maintainability and scalability."
       ]
     }
   },
   {
-    "repo": "unixorn/fzf-zsh-plugin",
+    "repo": "MrMohebi/xray-proxy-grabber-telegram",
     "recommendation": "APPROVE",
-    "total_score": 86.45,
+    "total_score": 77.375,
     "scores": {
       "commit_activity": 100,
-      "code_quality": 90,
-      "developer_engagement": 55.800000000000004,
-      "project_maturity": 100
+      "code_quality": 80,
+      "developer_engagement": 43.0,
+      "project_maturity": 86.5
     },
     "metadata": {
-      "description": "ZSH plugin to enable fzf searches of a lot more stuff - docker, tmux, homebrew and more.",
-      "stars": 393,
-      "forks": 33,
-      "language": "Shell",
+      "description": "Xray proxy grabber and checker + JSON and YAML Config - telegram channels",
+      "stars": 260,
+      "forks": 34,
+      "language": "Python",
       "topics": [
-        "command-history",
-        "fzf",
-        "fzf-scripts",
-        "hacktoberfest",
-        "zsh",
-        "zsh-plugin"
+        "bot",
+        "clash",
+        "clash-meta",
+        "free",
+        "proxy",
+        "server",
+        "telegram",
+        "v2ray",
+        "vless",
+        "vmess",
+        "vpn",
+        "xray"
       ],
-      "license": "Apache License 2.0",
-      "created_at": "2020-09-13T21:02:40Z",
-      "updated_at": "2025-11-29T02:13:34Z",
-      "pushed_at": "2025-11-29T02:13:30Z",
+      "license": "MIT License",
+      "created_at": "2023-07-17T12:08:05Z",
+      "updated_at": "2025-11-29T02:18:01Z",
+      "pushed_at": "2025-11-29T02:17:58Z",
+      "readme": ""
+    },
+    "ai_review": {
+      "architecture": 4,
+      "documentation": 2,
+      "testing": 1,
+      "best_practices": 3,
+      "innovation": 5,
+      "quality_score": 30.0,
+      "reasoning": "The project shows promise in automating proxy acquisition but lacks sufficient documentation, testing, and architectural design for robust and reliable operation.",
+      "strengths": [
+        "Automates proxy grabbing from Telegram",
+        "Provides JSON and YAML configuration support",
+        "Potentially useful for circumventing censorship"
+      ],
+      "weaknesses": [
+        "Add comprehensive documentation including usage examples",
+        "Implement unit and integration tests",
+        "Improve code structure and modularity for better maintainability"
+      ]
+    }
+  },
+  {
+    "repo": "MattParkerDev/SharpIDE",
+    "recommendation": "REJECT",
+    "total_score": 56.325,
+    "scores": {
+      "commit_activity": 100,
+      "code_quality": 80,
+      "developer_engagement": 43.3,
+      "project_maturity": 2.0
+    },
+    "metadata": {
+      "description": "A modern, cross platform IDE for .NET, built with .NET & Godot",
+      "stars": 378,
+      "forks": 11,
+      "language": "C#",
+      "topics": [
+        "csharp",
+        "dotnet",
+        "godot",
+        "razor",
+        "roslyn"
+      ],
+      "license": "MIT License",
+      "created_at": "2025-11-08T13:01:42Z",
+      "updated_at": "2025-11-29T02:17:55Z",
+      "pushed_at": "2025-11-29T02:17:50Z",
+      "readme": ""
+    },
+    "ai_review": null
+  },
+  {
+    "repo": "enzonotario/esjs-argentina-datos-api",
+    "recommendation": "APPROVE",
+    "total_score": 67.15,
+    "scores": {
+      "commit_activity": 100,
+      "code_quality": 80,
+      "developer_engagement": 18.200000000000003,
+      "project_maturity": 70.4
+    },
+    "metadata": {
+      "description": "API pública para diferentes datos de Argentina",
+      "stars": 132,
+      "forks": 10,
+      "language": "TypeScript",
+      "topics": [
+        "api",
+        "argentina",
+        "argentina-data",
+        "argentinadatos",
+        "datos",
+        "esjs",
+        "static-api"
+      ],
+      "license": "MIT License",
+      "created_at": "2023-12-25T21:36:32Z",
+      "updated_at": "2025-11-29T02:17:10Z",
+      "pushed_at": "2025-11-29T02:17:06Z",
       "readme": ""
     },
     "ai_review": {
       "architecture": 6,
-      "documentation": 4,
-      "testing": 2,
+      "documentation": 2,
+      "testing": 1,
       "best_practices": 5,
       "innovation": 7,
-      "quality_score": 48.0,
-      "reasoning": "This plugin offers valuable extensions to fzf for ZSH users, but would benefit from improved documentation, testing, and code structure.",
+      "quality_score": 42.0,
+      "reasoning": "This project offers a valuable service by providing an API for Argentinian data, but it needs significant improvements in documentation, testing, and code structure to reach its full potential.",
       "strengths": [
-        "Extends fzf functionality to various tools",
-        "Provides useful shell integrations",
-        "Addresses common workflow needs"
+        "Provides a public API for Argentinian data.",
+        "Written in TypeScript.",
+        "Addresses a specific regional data need."
       ],
       "weaknesses": [
-        "Improve documentation with examples and usage instructions",
-        "Add tests to ensure functionality and prevent regressions",
-        "Refactor code for better modularity and readability"
+        "Add comprehensive documentation, including API endpoints and usage examples.",
+        "Implement unit and integration tests to ensure code quality and reliability.",
+        "Improve code structure and modularity for better maintainability and scalability."
       ]
     }
   }
