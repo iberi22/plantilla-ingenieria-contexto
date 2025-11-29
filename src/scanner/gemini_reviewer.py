@@ -8,7 +8,8 @@ import os
 import time
 from typing import Dict, List, Optional
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ class GeminiReviewer:
         self.api_keys = self._collect_api_keys()
         self.current_key_index = 0
         self.available = len(self.api_keys) > 0
+        self.client: genai.Client = None
         
         if self.available:
             self._configure_current_key()
@@ -55,7 +57,7 @@ class GeminiReviewer:
     def _configure_current_key(self):
         """Configure Gemini with the current API key"""
         if self.api_keys:
-            genai.configure(api_key=self.api_keys[self.current_key_index])
+            self.client = genai.Client(api_key=self.api_keys[self.current_key_index])
 
     def _rotate_key(self):
         """Rotate to the next available API key"""
@@ -173,11 +175,10 @@ Respond ONLY with valid JSON (no markdown, no explanation):
             try:
                 logger.info(f"🤖 Calling Gemini API (attempt {attempt}/{max_retries}, key #{self.current_key_index + 1})...")
                 
-                model = genai.GenerativeModel(self.model_name)
-                
-                response = model.generate_content(
-                    prompt,
-                    generation_config=genai.types.GenerationConfig(
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
                         temperature=0.3,
                         max_output_tokens=1000,
                     )
