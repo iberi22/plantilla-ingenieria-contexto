@@ -20,7 +20,7 @@ class GeminiReviewer:
     def __init__(self, model: str = "gemini-2.0-flash"):
         """
         Initialize with Gemini API keys
-        
+
         Args:
             model: Model to use. Options: 'gemini-2.0-flash', 'gemini-1.5-pro', etc.
         """
@@ -29,7 +29,7 @@ class GeminiReviewer:
         self.current_key_index = 0
         self.available = len(self.api_keys) > 0
         self.client: genai.Client = None
-        
+
         if self.available:
             self._configure_current_key()
             logger.info(f"✅ Gemini reviewer initialized with {len(self.api_keys)} API keys (model: {self.model_name})")
@@ -40,18 +40,18 @@ class GeminiReviewer:
     def _collect_api_keys(self) -> List[str]:
         """Collect all available API keys from environment"""
         keys = []
-        
+
         # Main key
         main_key = os.environ.get("GOOGLE_API_KEY")
         if main_key:
             keys.append(main_key)
-        
+
         # Additional keys (2-5)
         for i in range(2, 6):
             key = os.environ.get(f"GOOGLE_API_KEY_{i}")
             if key:
                 keys.append(key)
-        
+
         return keys
 
     def _configure_current_key(self):
@@ -63,7 +63,7 @@ class GeminiReviewer:
         """Rotate to the next available API key"""
         if len(self.api_keys) <= 1:
             return
-        
+
         self.current_key_index = (self.current_key_index + 1) % len(self.api_keys)
         self._configure_current_key()
         logger.info(f"🔄 Rotated to Gemini API key #{self.current_key_index + 1}")
@@ -86,17 +86,17 @@ class GeminiReviewer:
         try:
             # Build context
             context = self._build_context(repo, readme_content)
-            
+
             # Create prompt
             prompt = self._create_review_prompt(context)
-            
+
             # Call Gemini API with retry and key rotation
             response = self._call_gemini_with_retry(prompt)
-            
+
             if response:
                 scores = self._parse_ai_response(response)
                 return scores
-            
+
             return None
 
         except Exception as e:
@@ -112,7 +112,7 @@ class GeminiReviewer:
                 topics = repo.get_topics()[:5]
             except:
                 topics = getattr(repo, '_topics', [])[:5]
-        
+
         return {
             "name": repo.name,
             "description": repo.description or "",
@@ -170,11 +170,11 @@ Respond ONLY with valid JSON (no markdown, no explanation):
 
     def _call_gemini_with_retry(self, prompt: str, max_retries: int = 3) -> Optional[str]:
         """Call Gemini API with retry and key rotation"""
-        
+
         for attempt in range(1, max_retries + 1):
             try:
                 logger.info(f"🤖 Calling Gemini API (attempt {attempt}/{max_retries}, key #{self.current_key_index + 1})...")
-                
+
                 response = self.client.models.generate_content(
                     model=self.model_name,
                     contents=prompt,
@@ -183,7 +183,7 @@ Respond ONLY with valid JSON (no markdown, no explanation):
                         max_output_tokens=1000,
                     )
                 )
-                
+
                 if response and response.text:
                     logger.info("✅ Gemini API call successful")
                     # Rotate key after success to distribute load
@@ -192,19 +192,19 @@ Respond ONLY with valid JSON (no markdown, no explanation):
                 else:
                     logger.warning("Gemini returned empty response")
                     self._rotate_key()
-                    
+
             except Exception as e:
                 error_msg = str(e)
                 logger.warning(f"Gemini API error (attempt {attempt}): {error_msg}")
-                
+
                 # Rotate key on error
                 self._rotate_key()
-                
+
                 if attempt < max_retries:
                     wait_time = 2 ** attempt
                     logger.info(f"Retrying in {wait_time}s...")
                     time.sleep(wait_time)
-        
+
         logger.error("Max retries reached for Gemini API")
         return None
 
@@ -212,7 +212,7 @@ Respond ONLY with valid JSON (no markdown, no explanation):
         """Parse AI JSON response"""
         try:
             response_text = response_text.strip()
-            
+
             # Remove markdown code blocks if present
             if response_text.startswith('```'):
                 lines = response_text.split('\n')
@@ -225,25 +225,25 @@ Respond ONLY with valid JSON (no markdown, no explanation):
                     if in_json:
                         json_lines.append(line)
                 response_text = '\n'.join(json_lines)
-            
+
             # Find JSON object
             start = response_text.find('{')
             end = response_text.rfind('}')
             if start != -1 and end != -1:
                 response_text = response_text[start:end+1]
-            
+
             data = json.loads(response_text)
-            
+
             # Validate and normalize scores
             required = ['architecture_score', 'documentation_score', 'testing_score',
                        'practices_score', 'innovation_score']
-            
+
             for field in required:
                 if field not in data:
                     data[field] = 5  # Default score
                 else:
                     data[field] = max(1, min(10, int(data[field])))
-            
+
             return {
                 'architecture': data['architecture_score'],
                 'documentation': data['documentation_score'],
@@ -254,7 +254,7 @@ Respond ONLY with valid JSON (no markdown, no explanation):
                 'improvements': data.get('improvements', [])[:3],
                 'assessment': data.get('assessment', '')
             }
-            
+
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse Gemini JSON response: {e}")
             logger.debug(f"Response was: {response_text[:500]}")
@@ -280,7 +280,7 @@ Respond ONLY with valid JSON (no markdown, no explanation):
         """Calculate overall quality score (0-100) from individual scores"""
         if not ai_scores:
             return 50.0
-        
+
         scores = [
             ai_scores.get('architecture', 5),
             ai_scores.get('documentation', 5),
@@ -288,5 +288,5 @@ Respond ONLY with valid JSON (no markdown, no explanation):
             ai_scores.get('practices', 5),
             ai_scores.get('innovation', 5)
         ]
-        
+
         return (sum(scores) / len(scores)) * 10.0

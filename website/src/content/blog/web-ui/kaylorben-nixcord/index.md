@@ -16,6 +16,8 @@ repo_data:
   topics: ["discord", "home-manager-module", "nix", "nix-flake", "nixos", "vencord"]
   updated_at: "2025-11-28T08:04:43Z"
   html_url: "https://github.com/KaylorBen/nixcord"
+images:
+  screenshot: "/bestof-opensorce/images/blog/kaylorben-nixcord-header.svg"
 ---
 
 

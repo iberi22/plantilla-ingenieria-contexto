@@ -8,7 +8,7 @@ export default defineConfig({
   site: 'https://iberi22.github.io',
   base: '/bestof-opensorce',
   integrations: [
-    tailwind(), 
+    tailwind(),
     svelte(),
     sitemap({
       changefreq: 'daily',

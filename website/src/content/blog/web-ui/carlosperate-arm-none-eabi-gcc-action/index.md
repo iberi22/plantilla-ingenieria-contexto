@@ -16,6 +16,8 @@ repo_data:
   topics: ["arm-gcc", "arm-none-eabi-gcc", "gcc", "gcc-arm-toolchain", "gcc-cross-compiler", "github-actions", "hacktoberfest"]
   updated_at: "2025-11-29T01:59:52Z"
   html_url: "https://github.com/carlosperate/arm-none-eabi-gcc-action"
+images:
+  screenshot: "/bestof-opensorce/images/blog/carlosperate-arm-none-eabi-gcc-action-header.svg"
 ---
 
 

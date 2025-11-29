@@ -16,6 +16,8 @@ repo_data:
   topics: ["apex", "cli-application", "formatter", "prettier", "salesforce", "soql"]
   updated_at: "2025-11-29T01:59:13Z"
   html_url: "https://github.com/dangmai/prettier-plugin-apex"
+images:
+  screenshot: "/bestof-opensorce/images/blog/dangmai-prettier-plugin-apex-header.svg"
 ---
 
 

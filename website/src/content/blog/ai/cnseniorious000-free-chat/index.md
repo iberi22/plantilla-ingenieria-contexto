@@ -16,6 +16,8 @@ repo_data:
   topics: ["aibot", "astro", "chatgpt", "openai", "openai-api", "solidjs", "tiktoken"]
   updated_at: "2025-11-28T08:04:55Z"
   html_url: "https://github.com/CNSeniorious000/free-chat"
+images:
+  screenshot: "/bestof-opensorce/images/blog/cnseniorious000-free-chat-header.svg"
 ---
 
 

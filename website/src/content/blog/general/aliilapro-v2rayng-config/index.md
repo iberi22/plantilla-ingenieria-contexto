@@ -16,6 +16,8 @@ repo_data:
   topics: ["aliilapro", "config", "v2ray", "v2rayng", "vless", "vpn"]
   updated_at: "2025-11-29T02:15:59Z"
   html_url: "https://github.com/ALIILAPRO/v2rayNG-Config"
+images:
+  screenshot: "/bestof-opensorce/images/blog/aliilapro-v2rayng-config-header.svg"
 ---
 
 

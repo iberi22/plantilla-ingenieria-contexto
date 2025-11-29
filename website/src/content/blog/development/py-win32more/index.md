@@ -16,6 +16,8 @@ repo_data:
   topics: []
   updated_at: "2025-11-29T02:15:28Z"
   html_url: "https://github.com/ynkdir/py-win32more"
+images:
+  screenshot: "/bestof-opensorce/images/blog/py-win32more-header.svg"
 ---
 
 

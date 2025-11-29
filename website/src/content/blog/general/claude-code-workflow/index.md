@@ -16,6 +16,8 @@ repo_data:
   topics: ["claude", "claude-code", "cli-tools", "codex", "context-management", "gemini-cli", "json-driven", "qwen-code", "task-orchestration", "workflow-automation"]
   updated_at: "2025-11-29T03:19:04Z"
   html_url: "https://github.com/catlog22/Claude-Code-Workflow"
+images:
+  screenshot: "/bestof-opensorce/images/blog/claude-code-workflow-header.svg"
 ---
 
 

@@ -12,8 +12,8 @@ interface Props {
 	type?: 'website' | 'article';
 }
 
-const { 
-	title, 
+const {
+	title,
 	description = "Discover the best open source projects. AI-curated directory of trending GitHub repositories with in-depth reviews, insights, and developer resources.",
 	image,
 	article,
@@ -33,22 +33,22 @@ import SEO from '../components/SEO.astro';
 		<link rel="icon" type="image/svg+xml" href="/bestof-opensorce/favicon.svg" />
 		<link rel="apple-touch-icon" sizes="180x180" href="/bestof-opensorce/apple-touch-icon.png" />
 		<meta name="generator" content={Astro.generator} />
-		
+
 		<!-- SEO Component with all meta tags -->
-		<SEO 
+		<SEO
 			title={`${title} | BestOf OpenSource - Best Open Source Projects Directory`}
 			description={description}
 			image={image}
 			article={article}
 			type={type}
 		/>
-		
+
 		<!-- AI/LLM Access Control - Commercial use requires license -->
 		<meta name="ai-content-license" content="commercial-use-requires-payment" />
 		<meta name="ai-terms" content="https://iberi22.github.io/bestof-opensorce/api-pricing" />
 		<link rel="ai-agent-manifest" href="/bestof-opensorce/agent.json" type="application/json" />
 		<link rel="alternate" href="/bestof-opensorce/.well-known/ai-plugin.json" type="application/json" title="AI Plugin Manifest" />
-		
+
 		<!-- Fonts -->
 		<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">

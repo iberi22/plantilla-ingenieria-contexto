@@ -16,6 +16,8 @@ repo_data:
   topics: ["manifest-json", "vite", "vitejs", "wordpress"]
   updated_at: "2025-11-28T08:05:05Z"
   html_url: "https://github.com/idleberg/php-wordpress-vite-assets"
+images:
+  screenshot: "/bestof-opensorce/images/blog/idleberg-php-wordpress-vite-assets-header.svg"
 ---
 
 

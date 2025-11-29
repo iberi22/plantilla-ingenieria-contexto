@@ -16,6 +16,8 @@ repo_data:
   topics: ["bukkit", "bukkit-plugin", "hacktoberfest", "java", "multiverse"]
   updated_at: "2025-11-29T03:11:23Z"
   html_url: "https://github.com/Multiverse/Multiverse-Inventories"
+images:
+  screenshot: "/bestof-opensorce/images/blog/multiverse-multiverse-inventories-header.svg"
 ---
 
 

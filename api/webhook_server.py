@@ -35,7 +35,7 @@ try:
     redis_conn.ping()  # Test connection
     task_queue = Queue('pipeline_tasks', connection=redis_conn)
     logger.info(f"Connected to Redis at {redis_url}")
-    
+
     # Initialize API payments with Redis
     try:
         init_api_payments(redis_conn)

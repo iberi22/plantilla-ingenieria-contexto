@@ -16,6 +16,8 @@ repo_data:
   topics: ["api", "argentina", "argentina-data", "argentinadatos", "datos", "esjs", "static-api"]
   updated_at: "2025-11-29T02:17:10Z"
   html_url: "https://github.com/enzonotario/esjs-argentina-datos-api"
+images:
+  screenshot: "/bestof-opensorce/images/blog/esjs-argentina-datos-api-header.svg"
 ---
 
 

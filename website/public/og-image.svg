@@ -9,10 +9,10 @@
       <stop offset="100%" style="stop-color:#3b82f6"/>
     </linearGradient>
   </defs>
-  
+
   <!-- Background -->
   <rect width="1200" height="630" fill="url(#bg)"/>
-  
+
   <!-- Grid pattern -->
   <g opacity="0.1">
     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -20,43 +20,43 @@
     </pattern>
     <rect width="1200" height="630" fill="url(#grid)"/>
   </g>
-  
+
   <!-- Accent circles -->
   <circle cx="1100" cy="100" r="200" fill="#10b981" opacity="0.1"/>
   <circle cx="100" cy="530" r="150" fill="#3b82f6" opacity="0.1"/>
-  
+
   <!-- Logo -->
   <g transform="translate(80, 200)">
     <rect width="60" height="60" fill="#F5F5DC" transform="rotate(45, 30, 30)"/>
   </g>
-  
+
   <!-- Title -->
   <text x="180" y="250" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="#F5F5DC">
     BestOf<tspan fill="#F5F5DC" opacity="0.4">OpenSource</tspan>
   </text>
-  
+
   <!-- Tagline -->
   <text x="80" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#F5F5DC" opacity="0.8">
     Discover the Best Open Source Projects
   </text>
-  
+
   <!-- Description -->
   <text x="80" y="400" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#F5F5DC" opacity="0.6">
     AI-curated directory of trending GitHub repositories
   </text>
-  
+
   <!-- Features -->
   <g transform="translate(80, 480)">
     <rect x="0" y="0" width="200" height="40" rx="20" fill="url(#accent)" opacity="0.2"/>
     <text x="100" y="27" font-family="system-ui, sans-serif" font-size="16" fill="#10b981" text-anchor="middle" font-weight="bold">🔥 Trending Repos</text>
-    
+
     <rect x="220" y="0" width="180" height="40" rx="20" fill="url(#accent)" opacity="0.2"/>
     <text x="310" y="27" font-family="system-ui, sans-serif" font-size="16" fill="#10b981" text-anchor="middle" font-weight="bold">🤖 AI Reviews</text>
-    
+
     <rect x="420" y="0" width="200" height="40" rx="20" fill="url(#accent)" opacity="0.2"/>
     <text x="520" y="27" font-family="system-ui, sans-serif" font-size="16" fill="#10b981" text-anchor="middle" font-weight="bold">⭐ Quality Curated</text>
   </g>
-  
+
   <!-- URL -->
   <text x="80" y="580" font-family="monospace" font-size="18" fill="#F5F5DC" opacity="0.5">
     iberi22.github.io/bestof-opensorce

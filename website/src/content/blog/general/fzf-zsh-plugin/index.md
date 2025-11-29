@@ -16,6 +16,8 @@ repo_data:
   topics: ["command-history", "fzf", "fzf-scripts", "hacktoberfest", "zsh", "zsh-plugin"]
   updated_at: "2025-11-29T02:13:34Z"
   html_url: "https://github.com/unixorn/fzf-zsh-plugin"
+images:
+  screenshot: "/bestof-opensorce/images/blog/fzf-zsh-plugin-header.svg"
 ---
 
 

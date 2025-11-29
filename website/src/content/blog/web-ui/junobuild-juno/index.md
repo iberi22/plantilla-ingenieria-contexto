@@ -16,6 +16,8 @@ repo_data:
   topics: ["analytics", "authentication", "backend-as-a-service", "container", "database", "hacktoberfest", "hosting", "internet-computer", "self-hosting", "serverless", "serverless-functions", "storage", "wasm"]
   updated_at: "2025-11-28T08:05:56Z"
   html_url: "https://github.com/junobuild/juno"
+images:
+  screenshot: "/bestof-opensorce/images/blog/junobuild-juno-header.svg"
 ---
 
 

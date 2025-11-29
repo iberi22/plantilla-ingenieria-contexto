@@ -16,7 +16,7 @@ const { Content } = await entry.render();
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 
 // SEO data for blog posts
-const seoDescription = entry.data.description || 
+const seoDescription = entry.data.description ||
   `In-depth review and analysis of ${entry.data.title}. ${entry.data.stars ? `${entry.data.stars.toLocaleString()} GitHub stars.` : ''} Discover features, use cases, and why developers love this open source project.`;
 
 const articleData = {
@@ -27,7 +27,7 @@ const articleData = {
 };
 ---
 
-<Layout 
+<Layout
   title={entry.data.title}
   description={seoDescription}
   image={entry.data.images?.screenshot}

@@ -16,6 +16,8 @@ repo_data:
   topics: ["gfw", "shadowsocks", "trojan", "v2config", "v2ray", "v2ray-core", "v2rayng", "vless", "vmess", "vpn", "vpn-service"]
   updated_at: "2025-11-29T03:11:00Z"
   html_url: "https://github.com/MatinGhanbari/v2ray-configs"
+images:
+  screenshot: "/bestof-opensorce/images/blog/matinghanbari-v2ray-configs-header.svg"
 ---
 
 

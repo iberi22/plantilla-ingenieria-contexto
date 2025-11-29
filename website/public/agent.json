@@ -11,7 +11,7 @@
     "name": "BestOf OpenSource",
     "url": "https://iberi22.github.io/bestof-opensorce"
   },
-  
+
   "license": {
     "@type": "CreativeWork",
     "name": "Commercial License Required",
@@ -24,14 +24,14 @@
     "message": "AI agents and LLMs must purchase an API license for commercial access to this content.",
     "terms_url": "https://iberi22.github.io/bestof-opensorce/api-pricing",
     "contact": "api@bestof-opensource.com",
-    
+
     "free_tier": {
       "allowed": true,
       "rate_limit": "100 requests/day",
       "requires_attribution": true,
       "commercial_use": false
     },
-    
+
     "enforcement": "robots.txt + rate limiting + API key validation"
   },
 
@@ -96,7 +96,7 @@
       },
       {
         "path": "/repos/{slug}",
-        "method": "GET", 
+        "method": "GET",
         "description": "Get detailed repository information",
         "requires_auth": true,
         "tier_required": "free"

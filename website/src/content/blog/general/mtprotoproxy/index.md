@@ -16,6 +16,8 @@ repo_data:
   topics: ["mtproto-proxy", "mtproxy", "python", "telegram"]
   updated_at: "2025-11-29T02:18:39Z"
   html_url: "https://github.com/ALIILAPRO/MTProtoProxy"
+images:
+  screenshot: "/bestof-opensorce/images/blog/mtprotoproxy-header.svg"
 ---
 
 

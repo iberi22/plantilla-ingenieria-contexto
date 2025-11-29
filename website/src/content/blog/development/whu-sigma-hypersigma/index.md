@@ -16,6 +16,8 @@ repo_data:
   topics: ["computer-vision", "deep-learning", "foundation-model", "foundation-models", "hyperspectral-anomaly-detection", "hyperspectral-change-detection", "hyperspectral-datasets", "hyperspectral-image-classification", "hyperspectral-image-denoising", "hyperspectral-image-segmentation", "hyperspectral-super-resolution", "hyperspectral-target-detection", "hyperspectral-unmixing", "pre-training", "pytorch", "remote-sensing", "remote-sensing-foundation-model", "self-attention", "spectral-spatial-information-fusion", "transformer"]
   updated_at: "2025-11-29T02:18:09Z"
   html_url: "https://github.com/WHU-Sigma/HyperSIGMA"
+images:
+  screenshot: "/bestof-opensorce/images/blog/whu-sigma-hypersigma-header.svg"
 ---
 
 

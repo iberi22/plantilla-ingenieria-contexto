@@ -53,7 +53,7 @@ def rotate_key():
 def generate_image_gemini(prompt, output_path):
     """Generates an image using Google Gemini (Imagen 4)."""
     global CLIENT
-    
+
     try:
         model_name = 'imagen-4.0-generate-001'
 
@@ -106,8 +106,40 @@ def extract_frontmatter(md_file):
     return {
         'frontmatter': parts[1],
         'content': parts[2],
-        'file': md_file
+        'file': md_file,
+        'full_content': content
     }
+
+def update_frontmatter_with_image(md_file, image_relative_path):
+    """Updates the frontmatter to include the images.screenshot field."""
+    with open(md_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # Check if images section already exists
+    if 'images:' in content:
+        # Update existing screenshot or add it
+        if 'screenshot:' in content:
+            # Replace existing screenshot path
+            import re
+            content = re.sub(
+                r'(screenshot:\s*)(["\']?)(.+?)(["\']?)(\s*\n)',
+                f'\\1"{image_relative_path}"\\5',
+                content
+            )
+        else:
+            # Add screenshot to existing images section
+            content = content.replace('images:\n', f'images:\n  screenshot: "{image_relative_path}"\n')
+    else:
+        # Add new images section after the first ---
+        parts = content.split('---', 2)
+        if len(parts) >= 3:
+            new_frontmatter = parts[1].rstrip() + f'\nimages:\n  screenshot: "{image_relative_path}"\n'
+            content = '---' + new_frontmatter + '---' + parts[2]
+
+    with open(md_file, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+    logging.info(f"📝 Updated frontmatter with image path: {image_relative_path}")
 
 def parse_metadata(frontmatter):
     lines = frontmatter.strip().split('\n')
@@ -169,6 +201,10 @@ def process_blog_posts(blog_dir: Path = None, limit: int = None):
         if generate_image_gemini(prompt, image_path):
             generated_count += 1
             logging.info(f"✅ Generated {generated_count} images so far")
+
+            # Update frontmatter with image path (relative to the md file)
+            update_frontmatter_with_image(md_file, "./header.png")
+
             # Wait to avoid rate limits
             time.sleep(5)
         else:

@@ -16,6 +16,8 @@ repo_data:
   topics: ["extension", "komikku", "manga", "mihon", "tachiyomi"]
   updated_at: "2025-11-29T03:11:47Z"
   html_url: "https://github.com/yuzono/tachiyomi-extensions"
+images:
+  screenshot: "/bestof-opensorce/images/blog/tachiyomi-extensions-header.svg"
 ---
 
 

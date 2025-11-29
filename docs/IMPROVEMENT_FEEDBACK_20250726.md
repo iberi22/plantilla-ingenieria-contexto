@@ -1,6 +1,6 @@
 # Feedback de Mejora - Análisis de Workflows CI/CD
-**Fecha:** 26 de Julio, 2025  
-**Workflows Analizados:** 
+**Fecha:** 26 de Julio, 2025
+**Workflows Analizados:**
 - `19778411395` (Blog Generation Pipeline)
 - `19778420490` (CI Tests)
 
@@ -73,7 +73,7 @@ def process_batch_repos(repos, upload=False):
     results = []
     successful = 0
     failed = 0
-    
+
     for repo in repos:
         result = run_pipeline_task(repo, upload=upload)
         results.append(result)
@@ -81,7 +81,7 @@ def process_batch_repos(repos, upload=False):
             successful += 1
         else:
             failed += 1
-    
+
     return {
         'total': len(repos),
         'successful': successful,
@@ -178,7 +178,7 @@ def process_batch_repos(repos: List[str], upload: bool = False) -> dict:
     results = []
     successful = 0
     failed = 0
-    
+
     for repo_url in repos:
         result = run_pipeline_task(repo_url, upload=upload)
         results.append(result)
@@ -186,7 +186,7 @@ def process_batch_repos(repos: List[str], upload: bool = False) -> dict:
             successful += 1
         else:
             failed += 1
-    
+
     return {
         'total': len(repos),
         'successful': successful,

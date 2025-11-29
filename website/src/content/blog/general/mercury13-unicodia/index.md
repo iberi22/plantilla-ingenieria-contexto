@@ -16,6 +16,8 @@ repo_data:
   topics: ["character-table", "emoji-picker", "emoji-unicode", "encyclopedia", "unicode", "unicode-characters", "unicode-data", "unicode-table"]
   updated_at: "2025-11-29T02:15:47Z"
   html_url: "https://github.com/Mercury13/unicodia"
+images:
+  screenshot: "/bestof-opensorce/images/blog/mercury13-unicodia-header.svg"
 ---
 
 

@@ -16,6 +16,8 @@ repo_data:
   topics: []
   updated_at: "2025-11-29T01:59:17Z"
   html_url: "https://github.com/stephenjude/laravel-payment-gateways"
+images:
+  screenshot: "/bestof-opensorce/images/blog/stephenjude-laravel-payment-gateways-header.svg"
 ---
 
 

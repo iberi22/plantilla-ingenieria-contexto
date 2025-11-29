@@ -16,6 +16,8 @@ repo_data:
   topics: []
   updated_at: "2025-11-29T01:59:12Z"
   html_url: "https://github.com/Ezard/semantic-prs"
+images:
+  screenshot: "/bestof-opensorce/images/blog/ezard-semantic-prs-header.svg"
 ---
 
 

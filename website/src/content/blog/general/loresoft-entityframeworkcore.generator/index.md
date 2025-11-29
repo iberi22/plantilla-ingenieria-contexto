@@ -16,6 +16,8 @@ repo_data:
   topics: ["database-schema", "dbcontext", "entity-framework"]
   updated_at: "2025-11-28T08:05:02Z"
   html_url: "https://github.com/loresoft/EntityFrameworkCore.Generator"
+images:
+  screenshot: "/bestof-opensorce/images/blog/loresoft-entityframeworkcore.generator-header.svg"
 ---
 
 

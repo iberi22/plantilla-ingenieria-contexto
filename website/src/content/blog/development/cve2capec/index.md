@@ -16,6 +16,8 @@ repo_data:
   topics: ["blackhat", "blackhat-arsenal", "blackhateurope-2025", "capec", "cve", "cves", "cwe", "cybersecurity", "d3fend", "infosec", "infosectools", "mitre-attack", "mitre-attack-db", "mitre-attack-navigator", "mitre-capec", "mitre-cwe", "mitre-d3fend", "mitre-defend", "ttp"]
   updated_at: "2025-11-29T02:13:58Z"
   html_url: "https://github.com/Galeax/CVE2CAPEC"
+images:
+  screenshot: "/bestof-opensorce/images/blog/cve2capec-header.svg"
 ---
 
 

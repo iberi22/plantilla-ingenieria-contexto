@@ -16,6 +16,8 @@ repo_data:
   topics: ["animation", "janim", "python"]
   updated_at: "2025-11-29T03:19:34Z"
   html_url: "https://github.com/jkjkil4/JAnim"
+images:
+  screenshot: "/bestof-opensorce/images/blog/jkjkil4-janim-header.svg"
 ---
 
 

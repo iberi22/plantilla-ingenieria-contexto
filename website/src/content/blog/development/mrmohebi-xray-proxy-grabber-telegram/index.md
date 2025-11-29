@@ -16,6 +16,8 @@ repo_data:
   topics: ["bot", "clash", "clash-meta", "free", "proxy", "server", "telegram", "v2ray", "vless", "vmess", "vpn", "xray"]
   updated_at: "2025-11-29T02:18:01Z"
   html_url: "https://github.com/MrMohebi/xray-proxy-grabber-telegram"
+images:
+  screenshot: "/bestof-opensorce/images/blog/mrmohebi-xray-proxy-grabber-telegram-header.svg"
 ---
 
 

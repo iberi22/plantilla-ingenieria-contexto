@@ -13,8 +13,8 @@ const totalStars = posts.reduce((sum, p) => sum + (p.data.stars || 0), 0);
 const pageDescription = `Explore ${posts.length}+ in-depth reviews of open source projects. ${totalStars.toLocaleString()}+ combined GitHub stars. Expert analysis of trending repositories, developer tools, AI projects, and more.`;
 ---
 
-<Layout 
-  title="Blog - Open Source Project Reviews" 
+<Layout
+  title="Blog - Open Source Project Reviews"
   description={pageDescription}
   type="website"
 >

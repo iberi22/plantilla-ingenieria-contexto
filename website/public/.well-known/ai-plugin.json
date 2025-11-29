@@ -4,7 +4,7 @@
   "name_for_model": "bestof_opensource",
   "description_for_human": "Access curated data about trending open source repositories with AI-powered reviews.",
   "description_for_model": "This API provides structured data about open source repositories including GitHub stats, AI-generated reviews, technology classifications, and trending analysis. IMPORTANT: Commercial use requires a paid API license. Check /agent.json for pricing.",
-  
+
   "auth": {
     "type": "service_http",
     "authorization_type": "bearer",
@@ -12,16 +12,16 @@
       "note": "API keys must be purchased at https://iberi22.github.io/bestof-opensorce/api-pricing"
     }
   },
-  
+
   "api": {
     "type": "openapi",
     "url": "https://api.bestof-opensource.com/openapi.json"
   },
-  
+
   "logo_url": "https://iberi22.github.io/bestof-opensorce/favicon.svg",
   "contact_email": "api@bestof-opensource.com",
   "legal_info_url": "https://iberi22.github.io/bestof-opensorce/api-pricing#terms",
-  
+
   "payment_required": {
     "enabled": true,
     "pricing_url": "https://iberi22.github.io/bestof-opensorce/api-pricing",

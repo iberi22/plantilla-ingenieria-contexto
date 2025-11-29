@@ -16,6 +16,8 @@ repo_data:
   topics: ["aliilapro", "http", "proxy", "socks4", "socks5"]
   updated_at: "2025-11-29T01:58:58Z"
   html_url: "https://github.com/ALIILAPRO/Proxy"
+images:
+  screenshot: "/bestof-opensorce/images/blog/proxy-header.svg"
 ---
 
 

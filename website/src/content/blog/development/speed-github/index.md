@@ -16,6 +16,8 @@ repo_data:
   topics: []
   updated_at: "2025-11-29T03:12:24Z"
   html_url: "https://github.com/jvxiao/speed-github"
+images:
+  screenshot: "/bestof-opensorce/images/blog/speed-github-header.svg"
 ---
 
 

@@ -16,6 +16,8 @@ repo_data:
   topics: ["hacktoberfest", "nextcloud", "registration", "signup"]
   updated_at: "2025-11-29T03:19:38Z"
   html_url: "https://github.com/nextcloud/registration"
+images:
+  screenshot: "/bestof-opensorce/images/blog/registration-header.svg"
 ---
 
 

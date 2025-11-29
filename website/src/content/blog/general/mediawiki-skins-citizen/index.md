@@ -16,6 +16,8 @@ repo_data:
   topics: ["mediawiki-skin"]
   updated_at: "2025-11-28T08:05:46Z"
   html_url: "https://github.com/StarCitizenTools/mediawiki-skins-Citizen"
+images:
+  screenshot: "/bestof-opensorce/images/blog/mediawiki-skins-citizen-header.svg"
 ---
 
 
