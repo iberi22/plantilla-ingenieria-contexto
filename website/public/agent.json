@@ -1,0 +1,134 @@
+{
+  "$schema": "https://schema.org/WebAPI",
+  "@context": "https://schema.org",
+  "@type": "WebAPI",
+  "name": "BestOf OpenSource API",
+  "description": "API providing curated data about trending open source repositories, AI reviews, and developer insights",
+  "url": "https://iberi22.github.io/bestof-opensorce",
+  "documentationUrl": "https://iberi22.github.io/bestof-opensorce/api-pricing",
+  "provider": {
+    "@type": "Organization",
+    "name": "BestOf OpenSource",
+    "url": "https://iberi22.github.io/bestof-opensorce"
+  },
+  
+  "license": {
+    "@type": "CreativeWork",
+    "name": "Commercial License Required",
+    "description": "Free for personal/educational use. Commercial use by AI agents, LLMs, and automated systems requires a paid license.",
+    "url": "https://iberi22.github.io/bestof-opensorce/api-pricing"
+  },
+
+  "ai_access": {
+    "policy": "payment_required",
+    "message": "AI agents and LLMs must purchase an API license for commercial access to this content.",
+    "terms_url": "https://iberi22.github.io/bestof-opensorce/api-pricing",
+    "contact": "api@bestof-opensource.com",
+    
+    "free_tier": {
+      "allowed": true,
+      "rate_limit": "100 requests/day",
+      "requires_attribution": true,
+      "commercial_use": false
+    },
+    
+    "enforcement": "robots.txt + rate limiting + API key validation"
+  },
+
+  "pricing": {
+    "currency": "USD",
+    "billing_cycle": "monthly",
+    "tiers": [
+      {
+        "name": "Free",
+        "price": 0,
+        "requests_per_day": 100,
+        "features": [
+          "Basic repository data",
+          "Public statistics",
+          "Attribution required"
+        ],
+        "commercial_use": false,
+        "ai_training": false
+      },
+      {
+        "name": "Pro",
+        "price": 29,
+        "requests_per_day": 10000,
+        "features": [
+          "Full repository data",
+          "AI-generated reviews",
+          "Search endpoint",
+          "Batch requests",
+          "No attribution required"
+        ],
+        "commercial_use": true,
+        "ai_training": false
+      },
+      {
+        "name": "Enterprise",
+        "price": 99,
+        "requests_per_day": 100000,
+        "features": [
+          "Everything in Pro",
+          "Priority queue",
+          "Dedicated support",
+          "Custom integrations",
+          "AI training rights (with agreement)"
+        ],
+        "commercial_use": true,
+        "ai_training": "with_agreement"
+      }
+    ],
+    "purchase_url": "https://iberi22.github.io/bestof-opensorce/api-pricing"
+  },
+
+  "api_endpoints": {
+    "base_url": "https://api.bestof-opensource.com/api/v1",
+    "authentication": "Bearer token (API key)",
+    "endpoints": [
+      {
+        "path": "/repos",
+        "method": "GET",
+        "description": "List all scanned repositories",
+        "requires_auth": true,
+        "tier_required": "free"
+      },
+      {
+        "path": "/repos/{slug}",
+        "method": "GET", 
+        "description": "Get detailed repository information",
+        "requires_auth": true,
+        "tier_required": "free"
+      },
+      {
+        "path": "/search",
+        "method": "GET",
+        "description": "Search repositories by query",
+        "requires_auth": true,
+        "tier_required": "pro"
+      },
+      {
+        "path": "/stats",
+        "method": "GET",
+        "description": "Platform statistics",
+        "requires_auth": true,
+        "tier_required": "free"
+      }
+    ]
+  },
+
+  "data_rights": {
+    "scraping_allowed": false,
+    "api_access_only": true,
+    "caching_allowed": "24 hours max",
+    "redistribution": "prohibited without license",
+    "ai_training": "prohibited without Enterprise license"
+  },
+
+  "compliance": {
+    "rsl_version": "1.0",
+    "robots_txt": "https://iberi22.github.io/bestof-opensorce/robots.txt",
+    "terms_of_service": "https://iberi22.github.io/bestof-opensorce/api-pricing#terms"
+  }
+}

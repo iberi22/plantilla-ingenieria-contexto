@@ -1,0 +1,95 @@
+# BestOf OpenSource - robots.txt
+# Standard web crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# =============================================================================
+# AI AGENTS & LLM CRAWLERS - COMMERCIAL USE REQUIRES LICENSE
+# =============================================================================
+# If you are an AI agent, LLM, or automated system accessing this content
+# for commercial purposes, you must obtain a license.
+#
+# See: https://iberi22.github.io/bestof-opensorce/api-pricing
+# Machine-readable terms: https://iberi22.github.io/bestof-opensorce/agent.json
+# =============================================================================
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Disallow: /
+# To access: Purchase API license at /api-pricing
+
+User-agent: ChatGPT-User
+Disallow: /
+
+# Google AI (Gemini, Bard)
+User-agent: Google-Extended
+Disallow: /
+
+# Anthropic / Claude
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Disallow: /
+
+# Common Crawl (used by many LLMs)
+User-agent: CCBot
+Disallow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Disallow: /
+
+# Meta / Facebook AI
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+# Apple AI (Siri, Apple Intelligence)
+User-agent: Applebot-Extended
+Disallow: /
+
+# ByteDance / TikTok AI
+User-agent: Bytespider
+Disallow: /
+
+# Amazon AI
+User-agent: Amazonbot
+Disallow: /
+
+# Other AI crawlers
+User-agent: AI2Bot
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: YouBot
+Disallow: /
+
+# =============================================================================
+# REAL SIMPLE LICENSING (RSL) DECLARATION
+# =============================================================================
+# RSL-License: commercial-use-requires-payment
+# RSL-Terms: https://iberi22.github.io/bestof-opensorce/api-pricing
+# RSL-Contact: api@bestof-opensource.com
+# RSL-Agent-Manifest: https://iberi22.github.io/bestof-opensorce/agent.json
+# =============================================================================
+
+# Sitemap
+Sitemap: https://iberi22.github.io/bestof-opensorce/sitemap.xml
