@@ -7,6 +7,7 @@
 **Estado General:** 90% - Scanner Potenciado y Web Completada.
 
 **Logros Recientes:**
+
 - ✅ **Scanner 2.0:** Implementado `InsightsCollector` y `RepoClassifier` para detectar proyectos reales vs mocks.
 - ✅ **Metricas Avanzadas:** Análisis de contributors, commit frequency, health score y PR merge rate.
 - ✅ **Web Functional:** Astro Frontend ahora renderiza correctamente datos reales (`.md` files).
@@ -36,6 +37,7 @@
 **Estado Global del Proyecto:** 80%
 
 **Próximos Pasos Críticos:**
+
 1. Configurar webhook entre repositorios
 2. Probar flujo end-to-end de generación
 3. Activar pipeline de videos (opcional)
@@ -49,6 +51,7 @@
 ### Tareas Inmediatas
 
 #### 🔗 FASE 15: Webhook Integration (🔥 PRIORIDAD MÁXIMA)
+
 **Objetivo:** Conectar repo público con privado para automatización completa
 
 - [ ] 15.1: Configurar GitHub Webhook en repo público
@@ -77,18 +80,22 @@
 ## 📋 FASES COMPLETADAS
 
 ## 🔧 FASE 10: Enhanced Repository Analysis (✅ COMPLETADO)
+
 **Objetivo:** Análisis profundo con GitHub Insights API + Detección de proyectos reales
+
 - [x] 10.1: Expandir GitHubScanner con Insights API (Implementado `InsightsCollector`)
 - [x] 10.2: Implementar RepoClassifier para detectar proyectos reales (Scoring 0-100)
 - [x] 10.3: Sistema de taxonomía automática (Integrado en `markdown_writer` y `classifier`)
 - [x] 10.5: Tests unitarios para nuevos componentes (`tests/test_scanner_enhanced.py`)
 
 ## 🎨 FASE 4: Blog Design (✅ COMPLETADO)
+
 - [x] Layout post.html mejorado (Galería)
 - [x] Search (JS + JSON)
 - [x] Tags page
 
 ## 🚀 FASE 14: Modern Web Architecture (Astro + Tailwind + Svelte) (✅ COMPLETADO)
+
 - [x] 14.1: Setup del Proyecto Astro
 - [x] 14.2: Migración de Componentes
 - [x] 14.3: Lógica de Blog y Contenido
@@ -96,6 +103,7 @@
 - [x] 14.5: CI/CD para Astro
 
 ## 🎨 FASE 11: Blog UI Redesign (✅ COMPLETADO)
+
 - [x] 11.1: Integrar Fira Code
 - [x] 11.2: Dark theme glassmorphism moderno
 - [x] 11.3: Rutas de imágenes
@@ -103,6 +111,7 @@
 - [x] 11.5: Responsive design refinado
 
 ## 🖼️ FASE 16: Image Generation with Gemini API (🟡 PAUSADO - 29 nov 2025)
+
 **Objetivo:** Generar imágenes de alta calidad para blog posts usando Gemini Imagen API
 
 **Estado:** Pausado hasta activación de billing de Google Cloud
@@ -138,6 +147,7 @@
   - Documentar proceso de reactivación
 
 **Características Implementadas:**
+
 - ✅ Generación AI con Gemini Imagen 4.0 (PNG 4K)
 - ✅ Fallback SVG profesional con título
 - ✅ Multi-key rotation para rate limits
@@ -147,12 +157,14 @@
 - ✅ **Workflows deshabilitados hasta activación de billing**
 
 **Decisión Estratégica (29 nov 2025):**
+
 - 🟡 Usar SVG placeholders hasta tener dominio propio
 - 🟡 Esperar a invertir $20 en Google Cloud billing
 - 🟡 Activar Gemini cuando haya tráfico real
 - ✅ Documentación lista para reactivación inmediata
 
 **Archivos Creados/Modificados:**
+
 - `scripts/generate_blog_images.py` (listo para usar)
 - `scripts/generate_placeholder_headers.py` (activo)
 - `scripts/run_full_rust_pipeline.ps1` (SVG mode)
@@ -163,7 +175,8 @@
 - `GEMINI_ACTIVATION_QUICKSTART.md` (nuevo - guía rápida)
 
 **Para Reactivar Gemini:**
-1. Activar billing en https://console.cloud.google.com/billing
+
+1. Activar billing en <https://console.cloud.google.com/billing>
 2. Descomentar steps en workflows
 3. Ejecutar `python scripts/generate_blog_images.py --regenerate-all`
 4. Ver guía: `GEMINI_ACTIVATION_QUICKSTART.md`

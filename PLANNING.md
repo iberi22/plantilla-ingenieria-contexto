@@ -7,12 +7,14 @@ _Última Actualización: 26 de noviembre de 2025 - Arquitectura de Dos Repositor
 **Visión:** Crear un ecosistema automatizado que descubra repositorios Open Source destacados, genere contenido educativo en formato blog y videos cortos (reels de 20s), y lo publique automáticamente.
 
 **Propósito:**
+
 - Ayudar a desarrolladores a descubrir herramientas útiles
 - Dar visibilidad a creadores de Open Source
 - Crear una base de conocimiento persistente (blog + investigations)
 - Generar contenido visual atractivo (videos y reels)
 
 **Filosofía:** "Two-Repo Architecture: Public Discovery, Private Content Generation"
+
 - **Repositorio Público:** Scanner, investigations, blog, dashboards
 - **Repositorio Privado:** Generación de contenido con IA, APIs, código propietario
 - GitHub Actions para descubrimiento y análisis
@@ -43,9 +45,10 @@ graph TB
 
 ### 2.2 Repositorio PÚBLICO (bestof-opensorce)
 
-**URL:** https://github.com/iberi22/bestof-opensorce
+**URL:** <https://github.com/iberi22/bestof-opensorce>
 
 **Contenido:**
+
 - ✅ `investigations/` - Base de datos Markdown con análisis de repos
 - ✅ `website/` - Blog Astro (SSG) con Tailwind + Svelte
 - ✅ `web/` - Dashboard React para voice recorder y traducciones
@@ -55,6 +58,7 @@ graph TB
 - ✅ `.github/workflows/` - CI/CD para deploy y scanning
 
 **Características:**
+
 - 🌐 100% Open Source
 - 📊 Investigations como database
 - 🚀 Deploy automático a GitHub Pages
@@ -63,9 +67,10 @@ graph TB
 
 ### 2.3 Repositorio PRIVADO (bestof-pipeline)
 
-**URL:** https://github.com/iberi22/bestof-pipeline
+**URL:** <https://github.com/iberi22/bestof-pipeline>
 
 **Contenido:**
+
 - 🔐 `src/blog_generator/` - Generación de posts con Gemini AI
 - 🔐 `src/image_gen/` - Creación de thumbnails e imágenes
 - 🔐 `api/multilingual_api.py` - API Flask para generación
@@ -75,6 +80,7 @@ graph TB
 - 🔐 Docker configs y secrets
 
 **Características:**
+
 - 🔒 Código propietario protegido
 - 🤖 Integración con Gemini AI
 - 🎨 Generación de imágenes con IA
@@ -118,11 +124,13 @@ graph TB
 ### Repositorio Público (bestof-opensorce)
 
 **Frontend:**
+
 - **Website:** Astro + Tailwind CSS + Svelte (SSG)
 - **Dashboard:** React + Vite + Tailwind
 - **Deploy:** GitHub Actions → GitHub Pages
 
 **Backend/Scanner:**
+
 - **Python:** 3.11+
 - **APIs:** GitHub REST API
 - **Storage:** Local JSON + Markdown files
@@ -131,12 +139,14 @@ graph TB
 ### Repositorio Privado (bestof-pipeline)
 
 **Content Generation:**
+
 - **IA:** Google Gemini API (blog generation)
 - **Image Gen:** Gemini Imagen / Stable Diffusion
 - **TTS:** edge-tts / Coqui TTS (futuro)
 - **Video:** moviepy (futuro)
 
 **API & Workers:**
+
 - **Framework:** Flask
 - **Queue:** Redis + RQ (Redis Queue)
 - **Storage:** Local filesystem
@@ -192,6 +202,7 @@ Timeline:
 ```
 
 **Elementos:**
+
 - 3 imágenes generadas (architecture, flow, screenshot)
 - Narración condensada (20s)
 - Transiciones suaves
@@ -203,6 +214,7 @@ Timeline:
 ## 5. Roadmap de Implementación
 
 ### ✅ Fase 0-9: Fundamentos (COMPLETADO)
+
 - [x] Scanner de GitHub
 - [x] Integración con Gemini
 - [x] Generación de imágenes
@@ -214,9 +226,11 @@ Timeline:
 - [x] CI/CD Pipeline
 
 ### 🔧 Fase 10: Enhanced Repository Analysis (EN PROGRESO - 2 días)
+
 **Objetivo:** Análisis profundo con métricas avanzadas y clasificación inteligente
 
 **Componentes Nuevos:**
+
 ```
 src/scanner/
 ├── insights_collector.py      # 15+ métricas de GitHub Insights API
@@ -226,6 +240,7 @@ src/scanner/
 ```
 
 **Métricas Recopiladas (15+):**
+
 1. **Actividad:**
    - Commits per week
    - Issue velocity (issues cerrados/semana)
@@ -253,6 +268,7 @@ src/scanner/
    - Diversity de contributors
 
 **Taxonomía de Categorías (10):**
+
 1. 🤖 **AI/ML & Data Science** - Frameworks ML, NLP, Computer Vision
 2. 🔒 **Cybersecurity** - Pentesting, Security auditing, Encryption
 3. 🎨 **UI/UX & Frontend** - Component libraries, Design systems
@@ -265,6 +281,7 @@ src/scanner/
 10. 🛠️ **Developer Tools** - CLI utils, Code generators, Linters
 
 **Algoritmo de Clasificación:**
+
 ```python
 def classify_repo(repo: dict) -> dict:
     """
@@ -282,6 +299,7 @@ def classify_repo(repo: dict) -> dict:
 ```
 
 **Señales de Proyecto Real:**
+
 - ✅ Package downloads > 10K/month
 - ✅ Dependents > 50 proyectos
 - ✅ Contributors > 10
@@ -291,6 +309,7 @@ def classify_repo(repo: dict) -> dict:
 - ✅ Sponsors/funding activo
 
 **Señales de Mock/Tutorial:**
+
 - ❌ Nombre contiene: "example", "demo", "tutorial", "starter"
 - ❌ Solo 1-2 contributors
 - ❌ Sin releases
@@ -310,9 +329,11 @@ def classify_repo(repo: dict) -> dict:
 ---
 
 ### 🎨 Fase 11: Blog UI Redesign con Fira Code (SIGUIENTE - 1 día)
+
 **Objetivo:** Diseño moderno, arreglo de imágenes, Fira Code
 
 **Mejoras Visuales:**
+
 - 🔤 **Fira Code** como fuente principal (con ligatures)
 - 🌑 **Dark Theme** glassmorphism moderno
 - 🖼️ **Fix Crítico:** Rutas de imágenes con `{{ site.baseurl }}`
@@ -323,6 +344,7 @@ def classify_repo(repo: dict) -> dict:
   - Text: `#e4e4e7`
 
 **Componentes CSS:**
+
 ```css
 /* main.css - Variables globales */
 :root {
@@ -360,9 +382,11 @@ def classify_repo(repo: dict) -> dict:
 ---
 
 ### 🗂️ Fase 12: Multi-Category Navigation System (FUTURO - 1 día)
+
 **Objetivo:** Sistema de filtrado y navegación por categorías
 
 **Características:**
+
 - 🔍 **Filtrado dinámico** sin recarga de página
 - 🏷️ **Badges visuales** por categoría (con emoji + color único)
 - 📑 **Página de índice** organizada por categorías
@@ -370,6 +394,7 @@ def classify_repo(repo: dict) -> dict:
 - 📊 **Contador** de posts por categoría
 
 **Estructura:**
+
 ```
 blog/
 ├── categories.html              # Página principal con filtros
@@ -394,11 +419,13 @@ blog/
 ---
 
 ### 📊 Fase 13: Advanced Analytics Dashboard (BACKLOG - 1-2 días)
+
 **Objetivo:** Dashboard de métricas y health indicators
 
 **Componentes del Dashboard:**
 
 1. **Repo Metrics Card:**
+
    ```
    ⭐ 12,500 Stars        👥 45 Contributors
    📦 450K Downloads      🔄 28 Commits/week
@@ -411,6 +438,7 @@ blog/
    - Tooltip con breakdown detallado
 
 3. **Critical Issues Alert:**
+
    ```
    ⚠️ 2 Security Vulnerabilities Reported
    - CVE-2024-1234: SQL Injection in auth module
@@ -442,6 +470,7 @@ blog/
 | BG-06 | Tests de Blog Generator | 0.5 días |
 
 **Total:** 4.5 días
+
 | Tarea | Descripción | Estimación |
 |-------|-------------|------------|
 | AL-01 | Implementar `BlogWatcher` | 1 día |
@@ -452,6 +481,7 @@ blog/
 **Total:** 2.5 días
 
 ### 🎨 Fase 4: GitHub Pages & UI (Prioridad MEDIA)
+
 **Objetivo:** Blog visualmente atractivo
 
 | Tarea | Descripción | Estimación |
@@ -516,22 +546,26 @@ class BlogWatcher:
 ## 7. Ventajas de esta Arquitectura
 
 ### 📚 Blog como Base de Datos
+
 - ✅ Historial completo versionado (Git)
 - ✅ Búsqueda fácil (Markdown)
 - ✅ Portable y respaldable
 - ✅ Gratis (GitHub Pages)
 
 ### 🔄 Reutilización de Contenido
+
 - ✅ Un análisis → Blog + Video
 - ✅ Imágenes compartidas
 - ✅ Narración adaptable
 
 ### 💰 Costo Cero
+
 - ✅ GitHub Actions (2000 min/mes gratis)
 - ✅ GitHub Pages (hosting gratis)
 - ✅ Generación local (sin costos cloud)
 
 ### 📈 Escalabilidad
+
 - ✅ Fácil agregar más fuentes
 - ✅ Fácil cambiar formato de video
 - ✅ Fácil agregar más plataformas
@@ -541,16 +575,19 @@ class BlogWatcher:
 ## 8. Métricas de Éxito
 
 ### Fase 1 (Blog Generator)
+
 - [ ] 10 posts generados automáticamente
 - [ ] Blog publicado en GitHub Pages
 - [ ] Workflow corriendo sin errores
 
 ### Fase 2 (Reel Creator)
+
 - [ ] 5 reels de 20s generados
 - [ ] Calidad visual profesional
 - [ ] Narración sincronizada
 
 ### Fase 3 (Automatización)
+
 - [ ] Detección automática de nuevos posts
 - [ ] Generación de video sin intervención manual
 - [ ] Upload automático a YouTube
